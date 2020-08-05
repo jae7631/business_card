@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @MapperScan(basePackages= "com.infosiatec.mapper")
 public class DataSourceConfiguration {
-
+	
 	@Autowired
 	private ApplicationContext applicationContext;
 

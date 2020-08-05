@@ -8,4 +8,5 @@ import org.apache.ibatis.annotations.Mapper;
 public interface BusinessCardMapper {
 		
 	List<String> selectID();
+	void insertBusinessCard(String fileName);
 }

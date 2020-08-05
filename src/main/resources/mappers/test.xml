@@ -6,4 +6,9 @@
 		SELECT *
 		FROM test
 	</select>
+	
+	<insert id="insertBusinessCard" parameterType="string">
+		INSERT INTO test
+		VALUES ( #{fileName} )
+	</insert>
 </mapper>
