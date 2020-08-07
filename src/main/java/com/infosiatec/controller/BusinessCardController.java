@@ -57,4 +57,12 @@ public class BusinessCardController {
 		String id = "testID";
 		return businessCardService.selectBusinessCardList(id);
 	}
+	
+	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)
+	public ResponseEntity<String> updateBusinessCard(int idx, String jsonData) {
+		//TODO
+		//get sessionID
+		String id = "testID";
+		return businessCardService.updateBusinessCard(id, idx, jsonData);
+	}
 }
