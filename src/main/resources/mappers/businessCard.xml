@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "mybatis-3-mapper.dtd">
+
+<mapper namespace="com.infosiatec.mapper.BusinessCardMapper">
+	<insert id="insertBusinessCard" parameterType="string">
+		INSERT INTO BusinessCard ('id', 'fileName')
+		VALUES ( #{id}, #{fileName} )
+	</insert>
+	
+	<select id="selectFileName" parameterType="string" resultType="string">
+		SELECT fileName
+		FROM BusinessCard
+		WHERE id = #{id} AND idx = #{idx}
+	</select>
+	
+	<select id="selectBusinessCardList" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">
+		SELECT *
+		FROM BusinessCard
+		WHERE id = #{id}
+	</select>
+</mapper>

@@ -1,6 +1,7 @@
 package com.infosiatec.controller;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -26,11 +27,7 @@ public class BusinessCardController {
 	public ModelAndView home(ModelAndView mv) {
 		System.out.println("normal home page");
 
-		List<String> ids = businessCardService.test();
-
-		System.out.println("###########################");
-		System.out.println(ids.get(0));
-		System.out.println("###########################");
+		System.out.println("#############HOME##############");
 
 		mv.setViewName("home");
 
@@ -39,8 +36,25 @@ public class BusinessCardController {
 
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
 	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData) {
-		System.out.println("############################test#################################");
-		
-		return businessCardService.createBusinessCard(jsonData);
+		//TODO
+		//get sessionID
+		String id = "testID";
+		return businessCardService.createBusinessCard(jsonData, id);
+	}
+	
+	@RequestMapping(value = "/selectBusinessCard", method = RequestMethod.POST)
+	public String selectBusinessCard(@RequestParam("idx") int idx) {
+		//TODO
+		//get sessionID
+		String id = "testID";
+		return businessCardService.selectBusinessCard(id, idx);
+	}
+	
+	@RequestMapping(value = "/selectBusinessCardList", method = RequestMethod.POST)
+	public Map<Integer, String> selectBusinessCardList() {
+		//TODO
+		//get sessionID
+		String id = "testID";
+		return businessCardService.selectBusinessCardList(id);
 	}
 }
