@@ -29,7 +29,7 @@ public class BusinessCardController {
 
 		System.out.println("#############HOME##############");
 
-		mv.setViewName("home");
+		mv.setViewName("index");
 
 		return mv;
 	}

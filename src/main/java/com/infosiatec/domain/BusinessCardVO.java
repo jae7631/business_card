@@ -2,7 +2,8 @@ package com.infosiatec.domain;
 
 import lombok.Data;
 
-public @Data class BusinessCardVO {
+@Data
+public class BusinessCardVO {
 	
 	private String id;
 	private int idx;

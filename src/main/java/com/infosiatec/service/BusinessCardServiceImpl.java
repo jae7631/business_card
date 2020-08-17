@@ -1,15 +1,9 @@
 package com.infosiatec.service;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.print.attribute.HashAttributeSet;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -58,11 +52,13 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 
 	public Map<Integer, String> selectBusinessCardList(String id) {
 		Map<Integer, String> map = new HashMap<Integer, String>();
-
 		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList(id);
 		if (businessCardList != null) {
+			
 			for (BusinessCardVO vo : businessCardList) {
+				
 				String filePath = FILE_PATH + vo.getFileName();
+				
 				try {
 					map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
 				} catch (IOException e) {
