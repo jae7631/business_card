@@ -205,6 +205,7 @@
       function save(){
           if(confirm("保存しますか?")){
               return true;
+              
           }else{
               return false;
           }
