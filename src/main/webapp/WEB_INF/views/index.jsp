@@ -88,6 +88,7 @@
                                                 <input type="radio" autocomplete="off" class="custom-control-input" value="normal" id="fontStyleNormal">
                                                 <label for="fontStyleNormal" class="custom-control-label">Normal</label>
                                             </div>
+                                        
                                         </div>
                                         <div class="col-sm-4">
                                             <div class="custom-control custom-radio">
