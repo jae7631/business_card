@@ -54,7 +54,7 @@ public class BusinessCardController {
 	}
 	
 	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)
-	public ResponseEntity<String> updateBusinessCard(int idx, String jsonData) {
+	public ResponseEntity<String> updateBusinessCard(@RequestParam("idx") int idx, @RequestParam("jsonData") String jsonData) {
 		//TODO
 		//get sessionID
 		String id = "testID";
