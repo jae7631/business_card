@@ -128,7 +128,7 @@
                             </div>
                             <div class="card-body">
                                 <div class="container-fluid">
-                                    <form>
+                                    <form id="rightform">
                                         <div class="row my-1 py-2">
                                             <div class="col-sm-3"><label for="input-name1">お名前</label></div>
                                             <div class="col-sm-4"><input type="text" class="form-control form-control-sm" id="input-name1" placeholder="山田"></div>
@@ -182,10 +182,13 @@
                                         <div class="row my-1 py-2" role="group">
                                             <div class="col-sm-3"><button class="btn btn-outline-primary btn-block">Grid追加</button></div>
                                             <div class="col-sm-3"><button class="btn btn-outline-primary btn-block">grid削除</button></div>
-                                            <div class="col-sm-3"><button class="btn btn-outline-primary btn-block" onclick="return save();">保存</button></div>
+                                            <div class="col-sm-3"><button class="btn btn-outline-primary btn-block" onclick="save();">保存</button></div>
                                             <div class="col-sm-3"><input type="reset" class="btn btn-outline-primary btn-block" value="リセット" onclick="return confirmReset();"></div>
                                         </div>
                                     </form>
+                                    <form name="createBusinessCard" action="/createBusinessCard" method="post">
+    									<input type ="hidden" id="jsonData" name="jsonData" >
+    								</form>
                                 </div>
                             </div>
                         </div>
@@ -202,17 +205,27 @@
     </div>
     <!-- //page wrapper-->
   </body>
-  <script>
-      function save(){
-          if(confirm("保存しますか?")){
-              return true;
-          }else{
-              return false;
-          }
-      }
+  <script type="text/javascript">
+  	function save(){
+  		e.preventDefault();
+  		var dataArr = new Array();
+        
+  		var length = $("#rightform input[type=text]").length;
+  		
+        for(var i=0; i<length; i++){
+            var dataObj = new Object();         
+            dataObj.text = $("#rightform input[type=text]:eq("+i+")").val();             
+            dataArr.push(dataObj) ;
+        }
 
-      function confirmReset(){
-        return confirm("入力データをリセットしますか？");
-      }
+        var jsonData = JSON.stringify(dataArr);
+        $("#jsonData").val(jsonData);
+        var form = document.createBusinessCard;
+        form.submit();
+  	}
+
+    function confirmReset(){
+      return confirm("入力データをリセットしますか？");
+    }
   </script>
 </html>
