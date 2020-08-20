@@ -19,7 +19,7 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\jae76\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 
 	@Autowired
 	private BusinessCardMapper mapper;

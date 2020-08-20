@@ -3,7 +3,7 @@
 
 <mapper namespace="com.infosiatec.mapper.BusinessCardMapper">
 	<insert id="insertBusinessCard" parameterType="string">
-		INSERT INTO BusinessCard (id, fileName)
+		INSERT INTO BusinessCard ('id', 'fileName')
 		VALUES ( #{id}, #{fileName} )
 	</insert>
 	
