@@ -6,9 +6,8 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <!-- jQuery  -->
-<link rel="stylesheet"
-	href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-<script src="http://code.jquery.com/jquery.min.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
 <style>
@@ -122,7 +121,7 @@ $(document).ready(function(){
 	    }
 	    canvas.renderAll();
 	}
-	function  getStyle(object, styleName) {
+	function getStyle(object, styleName) {
 	    return (object.getSelectionStyles && object.isEditing)
 	    ? object.getSelectionStyles()[styleName]
 	    : object[styleName];
