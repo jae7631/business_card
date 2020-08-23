@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,9 +35,9 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 
 	public String selectBusinessCard(String id, int idx) {
-
-		String fileName = mapper.selectFilename(id, idx);
-		String filePath = FILE_PATH + fileName;
+		
+		String fileName = mapper.selectFileName(id, idx);
+		String filePath = FILE_PATH + fileName + ".json";
 		String jsonData = new String();
 
 		try {

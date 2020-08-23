@@ -3,19 +3,19 @@
 
 <mapper namespace="com.infosiatec.mapper.BusinessCardMapper">
 	<insert id="insertBusinessCard" parameterType="string">
-		INSERT INTO BusinessCard (id, fileName)
+		INSERT INTO businesscard (id, fileName)
 		VALUES ( #{id}, #{fileName} )
 	</insert>
 	
-	<select id="selectFileName" parameterType="string" resultType="string">
+	<select id="selectFileName" parameterType="com.infosiatec.domain.BusinessCardVO" resultType="string">
 		SELECT fileName
-		FROM BusinessCard
+		FROM businesscard
 		WHERE id = #{id} AND idx = #{idx}
 	</select>
 	
 	<select id="selectBusinessCardList" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">
 		SELECT *
-		FROM BusinessCard
+		FROM businesscard
 		WHERE id = #{id}
 	</select>
 </mapper>

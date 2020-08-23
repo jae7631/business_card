@@ -3,6 +3,7 @@ package com.infosiatec.mapper;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.infosiatec.domain.BusinessCardVO;
 
@@ -10,6 +11,6 @@ import com.infosiatec.domain.BusinessCardVO;
 public interface BusinessCardMapper {
 	
 	void insertBusinessCard(String fileName);
-	String selectFilename(String id, int idx);
+	String selectFileName(@Param("id") String id, @Param("idx") int idx);
 	List<BusinessCardVO> selectBusinessCardList(String id);
 }
