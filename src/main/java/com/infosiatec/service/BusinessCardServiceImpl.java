@@ -19,12 +19,13 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
 	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	private static final String FILE_EXTENSION = ".json";
 
 	@Autowired
 	private BusinessCardMapper mapper;
 
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
-		String filePath = FILE_PATH + id + ".json";
+		String filePath = FILE_PATH + id + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
@@ -37,7 +38,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	public String selectBusinessCard(String id, int idx) {
 		
 		String fileName = mapper.selectFileName(id, idx);
-		String filePath = FILE_PATH + fileName + ".json";
+		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
 		String jsonData = new String();
 
 		try {
@@ -70,7 +71,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
-		String filePath = FILE_PATH + id + ".json";
+		String filePath = FILE_PATH + id + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
