@@ -13,4 +13,5 @@ public interface BusinessCardMapper {
 	void insertBusinessCard(String fileName);
 	String selectFileName(@Param("id") String id, @Param("idx") int idx);
 	List<BusinessCardVO> selectBusinessCardList(String id);
+	int selectMaxIdx();
 }

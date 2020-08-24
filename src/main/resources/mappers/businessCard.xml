@@ -18,4 +18,9 @@
 		FROM businesscard
 		WHERE id = #{id}
 	</select>
+	
+	<select id="selectMaxIdx" resultType="Integer">
+		SELECT MAX(idx)
+		FROM businesscard
+	</select>
 </mapper>
