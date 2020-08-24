@@ -66,6 +66,27 @@
 		});	
 	});
 	
+	$('html').keyup(function(e){
+        if(e.keyCode == 46) {
+            deleteSelectedObjectsFromCanvas();
+        }
+	});    
+
+	function deleteSelectedObjectsFromCanvas(){
+   	 	var selection = canvas.getActiveObject();
+    	if (selection.type === 'activeSelection') {
+        	selection.forEachObject(function(element) {
+            	console.log(element);
+            	canvas.remove(element);
+        	});
+    	}
+    	else{
+        	canvas.remove(selection);
+    	}
+    	canvas.discardActiveObject();
+    	canvas.requestRenderAll();
+	}
+	
 	addHandler('font-family', function(obj) {
 	      setStyle(obj, 'fontFamily', this.value);
 	    }, 'onchange');
