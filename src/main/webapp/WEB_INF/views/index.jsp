@@ -84,7 +84,37 @@
     	}
     	canvas.discardActiveObject();
     	canvas.requestRenderAll();
-	}
+  }
+  
+    document.getElementById('imgFile').addEventListener("change", function (e) {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.onload = function (f) {
+    var data = f.target.result;                    
+    fabric.Image.fromURL(data, function (img) {
+      var oImg = img.set({left: 0, top: 0}).scale(0.2);
+      canvas.add(oImg).renderAll();
+      var a = canvas.setActiveObject(oImg);
+      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
+    });
+  };
+  reader.readAsDataURL(file);
+});
+
+document.getElementById('bgFile').addEventListener("change", function (e) {
+  var file = e.target.files[0];
+  var reader = new FileReader();
+  reader.onload = function (f) {
+    var data = f.target.result;                    
+    fabric.Image.fromURL(data, function (img) {
+      var oImg = img.set({left: 0, top: 0}).scale(0.5);
+      canvas.add(oImg).renderAll();
+      var a = canvas.setActiveObject(oImg);
+      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
+    });
+  };
+  reader.readAsDataURL(file);
+});
 	
 	addHandler('font-family', function(obj) {
 	      setStyle(obj, 'fontFamily', this.value);
@@ -210,9 +240,10 @@
             <!-- shadow-->
             <div class="card shadow mb-2 text-left" style="margin: 2vh auto auto;">
               <!-- main content Title-->
-              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                <h6 class="m-0 font-weight-bold text-primary">名刺</h6>
-              </div>
+              <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
+                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
+                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">拝啓追加<input type="file" id="bgFile" hidden></label></div>
+                </div>
               <!-- //main content Title-->
 
               <!-- main content body-->
