@@ -30,12 +30,13 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
 		int idx = getNextIdx();
-		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
+		String fileName = id + idx;
+		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		mapper.insertBusinessCard(id);
+		mapper.insertBusinessCard(id, fileName);
 
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
