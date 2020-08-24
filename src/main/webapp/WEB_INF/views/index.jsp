@@ -4,10 +4,11 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
 
@@ -30,7 +31,40 @@
 			});
 		canvas.add(text).setActiveObject(text);
 	});
+	
+	$('#save').on("click",function(){
+		var jsonData = JSON.stringify( canvas );
 
+		$.ajax({ url: "/createBusinessCard", 
+			data: { jsonData: jsonData}, 
+			method: "POST", 
+			dataType: "json",
+			success:function(data){
+				alert("success");				 
+			},
+			error:function(error){
+				alert("error");
+			}
+		});
+	});
+	
+	$('#load').on("click",function(){
+		$.ajax({ url: "/selectBusinessCard", 
+			data: { idx: 1 }, 
+			method: "POST", 
+			dataType: "text",
+			success:function(data){
+				alert(data);
+				canvas.clear();
+				canvas.loadFromJSON(data, function() {
+				    canvas.renderAll();
+				});   
+			},
+			error:function(){
+				alert("error");	
+			}
+		});	
+	});
 	
 	addHandler('font-family', function(obj) {
 	      setStyle(obj, 'fontFamily', this.value);
@@ -250,11 +284,8 @@
                         <div class="row my-1 py-2" role="group">
                             <div class="col-sm-4"><button class="btn btn-outline-primary btn-block">gridOn</button>
                           </div>
-                            <div class="col-sm-4"><input type="reset" class="btn btn-outline-primary btn-block"
-                                value="リセット" onclick="return confirmReset();"></div>
-                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block"
-                                onclick="init();">保存</button></div>
-                          <input type="hidden" id="jsonData" name="jsonData">
+                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="load">load</button></div>
+                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="save">保存</button></div>
                         </div>
                       </div>
                     </div>
@@ -275,43 +306,4 @@
     <!-- //content wrapper-->
 
 </body>
-<script type="text/javascript">
-    function save() {
-        var dataArr = new Array();
-
-        var length = $("#rightform input[type=text]").length;
-
-        for (var i = 0; i < length; i++) {
-            var dataObj = new Object();
-            dataObj.text = $("#rightform input[type=text]:eq(" + i + ")").val();
-            dataArr.push(dataObj);
-        }
-
-        var jsonData = JSON.stringify(dataArr);
-        $("#jsonData").val(jsonData);
-        var form = document.createBusinessCard;
-        form.submit();
-    }
-
-    $('#reset').on('click', function(){
-		if(confirm("入力データをリセットしますか？")){
-			return true;
-		}else{
-			return false;
-		}
-    });
-    
-
-    $('#saveInput').on('click', function(){
-	    $('input[type="text"]').each(function(){    
-	        var id = $(this).attr('id');
-	        var value = $(this).val();
-	       localStorage.setItem(id, value);
-	    });   
-	});
-    
-
-   
-</script>
-
 </html>
