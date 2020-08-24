@@ -38,12 +38,12 @@
 		$.ajax({ url: "/createBusinessCard", 
 			data: { jsonData: jsonData}, 
 			method: "POST", 
-			dataType: "json",
+			dataType: "text",
 			success:function(data){
 				alert("success");				 
 			},
-			error:function(error){
-				alert("error");
+			error:function(request, status, error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}
 		});
 	});
@@ -54,14 +54,13 @@
 			method: "POST", 
 			dataType: "text",
 			success:function(data){
-				alert(data);
 				canvas.clear();
 				canvas.loadFromJSON(data, function() {
 				    canvas.renderAll();
 				});   
 			},
-			error:function(){
-				alert("error");	
+			error:function(request, status, error){
+				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 			}
 		});	
 	});
