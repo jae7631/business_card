@@ -101,19 +101,21 @@
   reader.readAsDataURL(file);
 });
 
-document.getElementById('bgFile').addEventListener("change", function (e) {
-  var file = e.target.files[0];
-  var reader = new FileReader();
-  reader.onload = function (f) {
-    var data = f.target.result;                    
-    fabric.Image.fromURL(data, function (img) {
-      var oImg = img.set({left: 0, top: 0}).scale(0.5);
-      canvas.add(oImg).renderAll();
-      var a = canvas.setActiveObject(oImg);
-      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
-    });
-  };
-  reader.readAsDataURL(file);
+
+document.getElementById('bgFile').addEventListener("change", function(e) {
+   var file = e.target.files[0];
+   var reader = new FileReader();
+   reader.onload = function(f) {
+      var data = f.target.result;
+      fabric.Image.fromURL(data, function(img) {
+         // add background image
+         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height
+         });
+      });
+   };
+   reader.readAsDataURL(file);
 });
 	
 	addHandler('font-family', function(obj) {
@@ -242,7 +244,7 @@ document.getElementById('bgFile').addEventListener("change", function (e) {
               <!-- main content Title-->
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
                 <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
-                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">拝啓追加<input type="file" id="bgFile" hidden></label></div>
+                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
                 </div>
               <!-- //main content Title-->
 
