@@ -8,7 +8,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
-    <script src="http://code.jquery.com/jquery.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
 
@@ -32,13 +31,6 @@
 		canvas.add(text).setActiveObject(text);
 	});
 
-	addHandler('color', function(obj) {
-	      setStyle(obj, 'fill', this.value);
-	    }, 'onchange');
-
-	addHandler('opacity', function(obj) {
-	      setStyle(obj, 'opacity', this.value);
-	    }, 'onchange');	    
 	
 	addHandler('font-family', function(obj) {
 	      setStyle(obj, 'fontFamily', this.value);
@@ -51,11 +43,7 @@
 	addHandler('text-bg-color', function(obj) {
 	      setStyle(obj, 'textBackgroundColor', this.value);
 	    }, 'onchange');
-	
-	addHandler('text-lines-bg-color', function(obj) {
-	      setStyle(obj, 'backgroundColor', this.value);
-	    }, 'onchange');
-	    
+
 	addHandler('text-stroke-color', function(obj) {
 	      setStyle(obj, 'stroke', this.value);
 	    }, 'onchange');
@@ -84,10 +72,10 @@
 	      setStyle(obj, 'underline', this.value);
 	    }, 'onchange');
 	    
-	addHandler('text-cmd-linethrough', function(obj) {
-	      setStyle(obj, 'line-through', this.value);
+  	addHandler('text-cmd-linethrough', function(obj) {
+	      setStyle(obj, 'linethrough', this.value);
 	    }, 'onchange');
-	    	
+	    	 
 	addHandler('text-cmd-overline', function(obj) {
 	      setStyle(obj, 'overline', this.value);
 	    }, 'onchange');
@@ -109,7 +97,7 @@
 	    : object[styleName];
 	}
 	function addHandler(id, fn, eventName) {
-	    document.getElementById(id)[eventName || 'onclick'] = function() {
+	    document.getElementById(id)[eventName || "onclick"] = function() {
 	        var el = this;
 	        if (obj = canvas.getActiveObject()) {
 	            fn.call(el, obj);
@@ -194,7 +182,7 @@
                       <div class="container-fluid">
                         <div class="row my-1 py-2"><button class="btn btn-outline-primary btn-block" id="test">テキスト追加</button></div>
                         <div class="row my-1 py-2">
-                          <div class="col-sm-2"><label for="font">Font</label></div>
+                          <div class="col-sm-2"><label for="font-family">Font</label></div>
                           <div class="col-sm-4">
                              <select id="font-family" class="form-control">
                                 <option value="arial">Arial</option>
@@ -252,8 +240,8 @@
                           <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="fontType"></div>
 
-                          <div class="col-sm-2"><label for="text-cmd-through">LineThrough</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-through" name="fontType"></div>
+                          <div class="col-sm-2"><label for="text-cmd-linethrough">LineThrough</label></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-linethrough" name="fontType"></div>
                         
                           <div class="col-sm-1"><label for="text-cmd-overline">overLine</label></div>
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-overline" name="fontType"></div>
