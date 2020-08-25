@@ -18,19 +18,25 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\jae76\\Desktop\\";
 	private static final String FILE_EXTENSION = ".json";
 
 	@Autowired
 	private BusinessCardMapper mapper;
 
+	private int getNextIdx() {
+		return mapper.selectMaxIdx()+1;
+	}
+	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
-		String filePath = FILE_PATH + id + FILE_EXTENSION;
+		int idx = getNextIdx();
+		String fileName = id + idx;
+		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		mapper.insertBusinessCard(id);
+		mapper.insertBusinessCard(id, fileName);
 
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
@@ -71,7 +77,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
-		String filePath = FILE_PATH + id + FILE_EXTENSION;
+		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
@@ -79,4 +85,5 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
+	
 }

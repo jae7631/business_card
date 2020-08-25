@@ -14,185 +14,214 @@
 
     <script type="text/javascript">
     $(document).ready(function(){
-
-	 fabric.Object.prototype.transparentCorners = false;
-	 fabric.Object.prototype.padding = 5;
+		fabric.Object.prototype.transparentCorners = false;
+		fabric.Object.prototype.padding = 5;
+		    
+		var canvas = this.__canvas = new fabric.Canvas('canvas-area');
+		  	canvas.setHeight(300);
+	           canvas.setWidth(450);
 	    
-	var canvas = this.__canvas = new fabric.Canvas('canvas-area');
-	  	canvas.setHeight(300);
-           canvas.setWidth(450);
-    
-	   
-	$('#test').on("click",function() { 
-		var text = new fabric.IText('Lorem ipsum',{
-			fontSize:16,
-			left:20,
-			top:20
-			});
-		canvas.add(text).setActiveObject(text);
-	});
-	
-	$('#save').on("click",function(){
-		var jsonData = JSON.stringify( canvas );
-
-		$.ajax({ url: "/createBusinessCard", 
-			data: { jsonData: jsonData}, 
-			method: "POST", 
-			dataType: "text",
-			success:function(data){
-				alert("success");				 
-			},
-			error:function(request, status, error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
+		   
+		$('#test').on("click",function() { 
+			var text = new fabric.IText('Lorem ipsum',{
+				fontSize:16,
+				left:20,
+				top:20
+				});
+			canvas.add(text).setActiveObject(text);
 		});
-	});
-	
-	$('#load').on("click",function(){
-		$.ajax({ url: "/selectBusinessCard", 
-			data: { idx: 1 }, 
-			method: "POST", 
-			dataType: "text",
-			success:function(data){
-				canvas.clear();
-				canvas.loadFromJSON(data, function() {
-				    canvas.renderAll();
-				});   
-			},
-			error:function(request, status, error){
-				alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-			}
-		});	
-	});
-	
-	$('html').keyup(function(e){
-        if(e.keyCode == 46) {
-            deleteSelectedObjectsFromCanvas();
-        }
-	});    
-
-	function deleteSelectedObjectsFromCanvas(){
-   	 	var selection = canvas.getActiveObject();
-    	if (selection.type === 'activeSelection') {
-        	selection.forEachObject(function(element) {
-            	console.log(element);
-            	canvas.remove(element);
-        	});
-    	}
-    	else{
-        	canvas.remove(selection);
-    	}
-    	canvas.discardActiveObject();
-    	canvas.requestRenderAll();
-  }
-  
-    document.getElementById('imgFile').addEventListener("change", function (e) {
-  var file = e.target.files[0];
-  var reader = new FileReader();
-  reader.onload = function (f) {
-    var data = f.target.result;                    
-    fabric.Image.fromURL(data, function (img) {
-      var oImg = img.set({left: 0, top: 0}).scale(0.2);
-      canvas.add(oImg).renderAll();
-      var a = canvas.setActiveObject(oImg);
-      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
-    });
-  };
-  reader.readAsDataURL(file);
-});
-
-
-document.getElementById('bgFile').addEventListener("change", function(e) {
-   var file = e.target.files[0];
-   var reader = new FileReader();
-   reader.onload = function(f) {
-      var data = f.target.result;
-      fabric.Image.fromURL(data, function(img) {
-         // add background image
-         canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-            scaleX: canvas.width / img.width,
-            scaleY: canvas.height / img.height
-         });
-      });
-   };
-   reader.readAsDataURL(file);
-});
-	
-	addHandler('font-family', function(obj) {
-	      setStyle(obj, 'fontFamily', this.value);
-	    }, 'onchange');
-	
-	addHandler('text-align', function(obj) {
-	      setStyle(obj, 'textAlign', this.value);
-	    }, 'onchange');
-	
-	addHandler('text-bg-color', function(obj) {
-	      setStyle(obj, 'textBackgroundColor', this.value);
-	    }, 'onchange');
-
-	addHandler('text-stroke-color', function(obj) {
-	      setStyle(obj, 'stroke', this.value);
-	    }, 'onchange');
-	    
-	addHandler('text-stroke-width', function(obj) {
-	      setStyle(obj, 'strokeWidth', this.value);
-	    }, 'onchange');
-	    
-	addHandler('text-font-size', function(obj) {
-	      setStyle(obj, 'fontSize', this.value);
-	    }, 'onchange');
-	    
-	addHandler('text-line-height', function(obj) {
-	      setStyle(obj, 'lineHeight', this.value);
-	    }, 'onchange');
-	    
-	addHandler('text-cmd-bold', function(obj) {
-	      setStyle(obj, 'fontWeight', this.value);
-	    }, 'onchange');
-	    
-	addHandler('text-cmd-italic', function(obj) {
-	      setStyle(obj, 'italic', this.value);
-	    }, 'onchange');
-	    	
-	addHandler('text-cmd-underline', function(obj) {
-	      setStyle(obj, 'underline', this.value);
-	    }, 'onchange');
-	    
-  	addHandler('text-cmd-linethrough', function(obj) {
-	      setStyle(obj, 'linethrough', this.value);
-	    }, 'onchange');
-	    	 
-	addHandler('text-cmd-overline', function(obj) {
-	      setStyle(obj, 'overline', this.value);
-	    }, 'onchange');
-	    
-	function setStyle(object, styleName, value) {
-	    if (object.setSelectionStyles && object.isEditing) {
-	        var style = { };
-	        style[styleName] = value;
-	        object.setSelectionStyles(style).setCoords();
-	    }
-	    else {
-	        object[styleName] = value;
-	    }
-	    canvas.renderAll();
-	}
-	function getStyle(object, styleName) {
-	    return (object.getSelectionStyles && object.isEditing)
-	    ? object.getSelectionStyles()[styleName]
-	    : object[styleName];
-	}
-	function addHandler(id, fn, eventName) {
-	    document.getElementById(id)[eventName || "onclick"] = function() {
-	        var el = this;
-	        if (obj = canvas.getActiveObject()) {
-	            fn.call(el, obj);
-	            canvas.renderAll();
-	        }
-	    };
-	}    
 		
-});
+		$('#save').on("click",function(){
+			this.href = canvas.toDataURL({
+		        format: 'png',
+		        multiplier: 4
+		    });
+			
+		    const link = document.createElement('a');
+		    link.download = 'image.png';
+		    link.href = this.href;
+		    document.body.appendChild(link);
+		    link.click();
+		    document.body.removeChild(link);
+		    
+			var jsonData = JSON.stringify( canvas );
+	
+			$.ajax({ url: "/createBusinessCard", 
+				data: { jsonData: jsonData}, 
+				method: "POST", 
+				dataType: "text",
+				success:function(data){
+					alert("success");				 
+				},
+				error:function(request, status, error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+			});
+		});
+		
+		$('#load').on("click",function(){
+			$.ajax({ url: "/selectBusinessCard", 
+				data: { idx: 1 }, 
+				method: "POST", 
+				dataType: "text",
+				success:function(data){
+					canvas.clear();
+					canvas.loadFromJSON(data, function() {
+					    canvas.renderAll();
+					});   
+				},
+				error:function(request, status, error){
+					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+				}
+			});	
+		});
+		
+		$('html').keyup(function(e){
+	        if(e.keyCode == 46) {
+	            deleteSelectedObjectsFromCanvas();
+	        }
+		});    
+	
+		function deleteSelectedObjectsFromCanvas(){
+	   	 	var selection = canvas.getActiveObject();
+	    	if (selection.type === 'activeSelection') {
+	        	selection.forEachObject(function(element) {
+	            	console.log(element);
+	            	canvas.remove(element);
+	        	});
+	    	}
+	    	else{
+	        	canvas.remove(selection);
+	    	}
+	    	canvas.discardActiveObject();
+	    	canvas.requestRenderAll();
+	  	}
+		
+		canvas.on('object:moving', function (e) {
+			  var obj = e.target;
+			  // if object is too big ignore
+			  if(obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width){
+			    return;
+			  }
+			  obj.setCoords();
+			  // top-left  corner
+			  if(obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0){
+			    obj.top = Math.max(obj.top, obj.top-obj.getBoundingRect().top);
+			    obj.left = Math.max(obj.left, obj.left-obj.getBoundingRect().left);
+			  }
+			  // bot-right corner
+			  if(obj.getBoundingRect().top+obj.getBoundingRect().height  > obj.canvas.height || obj.getBoundingRect().left+obj.getBoundingRect().width  > obj.canvas.width){
+			    obj.top = Math.min(obj.top, obj.canvas.height-obj.getBoundingRect().height+obj.top-obj.getBoundingRect().top);
+			    obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
+			  }
+		});
+	  
+	    document.getElementById('imgFile').addEventListener("change", function (e) {
+		  	var file = e.target.files[0];
+		  	var reader = new FileReader();
+		  	reader.onload = function (f) {
+			    var data = f.target.result;                    
+			    fabric.Image.fromURL(data, function (img) {
+			      var oImg = img.set({left: 0, top: 0}).scale(0.2);
+			      canvas.add(oImg).renderAll();
+			      var a = canvas.setActiveObject(oImg);
+			      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
+			    });
+		  	};
+	  	reader.readAsDataURL(file);
+		});
+	
+	
+		document.getElementById('bgFile').addEventListener("change", function(e) {
+	   		var file = e.target.files[0];
+	   		var reader = new FileReader();
+	   		reader.onload = function(f) {
+	      		var data = f.target.result;
+	      		fabric.Image.fromURL(data, function(img) {
+	         		// add background image
+	         		canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+	            		scaleX: canvas.width / img.width,
+	            		scaleY: canvas.height / img.height
+	         		});
+	      		});
+	   		};
+	   		reader.readAsDataURL(file);
+		});
+		
+		addHandler('font-family', function(obj) {
+		      setStyle(obj, 'fontFamily', this.value);
+		    }, 'onchange');
+		
+		addHandler('text-align', function(obj) {
+		      setStyle(obj, 'textAlign', this.value);
+		    }, 'onchange');
+		
+		addHandler('text-bg-color', function(obj) {
+		      setStyle(obj, 'textBackgroundColor', this.value);
+		    }, 'onchange');
+	
+		addHandler('text-stroke-color', function(obj) {
+		      setStyle(obj, 'stroke', this.value);
+		    }, 'onchange');
+		    
+		addHandler('text-stroke-width', function(obj) {
+		      setStyle(obj, 'strokeWidth', this.value);
+		    }, 'onchange');
+		    
+		addHandler('text-font-size', function(obj) {
+		      setStyle(obj, 'fontSize', this.value);
+		    }, 'onchange');
+		    
+		addHandler('text-line-height', function(obj) {
+		      setStyle(obj, 'lineHeight', this.value);
+		    }, 'onchange');
+		    
+		addHandler('text-cmd-bold', function(obj) {
+		      setStyle(obj, 'fontWeight', this.value);
+		    }, 'onchange');
+		    
+		addHandler('text-cmd-italic', function(obj) {
+		      setStyle(obj, 'italic', this.value);
+		    }, 'onchange');
+		    	
+		addHandler('text-cmd-underline', function(obj) {
+		      setStyle(obj, 'underline', this.value);
+		    }, 'onchange');
+		    
+	  	addHandler('text-cmd-linethrough', function(obj) {
+		      setStyle(obj, 'linethrough', this.value);
+		    }, 'onchange');
+		    	 
+		addHandler('text-cmd-overline', function(obj) {
+		      setStyle(obj, 'overline', this.value);
+		    }, 'onchange');
+		    
+		function setStyle(object, styleName, value) {
+		    if (object.setSelectionStyles && object.isEditing) {
+		        var style = { };
+		        style[styleName] = value;
+		        object.setSelectionStyles(style).setCoords();
+		    }
+		    else {
+		        object[styleName] = value;
+		    }
+		    canvas.renderAll();
+		}
+		function getStyle(object, styleName) {
+		    return (object.getSelectionStyles && object.isEditing)
+		    ? object.getSelectionStyles()[styleName]
+		    : object[styleName];
+		}
+		function addHandler(id, fn, eventName) {
+		    document.getElementById(id)[eventName || "onclick"] = function() {
+		        var el = this;
+		        if (obj = canvas.getActiveObject()) {
+		            fn.call(el, obj);
+		            canvas.renderAll();
+		        }
+		    };
+		}    	
+	});
 </script>
     <title>Main</title>
     <style>
