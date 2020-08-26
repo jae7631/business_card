@@ -352,6 +352,43 @@
                                 <option value="hoefler text">Hoefler Text</option>
                                 <option value="plaster">Plaster</option>
                                 <option value="engagement">Engagement</option>
+                                <option value="sans-serif">sans-serif</option>
+                                <option value="serif">serif</option>
+                                <option value="cursive">cursive</option>
+                                <option value="fantasy">fantasy</option>
+                                <option value="monospace">monospace</option>
+                                <option value="HiraginoSans-W0">HiraginoSans-W0</option>
+                                <option value="Hiragino Sans">Hiragino Sans</option>
+                                <option value="Hiragino Maru Gothic ProN">Hiragino Maru Gothic ProN</option>
+                                <option value="YuGothic">YuGothic</option>
+                                <option value="YuMincho">YuMincho</option>
+                                <option value="YuKyokasho">YuKyokasho</option>
+                                <option value="YuKyokasho Yoko">YuKyokasho Yoko</option>
+                                <option value="Klee">Klee</option>
+                                <option value="Tsukushi A Round Gothic">Tsukushi A Round Gothic</option>
+                                <option value="Tsukushi B Round Gothic">Tsukushi B Round Gothic</option>
+                                <option value="Toppan Bunkyu Gothic">Toppan Bunkyu Gothic</option>
+                                <option value="Toppan Bunkyu Midashi Gothic">Toppan Bunkyu Midashi Gothic</option>
+                                <option value="Toppan Bunkyu Mincho">Toppan Bunkyu Mincho</option>
+                                <option value="Toppan Bunkyu Midashi Mincho">Toppan Bunkyu Midashi Mincho</option>
+                                <option value="Meiryo">Meiryo</option>
+                                <option value="Meiryo UI">Meiryo UI</option>
+                                <option value="Yu Gothic">Yu Gothic</option>
+                                <option value="Yu Mincho">Yu Mincho</option>
+                                <option value="BIZ UDPGothic">BIZ UDPGothic</option>
+                                <option value="BIZ UDGothic">BIZ UDGothic</option>
+                                <option value="BIZ UDPMincho">BIZ UDPMincho</option>
+                                <option value="UD Digi Kyokasho N-R">UD Digi Kyokasho N-R</option>
+                                <option value="UD Digi Kyokasho N-B">UD Digi Kyokasho N-B</option>
+                                <option value="UD Digi Kyokasho NP-R">UD Digi Kyokasho NP-R</option>
+                                <option value="UD Digi Kyokasho NP-B">UD Digi Kyokasho NP-B</option>
+                                <option value="UD Digi Kyokasho NK-R">UD Digi Kyokasho NK-R</option>
+                                <option value="UD Digi Kyokasho NK-B">UD Digi Kyokasho NK-B</option>
+                                <option value="MS UI Gothic">MS UI Gothic</option>
+                                <option value="MS PGothic">MS PGothic</option>
+                                <option value="MS Gothic">MS Gothic</option>
+                                <option value="MS PMincho">MS PMincho</option>
+                                <option value="MS Mincho">MS Mincho</option>
                             </select>      
                         </div>
                         <div class="col-sm-3"><label for="text-font-size">Font size:</label></div>
