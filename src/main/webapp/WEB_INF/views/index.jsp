@@ -8,9 +8,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
     <script src="http://code.jquery.com/jquery-latest.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
 
     <script type="text/javascript">
 	$(document).ready(function(){
@@ -197,13 +199,55 @@
 		reader.readAsDataURL(file);
 	});
 	
+	$("#text-color").spectrum({
+	    preferredFormat: "rgb",
+	    showInput: true,
+	    showPalette: true,
+	    move : function(color) {
+	    	canvas.getActiveObject().set('fill', color);
+	    	canvas.renderAll();
+	    },
+	    change : function(color){
+	    	canvas.getActiveObject().set('fill', color);
+	    	canvas.renderAll();
+	    }
+	});
+	
+	$("#text-bg-color").spectrum({
+	    preferredFormat: "rgb",
+	    showInput: true,
+	    showPalette: true,
+	    move : function(color) {
+	    	canvas.getActiveObject().set('textBackgroundColor', color);
+	    	canvas.renderAll();
+	    },
+	    change : function(color){
+	    	canvas.getActiveObject().set('textBackgroundColor', color);
+	    	canvas.renderAll();
+	    }
+	});
+	
+	$("#text-stroke-color").spectrum({
+	    preferredFormat: "rgb",
+	    showInput: true,
+	    showPalette: true,
+	    move : function(color) {
+	    	canvas.getActiveObject().set('stroke', color);
+	    	canvas.renderAll();
+	    },
+	    change : function(color){
+	    	canvas.getActiveObject().set('stroke', color);
+	    	canvas.renderAll();
+	    }
+	});
+	
 	/** Add Property */
 	addHandler('font-family', function(obj) {
 			setStyle(obj, 'fontFamily', this.value);
 		}, 'onchange');
 	
- 	addHandler('text-color', function(obj) {
-        setStyle(obj, 'fill', this.value);
+ 	/* addHandler('text-color', function(obj) {
+        	setStyle(obj, 'fill', this.value);
       }, 'onchange');
 	
 	addHandler('text-bg-color', function(obj) {
@@ -212,7 +256,7 @@
 
 	addHandler('text-stroke-color', function(obj) {
 			setStyle(obj, 'stroke', this.value);
-		}, 'onclick');
+		}, 'onclick'); */
 		
 	addHandler('text-stroke-width', function(obj) {
 			setStyle(obj, 'strokeWidth', this.value);
