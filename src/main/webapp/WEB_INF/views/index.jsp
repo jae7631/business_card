@@ -13,214 +13,243 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
 
     <script type="text/javascript">
-    $(document).ready(function(){
-		fabric.Object.prototype.transparentCorners = false;
-		fabric.Object.prototype.padding = 5;
-		    
-		var canvas = this.__canvas = new fabric.Canvas('canvas-area');
-		  	canvas.setHeight(300);
-	           canvas.setWidth(450);
-	    
-		   
-		$('#test').on("click",function() { 
-			var text = new fabric.IText('Lorem ipsum',{
-				fontSize:16,
-				left:20,
-				top:20
-				});
-			canvas.add(text).setActiveObject(text);
+	$(document).ready(function(){
+	/** Create Canvas */
+	fabric.Object.prototype.transparentCorners = false;
+	fabric.Object.prototype.padding = 5;   
+	var canvas = this.__canvas = new fabric.Canvas('canvas-area');
+		canvas.setHeight(300);
+			canvas.setWidth(450);
+	
+	/** Create Text */
+	$('#test').on("click",function() { 
+		var text = new fabric.IText('Lorem ipsum',{
+		fontSize:16,
+		left:20,
+		top:20
+		});
+		canvas.add(text).setActiveObject(text);
+	});
+
+	/** Save Canvas to Png */
+	$('#save').on("click",function(){
+		this.href = canvas.toDataURL({
+			format: 'png',
+			multiplier: 4
 		});
 		
-		$('#save').on("click",function(){
-			this.href = canvas.toDataURL({
-		        format: 'png',
-		        multiplier: 4
-		    });
-			
-		    const link = document.createElement('a');
-		    link.download = 'image.png';
-		    link.href = this.href;
-		    document.body.appendChild(link);
-		    link.click();
-		    document.body.removeChild(link);
-		    
-			var jsonData = JSON.stringify( canvas );
+		const link = document.createElement('a');
+		link.download = 'image.png';
+		link.href = this.href;
+		document.body.appendChild(link);
+		link.click();
+		document.body.removeChild(link);
+		/** Create Json */
+		var jsonData = JSON.stringify( canvas );
+
+		$.ajax({ url: "/createBusinessCard", 
+		data: { jsonData: jsonData}, 
+		method: "POST", 
+		dataType: "text",
+		success:function(data){
+			alert("success");				 
+		},
+		error:function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+		});
+	});
 	
-			$.ajax({ url: "/createBusinessCard", 
-				data: { jsonData: jsonData}, 
-				method: "POST", 
-				dataType: "text",
-				success:function(data){
-					alert("success");				 
-				},
-				error:function(request, status, error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				}
+	/** Load Templet */
+	$('#load').on("click",function(){
+		$.ajax({ url: "/selectBusinessCard", 
+		data: { idx: 1 }, 
+		method: "POST", 
+		dataType: "text",
+		success:function(data){
+			canvas.clear();
+			canvas.loadFromJSON(data, function() {
+				canvas.renderAll();
+			});   
+		},
+		error:function(request, status, error){
+			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
+		}
+		});	
+	});
+	/** Delete Object */
+	$('html').keyup(function(e){
+			if(e.keyCode == 46) {
+				deleteSelectedObjectsFromCanvas();
+			}
+	});    
+	function deleteSelectedObjectsFromCanvas(){
+			var selection = canvas.getActiveObject();
+		if (selection.type === 'activeSelection') {
+			selection.forEachObject(function(element) {
+				console.log(element);
+				canvas.remove(element);
 			});
-		});
-		
-		$('#load').on("click",function(){
-			$.ajax({ url: "/selectBusinessCard", 
-				data: { idx: 1 }, 
-				method: "POST", 
-				dataType: "text",
-				success:function(data){
-					canvas.clear();
-					canvas.loadFromJSON(data, function() {
-					    canvas.renderAll();
-					});   
-				},
-				error:function(request, status, error){
-					alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
-				}
-			});	
-		});
-		
-		$('html').keyup(function(e){
-	        if(e.keyCode == 46) {
-	            deleteSelectedObjectsFromCanvas();
-	        }
-		});    
-	
-		function deleteSelectedObjectsFromCanvas(){
-	   	 	var selection = canvas.getActiveObject();
-	    	if (selection.type === 'activeSelection') {
-	        	selection.forEachObject(function(element) {
-	            	console.log(element);
-	            	canvas.remove(element);
-	        	});
-	    	}
-	    	else{
-	        	canvas.remove(selection);
-	    	}
-	    	canvas.discardActiveObject();
-	    	canvas.requestRenderAll();
-	  	}
-		
-		canvas.on('object:moving', function (e) {
-			  var obj = e.target;
-			  // if object is too big ignore
-			  if(obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width){
-			    return;
-			  }
-			  obj.setCoords();
-			  // top-left  corner
-			  if(obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0){
-			    obj.top = Math.max(obj.top, obj.top-obj.getBoundingRect().top);
-			    obj.left = Math.max(obj.left, obj.left-obj.getBoundingRect().left);
-			  }
-			  // bot-right corner
-			  if(obj.getBoundingRect().top+obj.getBoundingRect().height  > obj.canvas.height || obj.getBoundingRect().left+obj.getBoundingRect().width  > obj.canvas.width){
-			    obj.top = Math.min(obj.top, obj.canvas.height-obj.getBoundingRect().height+obj.top-obj.getBoundingRect().top);
-			    obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
-			  }
-		});
-	  
-	    document.getElementById('imgFile').addEventListener("change", function (e) {
-		  	var file = e.target.files[0];
-		  	var reader = new FileReader();
-		  	reader.onload = function (f) {
-			    var data = f.target.result;                    
-			    fabric.Image.fromURL(data, function (img) {
-			      var oImg = img.set({left: 0, top: 0}).scale(0.2);
-			      canvas.add(oImg).renderAll();
-			      var a = canvas.setActiveObject(oImg);
-			      var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
-			    });
-		  	};
-	  	reader.readAsDataURL(file);
-		});
-	
-	
-		document.getElementById('bgFile').addEventListener("change", function(e) {
-	   		var file = e.target.files[0];
-	   		var reader = new FileReader();
-	   		reader.onload = function(f) {
-	      		var data = f.target.result;
-	      		fabric.Image.fromURL(data, function(img) {
-	         		// add background image
-	         		canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-	            		scaleX: canvas.width / img.width,
-	            		scaleY: canvas.height / img.height
-	         		});
-	      		});
-	   		};
-	   		reader.readAsDataURL(file);
-		});
-		
-		addHandler('font-family', function(obj) {
-		      setStyle(obj, 'fontFamily', this.value);
-		    }, 'onchange');
-		
-		addHandler('text-align', function(obj) {
-		      setStyle(obj, 'textAlign', this.value);
-		    }, 'onchange');
-		
-		addHandler('text-bg-color', function(obj) {
-		      setStyle(obj, 'textBackgroundColor', this.value);
-		    }, 'onchange');
-	
-		addHandler('text-stroke-color', function(obj) {
-		      setStyle(obj, 'stroke', this.value);
-		    }, 'onchange');
-		    
-		addHandler('text-stroke-width', function(obj) {
-		      setStyle(obj, 'strokeWidth', this.value);
-		    }, 'onchange');
-		    
-		addHandler('text-font-size', function(obj) {
-		      setStyle(obj, 'fontSize', this.value);
-		    }, 'onchange');
-		    
-		addHandler('text-line-height', function(obj) {
-		      setStyle(obj, 'lineHeight', this.value);
-		    }, 'onchange');
-		    
-		addHandler('text-cmd-bold', function(obj) {
-		      setStyle(obj, 'fontWeight', this.value);
-		    }, 'onchange');
-		    
-		addHandler('text-cmd-italic', function(obj) {
-		      setStyle(obj, 'italic', this.value);
-		    }, 'onchange');
-		    	
-		addHandler('text-cmd-underline', function(obj) {
-		      setStyle(obj, 'underline', this.value);
-		    }, 'onchange');
-		    
-	  	addHandler('text-cmd-linethrough', function(obj) {
-		      setStyle(obj, 'linethrough', this.value);
-		    }, 'onchange');
-		    	 
-		addHandler('text-cmd-overline', function(obj) {
-		      setStyle(obj, 'overline', this.value);
-		    }, 'onchange');
-		    
-		function setStyle(object, styleName, value) {
-		    if (object.setSelectionStyles && object.isEditing) {
-		        var style = { };
-		        style[styleName] = value;
-		        object.setSelectionStyles(style).setCoords();
-		    }
-		    else {
-		        object[styleName] = value;
-		    }
-		    canvas.renderAll();
 		}
-		function getStyle(object, styleName) {
-		    return (object.getSelectionStyles && object.isEditing)
-		    ? object.getSelectionStyles()[styleName]
-		    : object[styleName];
+		else{
+			canvas.remove(selection);
 		}
-		function addHandler(id, fn, eventName) {
-		    document.getElementById(id)[eventName || "onclick"] = function() {
-		        var el = this;
-		        if (obj = canvas.getActiveObject()) {
-		            fn.call(el, obj);
-		            canvas.renderAll();
-		        }
-		    };
-		}    	
+		canvas.discardActiveObject();
+		canvas.requestRenderAll();
+		}
+
+
+
+		canvas.on('object:selected', function (e) {
+		var obj = e.target;
+		console.log('fontFamily : ' + obj.fontFamily);
+		console.log('textAlign : ' + obj.textAlign);
+		console.log('textBackgroundColor : ' + obj.textBackgroundColor);
+		console.log('stroke : ' + obj.stroke);
+		console.log('strokeWidth : ' + obj.strokeWidth);
+		console.log('fontSize : ' + obj.fontSize);
+		console.log('lineHeight : ' + obj.lineHeight);
+		console.log('fontWeight : ' + obj.fontWeight);
+		console.log('italic : ' + obj.fontStyle);
+		console.log('underline : ' + obj.underline);
+		console.log('linethrough : ' + obj.linethrough);
+		console.log('overline : ' + obj.overline);
+		});
+
+	
+	/** Object Move in Canvas */
+	canvas.on('object:moving', function (e) {
+		var obj = e.target;
+		// if object is too big ignore
+		if(obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width){
+			return;
+		}
+		obj.setCoords();
+		// top-left  corner
+		if(obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0){
+			obj.top = Math.max(obj.top, obj.top-obj.getBoundingRect().top);
+			obj.left = Math.max(obj.left, obj.left-obj.getBoundingRect().left);
+		}
+		// bot-right corner
+		if(obj.getBoundingRect().top+obj.getBoundingRect().height  > obj.canvas.height || obj.getBoundingRect().left+obj.getBoundingRect().width  > obj.canvas.width){
+			obj.top = Math.min(obj.top, obj.canvas.height-obj.getBoundingRect().height+obj.top-obj.getBoundingRect().top);
+			obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
+		}
+	});
+	
+	/** Add Image */
+		document.getElementById('imgFile').addEventListener("change", function (e) {
+		var file = e.target.files[0];
+		var reader = new FileReader();
+		reader.onload = function (f) {
+			var data = f.target.result;                    
+			fabric.Image.fromURL(data, function (img) {
+			var oImg = img.set({left: 0, top: 0}).scale(0.2);
+			canvas.add(oImg).renderAll();
+			var a = canvas.setActiveObject(oImg);
+			var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
+			});
+		};
+		reader.readAsDataURL(file);
+	});
+
+	/** Add Background */
+	document.getElementById('bgFile').addEventListener("change", function(e) {
+		var file = e.target.files[0];
+		var reader = new FileReader();
+		reader.onload = function(f) {
+			var data = f.target.result;
+			fabric.Image.fromURL(data, function(img) {
+				// add background image
+				canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+					scaleX: canvas.width / img.width,
+					scaleY: canvas.height / img.height
+				});
+			});
+		};
+		reader.readAsDataURL(file);
+	});
+	
+	/** Add Property */
+	addHandler('font-family', function(obj) {
+			setStyle(obj, 'fontFamily', this.value);
+		}, 'onchange');
+	
+	addHandler('text-align', function(obj) {
+			setStyle(obj, 'textAlign', this.value);
+		}, 'onchange');
+	
+	addHandler('text-bg-color', function(obj) {
+			setStyle(obj, 'textBackgroundColor', this.value);
+		}, 'onchange');
+
+	addHandler('text-stroke-color', function(obj) {
+			setStyle(obj, 'stroke', this.value);
+		}, 'onclick');
+		
+	addHandler('text-stroke-width', function(obj) {
+			setStyle(obj, 'strokeWidth', this.value);
+		}, 'onchange');
+		
+	addHandler('text-font-size', function(obj) {
+			setStyle(obj, 'fontSize', this.value);
+		}, 'onchange');
+		
+	addHandler('text-line-height', function(obj) {
+			setStyle(obj, 'lineHeight', this.value);
+		}, 'onchange');
+		
+	addHandler('text-cmd-bold', function(obj) {
+			setStyle(obj, 'fontWeight', this.value);
+		}, 'onchange');
+		
+	addHandler('text-cmd-italic', function(obj) {
+			setStyle(obj, 'fontStyle', this.value);
+		}, 'onchange');   
+		
+	addHandler('text-cmd-underline', function(obj) {
+		var isUnderline = (getStyle(obj, 'underline') || false);
+		setStyle(obj, 'underline', isUnderline ? false : true);
+		obj.dirty = true;
+	});
+
+	addHandler('text-cmd-linethrough', function(obj) {
+		var islinethrough = (getStyle(obj, 'linethrough') || false);
+		setStyle(obj, 'linethrough', islinethrough ? false : true);
+		obj.dirty = true;
+		});
+
+	addHandler('text-cmd-overline', function(obj) {
+		var isoverline = (getStyle(obj, 'overline') || false);
+		setStyle(obj, 'overline', isoverline ? false : true);
+		obj.dirty = true;
+		});
+		
+	function setStyle(object, styleName, value) {
+	if (object.setSelectionStyles && object.isEditing) {
+		var style = { };
+		style[styleName] = value;
+		object.setSelectionStyles(style);
+	}
+	else {
+		object[styleName] = value;
+	}
+	}
+	function getStyle(object, styleName) {
+	return (object.getSelectionStyles && object.isEditing)
+		? object.getSelectionStyles()[styleName]
+		: object[styleName];
+	}
+	function addHandler(id, fn, eventName) {
+		document.getElementById(id)[eventName || "onclick"] = function() {
+			var el = this;
+			//alert(this.value);
+			if (obj = canvas.getActiveObject()) {
+				fn.call(el, obj);
+				canvas.renderAll();
+			}
+		};
+	}    	
 	});
 </script>
     <title>Main</title>
@@ -318,7 +347,7 @@
                             </select>      
                         </div>
                         <div class="col-sm-3"><label for="text-font-size">Font size:</label></div>
-                        <div class="col-sm-3"><input type="range" value="" min="1" max="120" step="1" id="text-font-size" class="form-control-range"></div>
+                        <div class="col-sm-3"><input type="range" min="1" max="120" step="1" id="text-font-size" class="form-control-range"></div>
                         </div>
                         <div class="row my-1 py-2">
                           <div class="col-sm-3"><label for="text-align">Text-Align</label></div>
@@ -331,8 +360,7 @@
                             </select>
                           </div>
                           <div class="col-sm-3"><label for="text-bg-color">背景色</label></div>
-                          <div class="col-sm-3"><input type="color" class="form-control form-control-sm"
-                              id="text-bg-color"></div>
+                        <div class="col-sm-3"><input type="color" class="form-control form-control-sm" id="text-bg-color"></div>
                         </div>
 
                         <div class="row my-1 py-2">
@@ -348,19 +376,19 @@
                         </div>
                         <div class="row my-1 py-2">
                           <div class="col-sm-1"><label for="text-cmd-bold">Bold</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold" name="fontType"></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold" name="fontType" value="bold"></div>
 
                           <div class="col-sm-1"><label for="text-cmd-italic">Italic</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic" name="fontType"></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic" name="fontType" value="italic"></div>
 
                           <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="fontType"></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="u" value="underline"></div>
 
                           <div class="col-sm-2"><label for="text-cmd-linethrough">LineThrough</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-linethrough" name="fontType"></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-linethrough" name="fontType" value="linethrough"></div>
                         
                           <div class="col-sm-1"><label for="text-cmd-overline">overLine</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-overline" name="fontType"></div>
+                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-overline" name="fontType" value="overline"></div>
                         </div>
                         
                         <div class="row my-1 py-2" role="group">
@@ -386,6 +414,7 @@
       <!-- //container-->
     </div>
     <!-- //content wrapper-->
+
 
 </body>
 </html>
