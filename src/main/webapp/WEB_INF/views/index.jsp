@@ -211,6 +211,10 @@
 	    change : function(color){
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
+	    },
+	    hide : function(color){
+	    	canvas.getActiveObject().set('fill', color);
+	    	canvas.renderAll();
 	    }
 	});
 	
@@ -225,6 +229,10 @@
 	    change : function(color){
 	    	canvas.getActiveObject().set('textBackgroundColor', color);
 	    	canvas.renderAll();
+	    },
+	    hide : function(color){
+	    	canvas.getActiveObject().set('textBackgroundColor', color);
+	    	canvas.renderAll();
 	    }
 	});
 	
@@ -237,6 +245,10 @@
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
+	    	canvas.getActiveObject().set('stroke', color);
+	    	canvas.renderAll();
+	    },
+	    hide : function(color){
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
 	    }
