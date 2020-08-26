@@ -200,11 +200,19 @@
 		}, 'onchange');
 		
 	addHandler('text-cmd-bold', function(obj) {
+		if(obj.fontWeight == 'bold'){
+			setStyle(obj, 'fontWeight', 'normal');
+		} else {
 			setStyle(obj, 'fontWeight', this.value);
+		}			
 		}, 'onchange');
 		
 	addHandler('text-cmd-italic', function(obj) {
+		if(obj.fontStyle == 'italic'){
+			setStyle(obj, 'fontStyle', 'normal');
+		} else {
 			setStyle(obj, 'fontStyle', this.value);
+		}
 		}, 'onchange');   
 		
 	addHandler('text-cmd-underline', function(obj) {
