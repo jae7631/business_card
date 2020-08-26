@@ -70,9 +70,8 @@
       if(canvas.getHeight()==300){
         canvas.clear();
         canvas.setHeight(450);
-        canvas.setWidth(300);
-        console.log(canvas.getHeight());
-        canvas.calcOffset();
+		canvas.setWidth(300);
+		canvas.calcOffset();
         $('#size_modify').text("よこ");
         $('#size_modify').addClass("yokotxt");
         $('.canvas-container').removeClass('yoko');
