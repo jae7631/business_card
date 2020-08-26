@@ -107,10 +107,13 @@
 		});	
 	});
 	/** Delete Object */
-	$('html').keyup(function(e){
-			if(e.keyCode == 46) {
-				deleteSelectedObjectsFromCanvas();
-			}
+	$('html').keyup(function(e){			
+		if (e.keyCode == 46) {
+			var obj = canvas.getActiveObject();
+			if(!obj.isEditing){
+				deleteSelectedObjectsFromCanvas();	
+			}		    
+		}
 	});    
 	function deleteSelectedObjectsFromCanvas(){
 			var selection = canvas.getActiveObject();
