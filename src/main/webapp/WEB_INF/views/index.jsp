@@ -395,17 +395,13 @@
                         <div class="col-sm-3"><input type="range" min="1" max="120" step="1" id="text-font-size" class="form-control-range"></div>
                         </div>
                         <div class="row my-1 py-2">
-                          <div class="col-sm-3"><label for="text-align">Text-Align</label></div>
+                          <div class="col-sm-3"><label for="text-color">文字色</label></div>
                           <div class="col-sm-3">
-                            <select id="text-align" class="form-control">
-                                <option value="left">Left</option>
-                                <option value="center">Center</option>
-                                <option value="right">Right</option>
-                                <option value="justify">Justify</option>
-                            </select>
-                          </div>
+                            <input id="text-color" class="form-control form-control-sm" type="color">
+						</div>
+						
                           <div class="col-sm-3"><label for="text-bg-color">背景色</label></div>
-                        <div class="col-sm-3"><input type="color" class="form-control form-control-sm" id="text-bg-color"></div>
+                        	<div class="col-sm-3"><input type="color" class="form-control form-control-sm" id="text-bg-color"></div>
                         </div>
 
                         <div class="row my-1 py-2">
@@ -416,23 +412,25 @@
                         </div>
                           
                         <div class="row my-1 py-2">
-                          <div class="col-sm-3"><label for="text-line-height">Line height:</label></div>
+                          <div class="col-sm-3"><label for="text-line-height">Line height</label></div>
                           <div class="col-sm-9"><input type="range" value="" min="0" max="10" step="0.1" id="text-line-height"></div>
                         </div>
                         <div class="row my-1 py-2">
                           <div class="col-sm-1"><label for="text-cmd-bold">Bold</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold" name="fontType" value="bold"></div>
+                          <div class="col-sm-3"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold" name="fontType" value="bold"></div>
 
                           <div class="col-sm-1"><label for="text-cmd-italic">Italic</label></div>
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic" name="fontType" value="italic"></div>
-
+                        </div>
+                        
+                        <div class="row my-1 py2">
                           <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
-                          <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="u" value="underline"></div>
+                          <div class="col-sm-2"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="u" value="underline"></div>
 
-                          <div class="col-sm-2"><label for="text-cmd-linethrough">LineThrough</label></div>
+                          <div class="col-sm-3"><label for="text-cmd-linethrough">LineThrough</label></div>
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-linethrough" name="fontType" value="linethrough"></div>
                         
-                          <div class="col-sm-1"><label for="text-cmd-overline">overLine</label></div>
+                          <div class="col-sm-2"><label for="text-cmd-overline">overLine</label></div>
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-overline" name="fontType" value="overline"></div>
                         </div>
                         
