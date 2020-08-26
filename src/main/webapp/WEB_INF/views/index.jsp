@@ -175,9 +175,9 @@
 			setStyle(obj, 'fontFamily', this.value);
 		}, 'onchange');
 	
-	addHandler('text-align', function(obj) {
-			setStyle(obj, 'textAlign', this.value);
-		}, 'onchange');
+ 	addHandler('text-color', function(obj) {
+        setStyle(obj, 'fill', this.value);
+      }, 'onchange');
 	
 	addHandler('text-bg-color', function(obj) {
 			setStyle(obj, 'textBackgroundColor', this.value);
