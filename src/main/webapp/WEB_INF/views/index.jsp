@@ -20,6 +20,7 @@
 	var canvas = this.__canvas = new fabric.Canvas('canvas-area');
 		canvas.setHeight(300);
 			canvas.setWidth(450);
+	$('.canvas-container').addClass('yoko');
 	
 	/** Create Text */
 	$('#test').on("click",function() { 
@@ -59,6 +60,33 @@
 		}
 		});
 	});
+
+	/** Canvas Resizing*/
+	  $('#size_modify').on("click",function(){
+    if(confirm("サイズ変更時、内容は初期化されます。よろしいですか。")===true){
+      
+      if(canvas.getHeight()==300){
+        canvas.clear();
+        canvas.setHeight(450);
+        canvas.setWidth(300);
+        console.log(canvas.getHeight());
+        canvas.calcOffset();
+        $('#size_modify').text("よこ");
+        $('#size_modify').addClass("yokotxt");
+        $('.canvas-container').removeClass('yoko');
+        $('.canvas-container').addClass('tate');
+      }else if(canvas.getHeight()==450){
+        canvas.clear();
+        canvas.setHeight(300);
+        canvas.setWidth(450);
+        canvas.calcOffset();
+        $('#size_modify').text("たて");
+        $('#size_modify').removeClass("yokotxt");
+        $('.canvas-container').removeClass('tate');
+        $('.canvas-container').addClass('yoko');
+      }     
+    }    
+  });
 	
 	/** Load Templet */
 	$('#load').on("click",function(){
@@ -262,17 +290,25 @@
 </script>
     <title>Main</title>
     <style>
-    #canvas-area {
-        width:400px;
-        height:250px;
+    .canvas-container {
         border:1px solid red;
-        background: #fff;
-        position: absolute;
-        top:0;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        margin:auto;
+        background: #FFF;
+    }
+    .yoko {
+      position: relative;
+        top:5em;
+        left:0.8em;
+        margin:0;
+        padding:0;
+        display: inline-block;
+    }
+    .tate {
+      position: relative;
+        top:0.2em;
+        left:5.5em;
+        margin:0;
+        padding:0;
+        display: inline-block;
     }
     </style>
 
@@ -309,6 +345,7 @@
             <div class="card shadow mb-2 text-left" style="margin: 2vh auto auto;">
               <!-- main content Title-->
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
+				<div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button></div>
                 <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
                 <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
                 </div>
@@ -318,10 +355,10 @@
               <div class="row card-body">
                 <!-- input Form-->
 
-                <!-- canvas Area-->
+				 <!-- canvas Area-->
                 <div class="col-sm-6">
-                  <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 2vh auto auto;">
-                    <div class="card-body" style="height: 450px; background: #f3f3f3;">
+                  <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 1vh auto auto;">
+                    <div class="card-body" style="height: 500px; background: #f3f3f3;">
                         <canvas id="canvas-area"></canvas>
                     </div>
                   </div>
@@ -330,8 +367,8 @@
 
                 <!-- canvas attribute Area-->
                 <div class="col-sm-6">
-                  <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 2vh auto auto;">
-                    <div class="card-body">
+                  <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 1vh auto auto;">
+                    <div class="card-body" style="height: 500px;">
                       <div class="container-fluid">
                         <div class="row my-1 py-2"><button class="btn btn-outline-primary btn-block" id="test">テキスト追加</button></div>
                         <div class="row my-1 py-2">
