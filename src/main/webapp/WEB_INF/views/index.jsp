@@ -115,6 +115,7 @@
 			}		    
 		}
 	});    
+	
 	function deleteSelectedObjectsFromCanvas(){
 			var selection = canvas.getActiveObject();
 		if (selection.type === 'activeSelection') {
@@ -132,11 +133,69 @@
 
 	canvas.on('selection:updated', function (e) {
 		$('#text-font-size').val(e.target.fontSize);
+		$('#text-color').spectrum("set", rgbToHex(e.target.fill));
+		$('#text-cmd-underline').prop("checked",e.target.underline);
+		$('#text-cmd-overline').prop("checked",e.target.overline);
+		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
+		
+		if(e.target.fontWeight == "bold"){
+			$('#text-cmd-bold').prop("checked", true);
+		} else {
+			$('#text-cmd-bold').prop("checked", false);
+		}
+		
+		if(e.target.fontStyle == "italic"){
+			$('#text-cmd-italic').prop("checked", true);
+		} else {
+			$('#text-cmd-italic').prop("checked", false);
+		}
 	});
 	
 	canvas.on('object:selected', function (e) {
 		$('#text-font-size').val(e.target.fontSize);
+		$('#text-color').spectrum("set", rgbToHex(e.target.fill));
+		$('#text-cmd-underline').prop("checked",e.target.underline);
+		$('#text-cmd-overline').prop("checked",e.target.overline);
+		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
+		
+		if(e.target.fontWeight == "bold"){
+			$('#text-cmd-bold').prop("checked", true);
+		} else {
+			$('#text-cmd-bold').prop("checked", false);
+		}
+		
+		if(e.target.fontStyle == "italic"){
+			$('#text-cmd-italic').prop("checked", true);
+		} else {
+			$('#text-cmd-italic').prop("checked", false);
+		}
 	});
+	
+	function rgbToHex ( rgbType ){ 
+
+		var rgb = rgbType.replace( /[^%,.\d]/g, "" ); 
+
+        rgb = rgb.split( "," ); 
+
+        for ( var x = 0; x < 3; x++ ) { 
+                if ( rgb[ x ].indexOf( "%" ) > -1 ) rgb[ x ] = Math.round( parseFloat( rgb[ x ] ) * 2.55 ); 
+        } 
+
+        var toHex = function( string ){ 
+                string = parseInt( string, 10 ).toString( 16 ); 
+                string = ( string.length === 1 ) ? "0" + string : string; 
+
+                return string; 
+        }; 
+
+        var r = toHex( rgb[ 0 ] ); 
+        var g = toHex( rgb[ 1 ] ); 
+        var b = toHex( rgb[ 2 ] ); 
+
+        var hexType = "#" + r + g + b; 
+
+        return hexType; 
+	} 
 	
 	/** Object Move in Canvas */
 	canvas.on('object:moving', function (e) {
