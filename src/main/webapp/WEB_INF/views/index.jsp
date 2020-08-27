@@ -128,26 +128,15 @@
 		}
 		canvas.discardActiveObject();
 		canvas.requestRenderAll();
-		}
+	}
 
-
-
-		canvas.on('object:selected', function (e) {
-		var obj = e.target;
-		console.log('fontFamily : ' + obj.fontFamily);
-		console.log('textAlign : ' + obj.textAlign);
-		console.log('textBackgroundColor : ' + obj.textBackgroundColor);
-		console.log('stroke : ' + obj.stroke);
-		console.log('strokeWidth : ' + obj.strokeWidth);
-		console.log('fontSize : ' + obj.fontSize);
-		console.log('lineHeight : ' + obj.lineHeight);
-		console.log('fontWeight : ' + obj.fontWeight);
-		console.log('italic : ' + obj.fontStyle);
-		console.log('underline : ' + obj.underline);
-		console.log('linethrough : ' + obj.linethrough);
-		console.log('overline : ' + obj.overline);
-		});
-
+	canvas.on('selection:updated', function (e) {
+		$('#text-font-size').val(e.target.fontSize);
+	});
+	
+	canvas.on('object:selected', function (e) {
+		$('#text-font-size').val(e.target.fontSize);
+	});
 	
 	/** Object Move in Canvas */
 	canvas.on('object:moving', function (e) {
