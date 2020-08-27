@@ -139,6 +139,7 @@
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
 		$('#text-stroke-width').val(e.target.strokeWidth);
 		$('#text-line-height').val(e.target.lineHeight);
+		$('#font-family').val(e.target.fontFamily);
 		
 		if(e.target.fontWeight == "bold"){
 			$('#text-cmd-bold').prop("checked", true);
@@ -161,6 +162,7 @@
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
 		$('#text-stroke-width').val(e.target.strokeWidth);
 		$('#text-line-height').val(e.target.lineHeight);
+		$('#font-family').val(e.target.fontFamily);
 		
 		if(e.target.fontWeight == "bold"){
 			$('#text-cmd-bold').prop("checked", true);
@@ -485,6 +487,7 @@
                           <div class="col-sm-2"><label for="font-family">Font</label></div>
                           <div class="col-sm-4">
                              <select id="font-family" class="form-control">
+                             	<option value="Times New Roman">Times New Roman</option>
                                 <option value="arial">Arial</option>
                                 <option value="helvetica" selected>Helvetica</option>
                                 <option value="myriad pro">Myriad Pro</option>
