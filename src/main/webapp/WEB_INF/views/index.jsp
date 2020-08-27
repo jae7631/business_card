@@ -137,6 +137,8 @@
 		$('#text-cmd-underline').prop("checked",e.target.underline);
 		$('#text-cmd-overline').prop("checked",e.target.overline);
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
+		$('#text-stroke-width').val(e.target.strokeWidth);
+		$('#text-line-height').val(e.target.lineHeight);
 		
 		if(e.target.fontWeight == "bold"){
 			$('#text-cmd-bold').prop("checked", true);
@@ -157,6 +159,8 @@
 		$('#text-cmd-underline').prop("checked",e.target.underline);
 		$('#text-cmd-overline').prop("checked",e.target.overline);
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
+		$('#text-stroke-width').val(e.target.strokeWidth);
+		$('#text-line-height').val(e.target.lineHeight);
 		
 		if(e.target.fontWeight == "bold"){
 			$('#text-cmd-bold').prop("checked", true);
