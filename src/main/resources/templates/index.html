@@ -1,7 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
 <!DOCTYPE html>
-<html lang="en">
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -13,31 +11,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
-	  <script src="/js/main.js"></script>
-    
+    <script src="js/main.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/main.css">
     <title>Main</title>
-    <style>
-    .canvas-container {
-        border:1px solid red;
-        background: #FFF;
-    }
-    .yoko {
-      position: relative;
-        top:5em;
-        left:0.8em;
-        margin:0;
-        padding:0;
-        display: inline-block;
-    }
-    .tate {
-      position: relative;
-        top:0.2em;
-        left:5.5em;
-        margin:0;
-        padding:0;
-        display: inline-block;
-    }
-    </style>
 
 </head>
 
@@ -72,7 +48,8 @@
             <div class="card shadow mb-2 text-left" style="margin: 2vh auto auto;">
               <!-- main content Title-->
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
-				<div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button></div>
+                <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on" id="gridBtn">gridOn</button></div>
+				        <div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button></div>
                 <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
                 <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
                 </div>
@@ -157,13 +134,13 @@
                             </select>      
                         </div>
                         <div class="col-sm-3"><label for="text-font-size">Font size:</label></div>
-                        <div class="col-sm-3"><input type="range" min="1" max="120" step="1" id="text-font-size" class="form-control-range"></div>
+                        <div class="col-sm-3"><input type="number" min="1" max="120" step="1" id="text-font-size" class="form-control-number"></div>
                         </div>
                         <div class="row my-1 py-2">
                           <div class="col-sm-3"><label for="text-color">文字色</label></div>
                           <div class="col-sm-3">
                             <input id="text-color" class="form-control form-control-sm" type="color">
-						</div>
+						            </div>
 						
                           <div class="col-sm-3"><label for="text-bg-color">背景色</label></div>
                         	<div class="col-sm-3"><input type="color" class="form-control form-control-sm" id="text-bg-color"></div>
@@ -188,7 +165,7 @@
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic" name="fontType" value="italic"></div>
                         </div>
                         
-                        <div class="row my-1 py2">
+                        <div class="row my-1 py-2">
                           <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
                           <div class="col-sm-2"><input type="checkbox" class="form-control-checkbox" id="text-cmd-underline" name="u" value="underline"></div>
 
@@ -199,11 +176,14 @@
                           <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-overline" name="fontType" value="overline"></div>
                         </div>
                         
-                        <div class="row my-1 py-2" role="group">
-                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block">gridOn</button>
+                        <div class="row my-1 py-2">
+                          
+                        </div>
+
+                        <div class="row my-1 py-2">
+                          <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="load">load</button></div>
+                          <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="save">保存</button></div>
                           </div>
-                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="load">load</button></div>
-                            <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="save">保存</button></div>
                         </div>
                       </div>
                     </div>

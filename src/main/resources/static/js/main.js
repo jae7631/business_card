@@ -1,7 +1,7 @@
 $(document).ready(function(){
 	/** Create Canvas */
 	fabric.Object.prototype.transparentCorners = false;
-	fabric.Object.prototype.padding = 5;
+//	fabric.Object.prototype.padding = 5;
 	var grid = 50;   
 	var canvas = this.__canvas = new fabric.Canvas('canvas-area');
 		canvas.setHeight(300);

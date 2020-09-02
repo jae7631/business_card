@@ -12,9 +12,13 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.infosiatec.service.BusinessCardService;
 
+import net.sourceforge.tess4j.Tesseract;
+
 @RestController
 public class BusinessCardController {
-
+	
+	static Tesseract instance = Tesseract.getInstance();
+	
 	@Autowired
 	private BusinessCardService businessCardService;
 
@@ -23,6 +27,7 @@ public class BusinessCardController {
 		System.out.println("normal home page");
 
 		System.out.println("#############HOME##############");
+		
 
 		mv.setViewName("index");
 
