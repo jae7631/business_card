@@ -249,8 +249,8 @@ $(document).ready(function(){
 			obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
 		}
 	});
-
-	/** Add Image 
+	
+	/** Add Image
 		document.getElementById('imgFile').addEventListener("change", function (e) {
 		var file = e.target.files[0];
 		var reader = new FileReader();
@@ -265,24 +265,25 @@ $(document).ready(function(){
 		};
 		reader.readAsDataURL(file);
 	});
-	*/
+ */
 
-	document.getElementById('imgFile').addEventListener("change", function (e) {
-		var file = e.target.files[0];
-		var reader = new FileReader();
-		reader.onload = function (f) {
-			var data = f.target.result;                    
-			fabric.Image.fromURL(data, function (img) {
-			var oImg = img.set({left: 0, top: 0}).scale(0.2);
-			canvas.add(oImg).renderAll();
-			var a = canvas.setActiveObject(oImg);
-			var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
+	/** add SVG */
+		document.getElementById('imgFile').addEventListener("change",function(e){
+			var url = URL.createObjectURL(e.target.files[0]);
+			fabric.loadSVGFromURL(url, function(objects, options) {
+			   objects.forEach(function(svg) {
+				  svg.set({
+					 top: 90,
+					 left: 90,
+					 originX: 'center',
+					 originY: 'center'
+				  });
+				  svg.scaleToWidth(50);
+				  svg.scaleToHeight(50);
+				  canvas.add(svg).renderAll();
+			   });
 			});
-		};
-		reader.readAsDataURL(file);
-	});
-
-	
+		})
 
 	/** Add Background */
 	document.getElementById('bgFile').addEventListener("change", function(e) {
