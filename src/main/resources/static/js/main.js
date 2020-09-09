@@ -8,9 +8,65 @@ $(document).ready(function(){
 		canvas.setWidth(450);
 	$('.canvas-container').addClass('yoko');
 
+	/** change fontScale to fontSize*/ 
+	$('#text-font-size').keyup(function() {
+		var val = $(this).val();
+		//if (isNaN(val)) {
+		 // alert('please enter number');
+		  //$(this).val('');
+		//}
+		var activeObject = canvas.getActiveObject();
+		activeObject.fontSize = val;
+		canvas.renderAll();
+	  });
+	  $('#add-text-btn').click(function() {
+		if ($('#text-font-size').val()) {
+		  var txtfontsize = $('#text-font-size').val();
+		} else {
+		  var txtfontsize = 40;
+		}
+		var txtfontfamily = $('#font-family').val();
+		var new_text = new fabric.IText('Lorem ipsum', {
+		  left: 20,
+		  top: 20,
+		  fontSize: txtfontsize,
+		  lockUniScaling: true,
+		  fontFamily: txtfontfamily,
+		  fill: '#000'
+		});
+		canvas.add(new_text);
+		canvas.setActiveObject(new_text);
+	  });
 	
-	/** Create Text */
-	$('#test').on("click",function() { 
+	  canvas.on('object:selected', function(options) {
+		if (options.target) {
+		  //$("textarea#add-text-value").val(options.target.text);
+		  $("#text-font-size").val(options.target.fontSize);
+		}
+	  });
+	
+	  canvas.on('object:scaling', function(event) {
+		if (event.target) {
+		  //$("textarea#add-text-value").val(event.target.text);
+		  $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
+		}
+	  });
+	/**
+	  canvas.on('object:modified', function(event) {
+		if (event.target) {
+		  event.target.fontSize *= event.target.scaleX;
+		  event.target.fontSize = event.target.fontSize.toFixed(0);
+		  event.target.scaleX = 1;
+		  event.target.scaleY = 1;
+		  //event.target._clearCache();
+		  //$("textarea#add-text-value").val(event.target.text);
+		  $("#text-font-size").val(event.target.fontSize);
+		}
+	  });
+	 */
+	
+	/** Create Text 
+	$('#add-text-btn').on("click",function() { 
 		var text = new fabric.IText('Lorem ipsum',{
 		fontSize:16,
 		left:20,
@@ -18,6 +74,7 @@ $(document).ready(function(){
 		});
 		canvas.add(text).setActiveObject(text);
   });
+*/
   
     /** Add Grid */
 	$("#gridBtn").click(function() {
@@ -58,32 +115,34 @@ $(document).ready(function(){
 		  }).setCoords();
 		}
 	  });
- 
-
 
 	/** Save Canvas to Png */
 	$('#save').on("click",function(){
-		this.href = canvas.toDataURL({
+		this.href =  canvas.toDataURL({
 			format: 'png',
-			multiplier: 4
+			multiplier: 4,
 		});
-		
+
 		const link = document.createElement('a');
 		link.download = 'image.png';
+		//link.href = 'data:image/svg+xml;utf8,' + canvas.toSVG();
 		link.href = this.href;
 		document.body.appendChild(link);
 		link.click();
 		document.body.removeChild(link);
-		/** Create Json */
-		var jsonData = JSON.stringify( canvas );
 
+		/** Create Json */
+		var svg = canvas.toSVG();
+		var jsonData = JSON.stringify( canvas );
+		console.log(jsonData);
+		console.log(svg);
 		$.ajax({ url: "/createBusinessCard", 
-		data: { jsonData: jsonData}, 
-		method: "POST", 
-		dataType: "text",
-		success:function(data){
-			alert("success");				 
-		},
+			data: {jsonData:jsonData},
+			method: "POST", 
+			dataType: "text",
+			success:function(data){
+				alert("success");				 
+			},
 		error:function(request, status, error){
 			alert("code:"+request.status+"\n"+"message:"+request.responseText+"\n"+"error:"+error);
 		}
@@ -118,14 +177,21 @@ $(document).ready(function(){
 	
 	/** Load Templet */
 	$('#load').on("click",function(){
-		$.ajax({ url: "/selectBusinessCard", 
+		$.ajax({
+		url: "/selectBusinessCard", 
 		data: { idx: 1 }, 
 		method: "POST", 
 		dataType: "text",
 		success:function(data){
+			/**canvas.clear();
+			fabric.loadSVGFromURL(url, function(objects, options) {
+				var group = fabric.util.groupSVGElements(objects, options);
+				canvas.add(group).renderAll();
+				console.log(group);**/
 			canvas.clear();
 			canvas.loadFromJSON(data, function() {
 				canvas.renderAll();
+			
 			});   
 		},
 		error:function(request, status, error){
@@ -160,7 +226,7 @@ $(document).ready(function(){
 
 	canvas.on('selection:updated', function (e) {
 		$('#text-font-size').val(e.target.fontSize);
-		$('#text-color').spectrum("set", rgbToHex(e.target.fill));
+		//$('#text-color').spectrum("set", rgbToHex(e.target.fill));
 		$('#text-cmd-underline').prop("checked",e.target.underline);
 		$('#text-cmd-overline').prop("checked",e.target.overline);
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
@@ -183,7 +249,7 @@ $(document).ready(function(){
 	
 	canvas.on('object:selected', function (e) {
 		$('#text-font-size').val(e.target.fontSize);
-		$('#text-color').spectrum("set", rgbToHex(e.target.fill));
+		//$('#text-color').spectrum("set", rgbToHex(e.target.fill));
 		$('#text-cmd-underline').prop("checked",e.target.underline);
 		$('#text-cmd-overline').prop("checked",e.target.overline);
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
@@ -203,7 +269,7 @@ $(document).ready(function(){
 			$('#text-cmd-italic').prop("checked", false);
 		}
 	});
-	
+	/**
 	function rgbToHex ( rgbType ){ 
 
 		var rgb = rgbType.replace( /[^%,.\d]/g, "" ); 
@@ -229,7 +295,7 @@ $(document).ready(function(){
 
         return hexType; 
 	} 
-	
+	 */
 	/** Object Move in Canvas */
 	canvas.on('object:moving', function (e) {
 		var obj = e.target;
@@ -250,7 +316,7 @@ $(document).ready(function(){
 		}
 	});
 	
-	/** Add Image
+	/** Add Image 
 		document.getElementById('imgFile').addEventListener("change", function (e) {
 		var file = e.target.files[0];
 		var reader = new FileReader();
@@ -269,20 +335,24 @@ $(document).ready(function(){
 
 	/** add SVG */
 		document.getElementById('imgFile').addEventListener("change",function(e){
+			var fileType = e.target.files[0].type;
 			var url = URL.createObjectURL(e.target.files[0]);
-			fabric.loadSVGFromURL(url, function(objects, options) {
-			   objects.forEach(function(svg) {
-				  svg.set({
-					 top: 90,
-					 left: 90,
-					 originX: 'center',
-					 originY: 'center'
-				  });
-				  svg.scaleToWidth(50);
-				  svg.scaleToHeight(50);
-				  canvas.add(svg).renderAll();
+		 
+			if (fileType === 'image/png') { //check if png
+			   fabric.Image.fromURL(url, function(img) {
+				img.set({
+					width: 180,
+					height: 180
+				 });
+				  canvas.add(img);
 			   });
-			});
+			} else if (fileType === 'image/svg+xml') { //check if svg
+			   fabric.loadSVGFromURL(url, function(objects, options) {
+					canvas.add.apply(canvas, objects);
+					canvas.renderAll();
+			   });
+			}
+			
 		})
 
 	/** Add Background */

@@ -20,16 +20,20 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	// json file path
 	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
 	private static final String FILE_EXTENSION = ".json";
-
+	//private static final String FILE_EXTENSION = ".xml";
 	@Autowired
 	private BusinessCardMapper mapper;
 
-	private int getNextIdx() {
+	private Integer getNextIdx() {
+		if(mapper.selectMaxIdx()==null) {
+			System.out.println("null");
+		}
 		return mapper.selectMaxIdx()+1;
 	}
 	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
-		int idx = getNextIdx();
+		Integer idx = getNextIdx();
+
 		String fileName = id + idx;
 		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
 
@@ -76,10 +80,10 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return map;
 	}
 
-	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
+	public ResponseEntity<String> updateBusinessCard(String id, int idx, String svgData) {
 		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
 
-		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
+		if (!CommonFileCreate.fileOverwrite(filePath, svgData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
 		

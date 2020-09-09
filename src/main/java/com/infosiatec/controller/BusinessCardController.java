@@ -17,8 +17,6 @@ import net.sourceforge.tess4j.Tesseract;
 @RestController
 public class BusinessCardController {
 	
-	static Tesseract instance = Tesseract.getInstance();
-	
 	@Autowired
 	private BusinessCardService businessCardService;
 
@@ -27,19 +25,17 @@ public class BusinessCardController {
 		System.out.println("normal home page");
 
 		System.out.println("#############HOME##############");
-		
-
 		mv.setViewName("index");
 
 		return mv;
 	}
 
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
-	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData) {
+	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String svgData) {
 		//TODO
 		//get sessionID
 		String id = "testID";
-		return businessCardService.createBusinessCard(jsonData, id);
+		return businessCardService.createBusinessCard(svgData, id);
 	}
 	
 	@RequestMapping(value = "/selectBusinessCard", method = RequestMethod.POST)
@@ -59,10 +55,10 @@ public class BusinessCardController {
 	}
 	
 	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)
-	public ResponseEntity<String> updateBusinessCard(@RequestParam("idx") int idx, @RequestParam("jsonData") String jsonData) {
+	public ResponseEntity<String> updateBusinessCard(@RequestParam("idx") int idx, @RequestParam("svg") String svgData) {
 		//TODO
 		//get sessionID
 		String id = "testID";
-		return businessCardService.updateBusinessCard(id, idx, jsonData);
+		return businessCardService.updateBusinessCard(id, idx, svgData);
 	}
 }
