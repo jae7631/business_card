@@ -8,77 +8,72 @@ $(document).ready(function(){
 		canvas.setWidth(450);
 	$('.canvas-container').addClass('yoko');
 
-	/** change fontScale to fontSize*/ 
-	$('#text-font-size').keyup(function() {
-		var val = $(this).val();
-		//if (isNaN(val)) {
-		 // alert('please enter number');
-		  //$(this).val('');
-		//}
-		var activeObject = canvas.getActiveObject();
-		activeObject.fontSize = val;
-		canvas.renderAll();
-	  });
+	
 	  $('#add-text-btn').click(function() {
+		  var new_text = new fabric.IText('Lorem ipsum', {
+		  left: 20,
+		  top: 20,
+		  fontSize: 40,
+		  lockUniScaling: true,
+		  //fontFamily: txtfontfamily,
+		  fill: '#000'
+		});
+		canvas.add(new_text);
+		canvas.setActiveObject(new_text);
+	  });
+	  
+	  
+		/** change fontScale to fontSize */
+		$('#text-font-size').keyup(function() {
+			var val = $(this).val();
+			if (isNaN(val)) {
+			  alert('please enter number');
+			  $(this).val('');
+			}
+			var activeObject = canvas.getActiveObject();
+			activeObject.fontSize = val;
+			canvas.renderAll();
+		  });
+	  
+	  /*
 		if ($('#text-font-size').val()) {
 		  var txtfontsize = $('#text-font-size').val();
 		} else {
 		  var txtfontsize = 40;
 		}
 		var txtfontfamily = $('#font-family').val();
-		var new_text = new fabric.IText('Lorem ipsum', {
-		  left: 20,
-		  top: 20,
-		  fontSize: txtfontsize,
-		  lockUniScaling: true,
-		  fontFamily: txtfontfamily,
-		  fill: '#000'
-		});
-		canvas.add(new_text);
-		canvas.setActiveObject(new_text);
-	  });
+		
 	
 	  canvas.on('object:selected', function(options) {
 		if (options.target) {
-		  //$("textarea#add-text-value").val(options.target.text);
+		 // $("textarea#add-text-value").val(options.target.text);
 		  $("#text-font-size").val(options.target.fontSize);
 		}
 	  });
 	
 	  canvas.on('object:scaling', function(event) {
 		if (event.target) {
-		  //$("textarea#add-text-value").val(event.target.text);
 		  $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
 		}
 	  });
-	/**
+	
 	  canvas.on('object:modified', function(event) {
 		if (event.target) {
 		  event.target.fontSize *= event.target.scaleX;
 		  event.target.fontSize = event.target.fontSize.toFixed(0);
 		  event.target.scaleX = 1;
 		  event.target.scaleY = 1;
-		  //event.target._clearCache();
 		  //$("textarea#add-text-value").val(event.target.text);
 		  $("#text-font-size").val(event.target.fontSize);
+		  //event.target._clearCache();
 		}
+		
 	  });
-	 */
-	
-	/** Create Text 
-	$('#add-text-btn').on("click",function() { 
-		var text = new fabric.IText('Lorem ipsum',{
-		fontSize:16,
-		left:20,
-		top:20
-		});
-		canvas.add(text).setActiveObject(text);
-  });
-*/
+	  
+	 
   
     /** Add Grid */
 	$("#gridBtn").click(function() {
-		
 		if($('#gridBtn').text()=="gridOn"){
 			$('#gridBtn').removeClass('grid-on');
 			$('#gridBtn').addClass('grid-off');
@@ -93,9 +88,8 @@ $(document).ready(function(){
 				stroke: '#ccc',
 				selectable: false
 				}))
-			}
-			
-		  }else if($('#gridBtn').text()=="gridOff") {
+			}		
+		  } else if($('#gridBtn').text()=="gridOff") {
 			$('#gridBtn').removeClass('grid-off');
 			$('#gridBtn').addClass('grid-on');
 			$('#gridBtn').text("gridOn");
@@ -118,6 +112,16 @@ $(document).ready(function(){
 
 	/** Save Canvas to Png */
 	$('#save').on("click",function(){
+		if($('#gridBtn').text()=="gridOff") {
+			$('#gridBtn').removeClass('grid-off');
+			$('#gridBtn').addClass('grid-on');
+			$('#gridBtn').text("gridOn");
+			var objects = canvas.getObjects('line');
+			for (let i in objects) {
+				canvas.remove(objects[i]);
+			}
+		  }
+		  canvas.renderAll();
 		this.href =  canvas.toDataURL({
 			format: 'png',
 			multiplier: 4,
@@ -183,11 +187,7 @@ $(document).ready(function(){
 		method: "POST", 
 		dataType: "text",
 		success:function(data){
-			/**canvas.clear();
-			fabric.loadSVGFromURL(url, function(objects, options) {
-				var group = fabric.util.groupSVGElements(objects, options);
-				canvas.add(group).renderAll();
-				console.log(group);**/
+
 			canvas.clear();
 			canvas.loadFromJSON(data, function() {
 				canvas.renderAll();
@@ -198,6 +198,8 @@ $(document).ready(function(){
 		}
 		});	
 	});
+
+	
 	/** Delete Object */
 	$('html').keyup(function(e){			
 		if (e.keyCode == 46) {
@@ -248,7 +250,10 @@ $(document).ready(function(){
 	
 	canvas.on('object:selected', function (e) {
 		$('#text-font-size').val(e.target.fontSize);
-		//$('#text-color').spectrum("set", rgbToHex(e.target.fill));
+		console.log(e.target.fill); //#000
+		
+		console.log(document.getElementById("text-color").value=e.target.fill+"000"); 
+		$('#text-color').spectrum("set", e.target.fill);
 		$('#text-cmd-underline').prop("checked",e.target.underline);
 		$('#text-cmd-overline').prop("checked",e.target.overline);
 		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
@@ -268,33 +273,38 @@ $(document).ready(function(){
 			$('#text-cmd-italic').prop("checked", false);
 		}
 	});
-	/**
+	
+	function hexToRgb(hex) {
+		  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+		  return result ? {
+		    r: parseInt(result[1], 16),
+		    g: parseInt(result[2], 16),
+		    b: parseInt(result[3], 16)
+		  } : null;
+		}
+	
+	function a(){
+		
+	}
+/*
 	function rgbToHex ( rgbType ){ 
-
 		var rgb = rgbType.replace( /[^%,.\d]/g, "" ); 
-
         rgb = rgb.split( "," ); 
-
         for ( var x = 0; x < 3; x++ ) { 
                 if ( rgb[ x ].indexOf( "%" ) > -1 ) rgb[ x ] = Math.round( parseFloat( rgb[ x ] ) * 2.55 ); 
         } 
-
         var toHex = function( string ){ 
                 string = parseInt( string, 10 ).toString( 16 ); 
                 string = ( string.length === 1 ) ? "0" + string : string; 
-
                 return string; 
         }; 
-
         var r = toHex( rgb[ 0 ] ); 
         var g = toHex( rgb[ 1 ] ); 
         var b = toHex( rgb[ 2 ] ); 
-
         var hexType = "#" + r + g + b; 
-
         return hexType; 
-	} 
-	 */
+	}*/
+	 
 	/** Object Move in Canvas */
 	canvas.on('object:moving', function (e) {
 		var obj = e.target;
@@ -322,36 +332,49 @@ $(document).ready(function(){
 		reader.onload = function (f) {
 			var data = f.target.result;                    
 			fabric.Image.fromURL(data, function (img) {
-			var oImg = img.set({left: 0, top: 0}).scale(0.2);
+			var oImg = img.set({left: 0, top: 0})
 			canvas.add(oImg).renderAll();
 			var a = canvas.setActiveObject(oImg);
 			var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
 			});
 		};
 		reader.readAsDataURL(file);
-	});
- */
+	});*/
+ 
 
 	/** add SVG */
 		document.getElementById('imgFile').addEventListener("change",function(e){
 			var fileType = e.target.files[0].type;
 			var url = URL.createObjectURL(e.target.files[0]);
-		 
-			if (fileType === 'image/png') { //check if png
-			   fabric.Image.fromURL(url, function(img) {
-				img.set({
-					width: 180,
-					height: 180
-				 });
-				  canvas.add(img);
-			   });
-			} else if (fileType === 'image/svg+xml') { //check if svg
-			   fabric.loadSVGFromURL(url, function(objects, options) {
+			
+			switch(fileType){
+			case 'image/png' :
+				fabric.Image.fromURL(url, (img) => {
+					 if(img.width > canvas.getWidth() || img.hieght > canvas.getHeight()){
+						 img.scaleToWidth(img.width*0.4);
+						 img.scaleToHeight(img.height*0.4);
+					 }
+					  canvas.add(img);
+				   });
+				break;
+				
+			case 'image/jpeg' :
+				fabric.Image.fromURL(url, (img) => {
+					if(img.width > canvas.getWidth() || img.hieght > canvas.getHeight()){
+						img.scaleToWidth(img.width*0.4);
+					    img.scaleToHeight(img.height*0.4);
+					 }
+					  canvas.add(img);
+				   });
+				break;
+				
+			case 'image/svg+xml' :
+				fabric.loadSVGFromURL(url, function(objects, options) {
 					canvas.add.apply(canvas, objects);
 					canvas.renderAll();
 			   });
+				break;
 			}
-			
 		})
 
 	/** Add Background */
@@ -370,16 +393,18 @@ $(document).ready(function(){
 		};
 		reader.readAsDataURL(file);
 	});
-	
+		/*
+		
 	$("#text-color").spectrum({
 	    preferredFormat: "rgb",
 	    showInput: true,
-	    showPalette: true,
 	    move : function(color) {
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
+	    	console.log(canvas.getActiveObject());
+	    	if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    },
@@ -392,7 +417,6 @@ $(document).ready(function(){
 	$("#text-bg-color").spectrum({
 	    preferredFormat: "rgb",
 	    showInput: true,
-	    showPalette: true,
 	    move : function(color) {
 	    	canvas.getActiveObject().set('textBackgroundColor', color);
 	    	canvas.renderAll();
@@ -410,7 +434,6 @@ $(document).ready(function(){
 	$("#text-stroke-color").spectrum({
 	    preferredFormat: "rgb",
 	    showInput: true,
-	    showPalette: true,
 	    move : function(color) {
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
@@ -423,7 +446,8 @@ $(document).ready(function(){
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
 	    }
-	});
+	});*/
+	
 	
 	/** Add Property */
 	addHandler('font-family', function(obj) {

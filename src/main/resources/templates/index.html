@@ -50,8 +50,8 @@
               <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
                 <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on" id="gridBtn">gridOn</button></div>
 				        <div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button></div>
-                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
-                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
+                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd" style="margin:0;">イメージ追加<input type="file" id="imgFile" accept="image/png, image/jpeg, image/svg+xml" hidden></label></div>
+                <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd" style="margin:0;">背景追加<input type="file" id="bgFile" accept="image/png, image/jpeg, image/svg+xml" hidden></label></div>
                 </div>
               <!-- //main content Title-->
 
@@ -181,6 +181,7 @@
                         </div>
 
                         <div class="row my-1 py-2">
+                          <!-- <div class="col-sm-6"><label class="btn btn-outline-primary btn-block">load<input type="file" id="load" hidden accept=".json"></label></div> -->
                           <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="load">load</button></div>
                           <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="save">保存</button></div>
                           </div>
