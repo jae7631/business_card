@@ -1,77 +1,151 @@
 $(document).ready(function(){
 	/** Create Canvas */
 	fabric.Object.prototype.transparentCorners = false;
-//	fabric.Object.prototype.padding = 5;
+	//fabric.Object.prototype.padding = 5;
 	var grid = 50;   
 	var canvas = this.__canvas = new fabric.Canvas('canvas-area');
 		canvas.setHeight(300);
 		canvas.setWidth(450);
 	$('.canvas-container').addClass('yoko');
-
 	
-	  $('#add-text-btn').click(function() {
-		  var new_text = new fabric.IText('Lorem ipsum', {
-		  left: 20,
-		  top: 20,
-		  fontSize: 40,
-		  lockUniScaling: true,
-		  //fontFamily: txtfontfamily,
-		  fill: '#000'
-		});
-		canvas.add(new_text);
-		canvas.setActiveObject(new_text);
-	  });
 	  
-	  
-		/** change fontScale to fontSize */
-		$('#text-font-size').keyup(function() {
-			var val = $(this).val();
-			if (isNaN(val)) {
-			  alert('please enter number');
-			  $(this).val('');
-			}
-			var activeObject = canvas.getActiveObject();
-			activeObject.fontSize = val;
-			canvas.renderAll();
-		  });
-	  
-	  /*
-		if ($('#text-font-size').val()) {
-		  var txtfontsize = $('#text-font-size').val();
-		} else {
-		  var txtfontsize = 40;
+	/** change fontScale to fontSize */
+	$('#text-font-size').keyup(function() {
+		var val = $(this).val();
+		if (isNaN(val)) {
+		  alert('please enter number');
+		  $(this).val('');
 		}
-		var txtfontfamily = $('#font-family').val();
-		
+		var activeObject = canvas.getActiveObject();
+		activeObject.fontSize = val;
+		canvas.renderAll();
+	  });
 	
-	  canvas.on('object:selected', function(options) {
-		if (options.target) {
-		 // $("textarea#add-text-value").val(options.target.text);
-		  $("#text-font-size").val(options.target.fontSize);
-		}
-	  });
+	$('#add-text-btn').click(function() {
+    if ($('#text-font-size').val()) {
+      var txtfontsize = $('#text-font-size').val();
+    } else {
+      var txtfontsize = 45;
+    }
+    var new_text = new fabric.IText("Text", {
+      left: 100,
+      top: 100,
+      fontSize: txtfontsize,
+      lockUniScaling: true,
+      fontFamily: "helvetica",
+      fill: '#000000'
+    });
+    canvas.add(new_text);
+    canvas.setActiveObject(new_text);
+  });
 	
 	  canvas.on('object:scaling', function(event) {
-		if (event.target) {
+		console.log("scale");
+		var isText = event.target.fontSize;
+		if (event.target.fontSize) {
 		  $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
 		}
 	  });
 	
 	  canvas.on('object:modified', function(event) {
-		if (event.target) {
+		console.log("modi");
+		var isText = event.target.fontSize;
+		if (event.target.fontSize) {
 		  event.target.fontSize *= event.target.scaleX;
 		  event.target.fontSize = event.target.fontSize.toFixed(0);
 		  event.target.scaleX = 1;
 		  event.target.scaleY = 1;
-		  //$("textarea#add-text-value").val(event.target.text);
 		  $("#text-font-size").val(event.target.fontSize);
 		  //event.target._clearCache();
 		}
-		
 	  });
-	  
-	 
-  
+
+	/** Object Move in Canvas */
+	canvas.on('object:moving', function (event) {
+		console.log("move");
+		var obj = event.target;
+		// if object is too big ignore
+		if(obj.getBoundingRect().height > canvas.height || obj.getBoundingRect().width > obj.canvas.width) {
+			return;
+		}
+		obj.setCoords();
+		// top-left  corner
+		if(obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0){
+			obj.top = Math.max(obj.top, obj.top-obj.getBoundingRect().top);
+			obj.left = Math.max(obj.left, obj.left-obj.getBoundingRect().left);
+		}
+		// bot-right corner
+		if(obj.getBoundingRect().top+obj.getBoundingRect().height  > obj.canvas.height || obj.getBoundingRect().left+obj.getBoundingRect().width  > obj.canvas.width){
+			obj.top = Math.min(obj.top, obj.canvas.height-obj.getBoundingRect().height+obj.top-obj.getBoundingRect().top);
+			obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
+		}
+		
+		//snap to grid
+		if (Math.round(event.target.left / grid * 4) % 4 == 0 && Math.round(event.target.top / grid * 4) % 4 == 0) {
+		  event.target.set({
+			left: Math.round(event.target.left / grid) * grid,
+			top: Math.round(event.target.top / grid) * grid
+		  }).setCoords();
+		}
+	});
+	
+	canvas.on('object:selected', function (event) {
+		console.log("sel");
+		$('#text-font-size').val(event.target.fontSize);
+		//var isText = event.target.fontSize;
+		if(event.target.fontSize)
+		hexToRgb(document.getElementById("text-color").value = event.target.fill);				
+		$('#text-color').spectrum("set", event.target.fill);
+		$('#text-cmd-underline').prop("checked",event.target.underline);
+		$('#text-cmd-overline').prop("checked",event.target.overline);
+		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
+		$('#text-stroke-width').val(event.target.strokeWidth);
+		$('#text-line-height').val(event.target.lineHeight);
+		$('#font-family').val(event.target.fontFamily);
+		
+		if(event.target.fontWeight == "bold"){
+			$('#text-cmd-bold').prop("checked", true);
+		} else {
+			$('#text-cmd-bold').prop("checked", false);
+		}
+		
+		if(event.target.fontStyle == "italic"){
+			$('#text-cmd-italic').prop("checked", true);
+		} else {
+			$('#text-cmd-italic').prop("checked", false);
+		}
+		
+		if(event.target) {
+			$("#text-font-size").val(event.target.fontSize);
+		}
+	});
+	
+	canvas.on('selection:updated', function (event) {
+		console.log("update");
+		$('#text-font-size').val(event.target.fontSize);
+		//var isText = event.target.fontSize;
+		if(event.target.fontSize)
+		hexToRgb(document.getElementById("text-color").value = event.target.fill); //#000
+		$('#text-cmd-underline').prop("checked",event.target.underline);
+		$('#text-cmd-overline').prop("checked",event.target.overline);
+		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
+		$('#text-stroke-width').val(event.target.strokeWidth);
+		$('#text-line-height').val(event.target.lineHeight);
+		$('#font-family').val(event.target.fontFamily);
+		
+		if(event.target.fontWeight == "bold"){
+			$('#text-cmd-bold').prop("checked", true);
+		} else {
+			$('#text-cmd-bold').prop("checked", false);
+		}
+		
+		if(event.target.fontStyle == "italic"){
+			$('#text-cmd-italic').prop("checked", true);
+		} else {
+			$('#text-cmd-italic').prop("checked", false);
+		}
+	});
+
     /** Add Grid */
 	$("#gridBtn").click(function() {
 		if($('#gridBtn').text()=="gridOn"){
@@ -79,7 +153,6 @@ $(document).ready(function(){
 			$('#gridBtn').addClass('grid-off');
 			$('#gridBtn').text("gridOff");			
 			for (var i = 0; i < (500 / grid); i++) {
-				console.log(canvas.getObjects('line'));
 				canvas.add(new fabric.Line([i * grid, 0, i * grid, 500], {
 				stroke: '#ccc',
 				selectable: false
@@ -99,16 +172,7 @@ $(document).ready(function(){
 			}
 		  }	 
 	});
-	// snap to grid
-	canvas.on('object:moving', function(options) {
-		if (Math.round(options.target.left / grid * 4) % 4 == 0 &&
-		  Math.round(options.target.top / grid * 4) % 4 == 0) {
-		  options.target.set({
-			left: Math.round(options.target.left / grid) * grid,
-			top: Math.round(options.target.top / grid) * grid
-		  }).setCoords();
-		}
-	  });
+
 
 	/** Save Canvas to Png */
 	$('#save').on("click",function(){
@@ -201,8 +265,8 @@ $(document).ready(function(){
 
 	
 	/** Delete Object */
-	$('html').keyup(function(e){			
-		if (e.keyCode == 46) {
+	$('html').keyup(function(event){			
+		if (event.keyCode == 46) {
 			var obj = canvas.getActiveObject();
 			if(!obj.isEditing){
 				deleteSelectedObjectsFromCanvas();	
@@ -223,56 +287,7 @@ $(document).ready(function(){
 		}
 		canvas.discardActiveObject();
 		canvas.requestRenderAll();
-	}
-
-	canvas.on('selection:updated', function (e) {
-		$('#text-font-size').val(e.target.fontSize);
-		//$('#text-color').spectrum("set", rgbToHex(e.target.fill));
-		$('#text-cmd-underline').prop("checked",e.target.underline);
-		$('#text-cmd-overline').prop("checked",e.target.overline);
-		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
-		$('#text-stroke-width').val(e.target.strokeWidth);
-		$('#text-line-height').val(e.target.lineHeight);
-		$('#font-family').val(e.target.fontFamily);
-		
-		if(e.target.fontWeight == "bold"){
-			$('#text-cmd-bold').prop("checked", true);
-		} else {
-			$('#text-cmd-bold').prop("checked", false);
-		}
-		
-		if(e.target.fontStyle == "italic"){
-			$('#text-cmd-italic').prop("checked", true);
-		} else {
-			$('#text-cmd-italic').prop("checked", false);
-		}
-	});
-	
-	canvas.on('object:selected', function (e) {
-		$('#text-font-size').val(e.target.fontSize);
-		console.log(e.target.fill); //#000
-		
-		console.log(document.getElementById("text-color").value=e.target.fill+"000"); 
-		$('#text-color').spectrum("set", e.target.fill);
-		$('#text-cmd-underline').prop("checked",e.target.underline);
-		$('#text-cmd-overline').prop("checked",e.target.overline);
-		$('#text-cmd-linethrough').prop("checked",e.target.linethrough);
-		$('#text-stroke-width').val(e.target.strokeWidth);
-		$('#text-line-height').val(e.target.lineHeight);
-		$('#font-family').val(e.target.fontFamily);
-		
-		if(e.target.fontWeight == "bold"){
-			$('#text-cmd-bold').prop("checked", true);
-		} else {
-			$('#text-cmd-bold').prop("checked", false);
-		}
-		
-		if(e.target.fontStyle == "italic"){
-			$('#text-cmd-italic').prop("checked", true);
-		} else {
-			$('#text-cmd-italic').prop("checked", false);
-		}
-	});
+	}	
 	
 	function hexToRgb(hex) {
 		  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
@@ -282,48 +297,7 @@ $(document).ready(function(){
 		    b: parseInt(result[3], 16)
 		  } : null;
 		}
-	
-	function a(){
-		
-	}
-/*
-	function rgbToHex ( rgbType ){ 
-		var rgb = rgbType.replace( /[^%,.\d]/g, "" ); 
-        rgb = rgb.split( "," ); 
-        for ( var x = 0; x < 3; x++ ) { 
-                if ( rgb[ x ].indexOf( "%" ) > -1 ) rgb[ x ] = Math.round( parseFloat( rgb[ x ] ) * 2.55 ); 
-        } 
-        var toHex = function( string ){ 
-                string = parseInt( string, 10 ).toString( 16 ); 
-                string = ( string.length === 1 ) ? "0" + string : string; 
-                return string; 
-        }; 
-        var r = toHex( rgb[ 0 ] ); 
-        var g = toHex( rgb[ 1 ] ); 
-        var b = toHex( rgb[ 2 ] ); 
-        var hexType = "#" + r + g + b; 
-        return hexType; 
-	}*/
-	 
-	/** Object Move in Canvas */
-	canvas.on('object:moving', function (e) {
-		var obj = e.target;
-		// if object is too big ignore
-		if(obj.currentHeight > obj.canvas.height || obj.currentWidth > obj.canvas.width){
-			return;
-		}
-		obj.setCoords();
-		// top-left  corner
-		if(obj.getBoundingRect().top < 0 || obj.getBoundingRect().left < 0){
-			obj.top = Math.max(obj.top, obj.top-obj.getBoundingRect().top);
-			obj.left = Math.max(obj.left, obj.left-obj.getBoundingRect().left);
-		}
-		// bot-right corner
-		if(obj.getBoundingRect().top+obj.getBoundingRect().height  > obj.canvas.height || obj.getBoundingRect().left+obj.getBoundingRect().width  > obj.canvas.width){
-			obj.top = Math.min(obj.top, obj.canvas.height-obj.getBoundingRect().height+obj.top-obj.getBoundingRect().top);
-			obj.left = Math.min(obj.left, obj.canvas.width-obj.getBoundingRect().width+obj.left-obj.getBoundingRect().left);
-		}
-	});
+
 	
 	/** Add Image 
 		document.getElementById('imgFile').addEventListener("change", function (e) {
@@ -343,13 +317,14 @@ $(document).ready(function(){
  
 
 	/** add SVG */
-		document.getElementById('imgFile').addEventListener("change",function(e){
-			var fileType = e.target.files[0].type;
-			var url = URL.createObjectURL(e.target.files[0]);
+		document.getElementById('imgFile').addEventListener("change",function(event){
+			var fileType = event.target.files[0].type;
+			var url = URL.createObjectURL(event.target.files[0]);
 			
 			switch(fileType){
 			case 'image/png' :
 				fabric.Image.fromURL(url, (img) => {
+					img.objectCaching = false;
 					 if(img.width > canvas.getWidth() || img.hieght > canvas.getHeight()){
 						 img.scaleToWidth(img.width*0.4);
 						 img.scaleToHeight(img.height*0.4);
@@ -360,6 +335,7 @@ $(document).ready(function(){
 				
 			case 'image/jpeg' :
 				fabric.Image.fromURL(url, (img) => {
+					img.objectCaching = false;
 					if(img.width > canvas.getWidth() || img.hieght > canvas.getHeight()){
 						img.scaleToWidth(img.width*0.4);
 					    img.scaleToHeight(img.height*0.4);
@@ -378,8 +354,8 @@ $(document).ready(function(){
 		})
 
 	/** Add Background */
-	document.getElementById('bgFile').addEventListener("change", function(e) {
-		var file = e.target.files[0];
+	document.getElementById('bgFile').addEventListener("change", function(event) {
+		var file = event.target.files[0];
 		var reader = new FileReader();
 		reader.onload = function(f) {
 			var data = f.target.result;
