@@ -41,16 +41,17 @@ $(document).ready(function(){
 	
 	  canvas.on('object:scaling', function(event) {
 		console.log("scale");
-		var isText = event.target.fontSize;
+		//var isText = event.target.fontSize;
 		if (event.target.fontSize) {
+			//$('#text-color').spectrum("set", hexToRgb(event.target.fill));
 		  $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
 		}
 	  });
 	
 	  canvas.on('object:modified', function(event) {
 		console.log("modi");
-		var isText = event.target.fontSize;
 		if (event.target.fontSize) {
+			$('#text-color').spectrum("set", event.target.fill);
 		  event.target.fontSize *= event.target.scaleX;
 		  event.target.fontSize = event.target.fontSize.toFixed(0);
 		  event.target.scaleX = 1;
@@ -92,10 +93,10 @@ $(document).ready(function(){
 	canvas.on('object:selected', function (event) {
 		console.log("sel");
 		$('#text-font-size').val(event.target.fontSize);
-		//var isText = event.target.fontSize;
 		if(event.target.fontSize)
-		hexToRgb(document.getElementById("text-color").value = event.target.fill);				
-		$('#text-color').spectrum("set", event.target.fill);
+		$('#text-color').spectrum("set", hexToRgb(event.target.fill));
+		//hexToRgb(document.getElementById("text-color").value = event.target.fill);				
+		//$('#text-color').spectrum("set", event.target.fill);
 		$('#text-cmd-underline').prop("checked",event.target.underline);
 		$('#text-cmd-overline').prop("checked",event.target.overline);
 		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
@@ -125,7 +126,8 @@ $(document).ready(function(){
 		$('#text-font-size').val(event.target.fontSize);
 		//var isText = event.target.fontSize;
 		if(event.target.fontSize)
-		hexToRgb(document.getElementById("text-color").value = event.target.fill); //#000
+		$('#text-color').spectrum("set", hexToRgb(event.target.fill));
+		//hexToRgb(document.getElementById("text-color").value = event.target.fill); //#000
 		$('#text-cmd-underline').prop("checked",event.target.underline);
 		$('#text-cmd-overline').prop("checked",event.target.overline);
 		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
@@ -298,25 +300,7 @@ $(document).ready(function(){
 		  } : null;
 		}
 
-	
-	/** Add Image 
-		document.getElementById('imgFile').addEventListener("change", function (e) {
-		var file = e.target.files[0];
-		var reader = new FileReader();
-		reader.onload = function (f) {
-			var data = f.target.result;                    
-			fabric.Image.fromURL(data, function (img) {
-			var oImg = img.set({left: 0, top: 0})
-			canvas.add(oImg).renderAll();
-			var a = canvas.setActiveObject(oImg);
-			var dataURL = canvas.toDataURL({format: 'png', quality: 0.8});
-			});
-		};
-		reader.readAsDataURL(file);
-	});*/
- 
-
-	/** add SVG */
+	/** add image */
 		document.getElementById('imgFile').addEventListener("change",function(event){
 			var fileType = event.target.files[0].type;
 			var url = URL.createObjectURL(event.target.files[0]);
@@ -369,29 +353,32 @@ $(document).ready(function(){
 		};
 		reader.readAsDataURL(file);
 	});
-		/*
+		
 		
 	$("#text-color").spectrum({
-	    preferredFormat: "rgb",
+	    preferredFormat: "hex",
 	    showInput: true,
 	    move : function(color) {
+		console.log(color);
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
+		console.log(color);
 	    	console.log(canvas.getActiveObject());
 	    	if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    },
-	    hide : function(color){
+	    hide : function(color){	
+		console.log(color);
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    }
 	});
 	
 	$("#text-bg-color").spectrum({
-	    preferredFormat: "rgb",
+	    preferredFormat: "hex",
 	    showInput: true,
 	    move : function(color) {
 	    	canvas.getActiveObject().set('textBackgroundColor', color);
@@ -408,7 +395,7 @@ $(document).ready(function(){
 	});
 	
 	$("#text-stroke-color").spectrum({
-	    preferredFormat: "rgb",
+	    preferredFormat: "hex",
 	    showInput: true,
 	    move : function(color) {
 	    	canvas.getActiveObject().set('stroke', color);
@@ -422,7 +409,7 @@ $(document).ready(function(){
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
 	    }
-	});*/
+	});
 	
 	
 	/** Add Property */
