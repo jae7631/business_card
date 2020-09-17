@@ -41,8 +41,7 @@ $(document).ready(function(){
 	
 	  canvas.on('object:scaling', function(event) {
 		console.log("scale");
-		//var isText = event.target.fontSize;
-		if (event.target.fontSize) {
+		if (event.target.text) {
 			//$('#text-color').spectrum("set", hexToRgb(event.target.fill));
 		  $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
 		}
@@ -50,7 +49,7 @@ $(document).ready(function(){
 	
 	  canvas.on('object:modified', function(event) {
 		console.log("modi");
-		if (event.target.fontSize) {
+		if (event.target.text) {
 			$('#text-color').spectrum("set", event.target.fill);
 		  event.target.fontSize *= event.target.scaleX;
 		  event.target.fontSize = event.target.fontSize.toFixed(0);
@@ -92,11 +91,13 @@ $(document).ready(function(){
 	
 	canvas.on('object:selected', function (event) {
 		console.log("sel");
+		console.log(event.target);
 		$('#text-font-size').val(event.target.fontSize);
-		if(event.target.fontSize)
-		$('#text-color').spectrum("set", hexToRgb(event.target.fill));
-		//hexToRgb(document.getElementById("text-color").value = event.target.fill);				
-		//$('#text-color').spectrum("set", event.target.fill);
+		if(event.target.text){
+			$('#text-color').spectrum("set", event.target.fill);
+			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
+			$('#text-stroke-color').spectrum("set", event.target.stroke)
+		}
 		$('#text-cmd-underline').prop("checked",event.target.underline);
 		$('#text-cmd-overline').prop("checked",event.target.overline);
 		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
@@ -124,10 +125,11 @@ $(document).ready(function(){
 	canvas.on('selection:updated', function (event) {
 		console.log("update");
 		$('#text-font-size').val(event.target.fontSize);
-		//var isText = event.target.fontSize;
-		if(event.target.fontSize)
-		$('#text-color').spectrum("set", hexToRgb(event.target.fill));
-		//hexToRgb(document.getElementById("text-color").value = event.target.fill); //#000
+		if(event.target.text){
+		$('#text-color').spectrum("set", event.target.fill);
+		$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
+		$('#text-stroke-color').spectrum("set", event.target.stroke);
+		}
 		$('#text-cmd-underline').prop("checked",event.target.underline);
 		$('#text-cmd-overline').prop("checked",event.target.overline);
 		$('#text-cmd-linethrough').prop("checked",event.target.linethrough);
@@ -222,7 +224,6 @@ $(document).ready(function(){
 	/** Canvas Resizing*/
 	  $('#size_modify').on("click",function(){
     if(confirm("サイズ変更時、内容は初期化されます。よろしいですか。")===true){
-      
       if(canvas.getHeight()==300){
         canvas.clear();
         canvas.setHeight(450);
@@ -291,15 +292,6 @@ $(document).ready(function(){
 		canvas.requestRenderAll();
 	}	
 	
-	function hexToRgb(hex) {
-		  var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-		  return result ? {
-		    r: parseInt(result[1], 16),
-		    g: parseInt(result[2], 16),
-		    b: parseInt(result[3], 16)
-		  } : null;
-		}
-
 	/** add image */
 		document.getElementById('imgFile').addEventListener("change",function(event){
 			var fileType = event.target.files[0].type;
@@ -357,21 +349,26 @@ $(document).ready(function(){
 		
 	$("#text-color").spectrum({
 	    preferredFormat: "hex",
-	    showInput: true,
+		allowEmpty:true,
+		showInitial: true,
+		showInput: true,
+		
 	    move : function(color) {
-		console.log(color);
+			console.log("move");
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
-		console.log(color);
-	    	console.log(canvas.getActiveObject());
+			console.log("change");
 	    	if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('fill', color);
-	    	canvas.renderAll();
-	    },
+			canvas.renderAll();
+		},
+		
 	    hide : function(color){	
-		console.log(color);
+			console.log("hide");
+			console.log(canvas.getActiveObject());
+			if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('fill', color);
 	    	canvas.renderAll();
 	    }
@@ -385,10 +382,12 @@ $(document).ready(function(){
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
+			if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('textBackgroundColor', color);
 	    	canvas.renderAll();
 	    },
 	    hide : function(color){
+			if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('textBackgroundColor', color);
 	    	canvas.renderAll();
 	    }
@@ -402,10 +401,12 @@ $(document).ready(function(){
 	    	canvas.renderAll();
 	    },
 	    change : function(color){
+			if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
 	    },
 	    hide : function(color){
+			if(canvas.getActiveObject == null)
 	    	canvas.getActiveObject().set('stroke', color);
 	    	canvas.renderAll();
 	    }
