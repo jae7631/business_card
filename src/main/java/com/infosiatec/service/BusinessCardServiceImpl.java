@@ -18,9 +18,9 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
-	//private static final String FILE_EXTENSION = ".xml";
 	@Autowired
 	private BusinessCardMapper mapper;
 
@@ -82,11 +82,9 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String svgData) {
 		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
-
 		if (!CommonFileCreate.fileOverwrite(filePath, svgData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 	

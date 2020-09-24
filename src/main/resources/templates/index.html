@@ -49,7 +49,7 @@
             <!-- main content Title-->
             <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
               <div class="col-sm-1"><label>grid size</label></div>
-              <div class="col-sm-1"><input type="number" class="form-control" value="45" id="gridSize"></div>
+              <div class="col-sm-1"><input type="number" class="form-control" value = "10" min="0" max="100" id="gridSize"></div>
               <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on"
                   id="gridBtn">gridOn</button></div>
               <div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button>
@@ -58,7 +58,10 @@
                   style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
               <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd"
                   style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
+                  <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on"
+                    id="bgDel">背景削除</button></div>
             </div>
+            
             <!-- //main content Title-->
 
             <!-- main content body-->
@@ -140,7 +143,7 @@
                             <option value="MS Mincho">MS Mincho</option>
                           </select>
                         </div>
-                        <div class="col-sm-3"><label for="text-font-size">Font size:</label></div>
+                        <div class="col-sm-3"><label for="text-font-size">Font size</label></div>
                         <div class="col-sm-3"><input type="number" min="1" max="120" step="1" id="text-font-size"
                             class="form-control"></div>
                       </div>
@@ -158,7 +161,7 @@
                       <div class="row my-1 py-2">
                         <div class="col-sm-3"><label for="text-stroke-width">Stroke width</label></div>
                         <div class="col-sm-3"><input type="range" class="form-control-range" id="text-stroke-width"
-                            value="1" min="1" max="5"></div>
+                            value="1" min="0" max="5"></div>
                         <div class="col-sm-3"><label for="text-stroke-color">Stroke color</label></div>
                         <div class="col-sm-3"><input type="color" class="form-control form-control-sm"
                             id="text-stroke-color"></div>
@@ -166,9 +169,18 @@
 
                       <div class="row my-1 py-2">
                         <div class="col-sm-3"><label for="text-line-height">Line height</label></div>
-                        <div class="col-sm-9"><input type="range" value="" min="0" max="10" step="0.1"
-                            id="text-line-height"></div>
+                        <div class="col-sm-3"><input type="range" value="" min="0" max="10" step="0.1" id="text-line-height" class="form-control"></div>
+                        <div class="col-sm-3"><label for="font-family">Align</label></div>
+                        <div class="col-sm-3">
+                          <select id ="text-align" class="form-control">
+                            <option value="left">left</option>
+                            <option value="center">center</option>
+                            <option value="right">right</option>
+                            <option value="justify">justify</option>
+                          </select>
+                        </div>
                       </div>
+                      
                       <div class="row my-1 py-2">
                         <div class="col-sm-1"><label for="text-cmd-bold">Bold</label></div>
                         <div class="col-sm-3"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold"
