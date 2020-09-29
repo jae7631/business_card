@@ -8,7 +8,9 @@ $(document).ready(function () {
     canvas.setWidth(450);
     $('.canvas-container').addClass('yoko');
 
-
+	function rgbToHex(r, g, b) {
+  		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+		}
 
     /** change fontScale to fontSize */
     $('#text-font-size').keyup(function () {
@@ -46,7 +48,9 @@ $(document).ready(function () {
     canvas.on('object:scaling', function (event) {
         console.log("scale");
         if (event.target.text) {
-            //$('#text-color').spectrum("set", hexToRgb(event.target.fill));
+            $('#text-color').spectrum("set", event.target.fill);
+			console.log(event.target.fill);
+			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
         }
     });
@@ -55,6 +59,7 @@ $(document).ready(function () {
         console.log("modi");
         if (event.target.text) {
             $('#text-color').spectrum("set", event.target.fill);
+			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             event.target.fontSize *= event.target.scaleX;
             event.target.fontSize = event.target.fontSize.toFixed(0);
             event.target.scaleX = 1;
@@ -93,7 +98,7 @@ $(document).ready(function () {
         }
     });
 
-  //오브젝트 선택시 속성값
+  	//object property
     canvas.on('object:selected', function (event) {
         console.log("sel");
         console.log(event.target);
@@ -235,7 +240,7 @@ $(document).ready(function () {
         document.body.removeChild(link);
 
         /** Create Json */
-        var svg = canvas.toSVG();
+        //var svg = canvas.toSVG();
         var jsonData = JSON.stringify(canvas);
         //console.log(jsonData);
         //console.log(svg);
@@ -289,6 +294,7 @@ $(document).ready(function () {
                 canvas.clear();
                 canvas.loadFromJSON(data, function () {
                 	canvas.renderAll();
+		console.log(data);
                 });
             },
             error: function (request, status, error) {
@@ -459,19 +465,19 @@ $(document).ready(function () {
         show: function (color) {
             console.log("show");
             isCancel = false;
-            previousColor = color;
-            console.log(previousColor);
+            previousColor = color.toHexString();
+			console.log(previousColor);
         },
         // 움직일때
         move: function (color) {
             console.log("move");
-            canvas.getActiveObject().set('fill', color);
+            canvas.getActiveObject().set('fill', color.toHexString());
             canvas.renderAll();
         },
         change: function (color) {
             console.log("change");
             isCancel = true;
-            canvas.getActiveObject().set('fill', color);
+            canvas.getActiveObject().set('fill', color.toHexString());
             canvas.renderAll();
             console.log(isCancel);
 
@@ -480,12 +486,11 @@ $(document).ready(function () {
             console.log("hide");
             if (!isCancel && previousColor) {
                 isCancel = true;
-                canvas.getActiveObject().set('fill', previousColor)
+                canvas.getActiveObject().set('fill', previousColor.toHexString())
                 canvas.renderAll();
             }
         }
     });
-
     $("#text-bg-color").spectrum({
         preferredFormat: "hex",
         allowEmpty: true,
@@ -500,12 +505,12 @@ $(document).ready(function () {
             console.log(previousColor.toHexString());
         },
         move: function (color) {
-            canvas.getActiveObject().set('textBackgroundColor', color);
+            canvas.getActiveObject().set('textBackgroundColor', color.toHexString());
             canvas.renderAll();
         },
         change: function (color) {
             isCancel = true;
-            canvas.getActiveObject().set('textBackgroundColor', color);
+            canvas.getActiveObject().set('textBackgroundColor', color.toHexString());
             canvas.renderAll();
         },
         hide: function (color) {
@@ -516,7 +521,7 @@ $(document).ready(function () {
                 if (previousColor.toHexString() == "#000000") {
                     previousColor = "";
                 }
-                canvas.getActiveObject().set('textBackgroundColor', previousColor);
+                canvas.getActiveObject().set('textBackgroundColor', previousColor.toHexString());
                 canvas.renderAll();
             }
         }
@@ -536,12 +541,12 @@ $(document).ready(function () {
             strokePrevious = color;
         },
         move: function (color) {
-            canvas.getActiveObject().set('stroke', color);
+            canvas.getActiveObject().set('stroke', color.toHexString());
             canvas.renderAll();
         },
         change: function (color) {
 			strokeCancel = true;
-                canvas.getActiveObject().set('stroke', color);
+                canvas.getActiveObject().set('stroke', color.toHexString());
                 canvas.renderAll();
             
         },
@@ -549,7 +554,7 @@ $(document).ready(function () {
 			console.log("hide");
             if (!strokeCancel && strokePrevious) {
                 strokeCancel = true;
-                canvas.getActiveObject().set('stroke', strokePrevious)
+                canvas.getActiveObject().set('stroke', strokePrevious.toHexString());
                 canvas.renderAll();
             }
         }
