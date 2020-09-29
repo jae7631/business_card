@@ -214,6 +214,40 @@ $(document).ready(function () {
     })
 
 
+    /** test save */
+    $('#fileNameSave').on("click", function(){
+    	var fileName = $('#fileName').val();
+    	var jsonData = JSON.stringify(canvas);
+    	console.log(fileName);
+    	
+    	$.ajax({
+    		url: "/createBusinessCard",
+    		data: {jsonData: jsonData, fileName: fileName},
+    		method: "POST",
+            dataType: "text",
+            success: function (data) {
+                this.href = canvas.toDataURL({
+                    format: 'png',
+                    multiplier: 4,
+                });
+                const link = document.createElement('a');
+                link.download = fileName+'.png';
+                //link.href = 'data:image/svg+xml;utf8,' + canvas.toSVG();
+                link.href = this.href;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                document.getElementById('fileName').value = ''
+                alert("success");
+                $('#modal2').modal('hide');
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    });
+
+    
     /** Save Canvas to Png */
     $('#save').on("click", function () {
         if ($('#gridBtn').text() == "gridOff") {
@@ -226,36 +260,7 @@ $(document).ready(function () {
             }
         }
         canvas.renderAll();
-        this.href = canvas.toDataURL({
-            format: 'svg',
-            multiplier: 4,
-        });
-
-        const link = document.createElement('a');
-        link.download = 'image.svg';
-        link.href = 'data:image/svg+xml;utf8,' + canvas.toSVG();
-        //link.href = this.href;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
-        /** Create Json */
-        //var svg = canvas.toSVG();
-        var jsonData = JSON.stringify(canvas);
-        //console.log(jsonData);
-        //console.log(svg);
-        $.ajax({
-            url: "/createBusinessCard",
-            data: {jsonData: jsonData},
-            method: "POST",
-            dataType: "text",
-            success: function (data) {
-                alert("success");
-            },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        });
+        $('#modal2').modal('show');          
     });
 
     /** Canvas Resizing*/
@@ -284,18 +289,20 @@ $(document).ready(function () {
     });
     /** Load Templet */
     $('#load').on("click", function () {
-    	console.log("load");
+        $('#modal1').modal('show');
+        
         $.ajax({
-            url: "/selectBusinessCard",
-            data: { idx: 1 },
+            url: "/selectBusinessCardList",
             method: "POST",
-            dataType: "text",
+            data:"mav",
+            dataType: "json",
             success: function (data) {
-                canvas.clear();
-                canvas.loadFromJSON(data, function () {
-                	canvas.renderAll();
-		console.log(data);
-                });
+            	alert("success");
+            	
+               //canvas.clear();
+                //canvas.loadFromJSON(data, function () {
+                	//canvas.renderAll();
+                //});
             },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);

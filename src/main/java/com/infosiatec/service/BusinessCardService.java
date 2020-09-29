@@ -8,6 +8,6 @@ public interface BusinessCardService {
 
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id);
 	public String selectBusinessCard(String id, int idx);
-	public Map<Integer, String> selectBusinessCardList(String id);
+	public Map<Integer, String> selectBusinessCardList();
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData);
 }

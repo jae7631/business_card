@@ -16,7 +16,7 @@
 	<select id="selectBusinessCardList" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">
 		SELECT *
 		FROM businesscard
-		WHERE id = #{id}
+		ORDER BY idx
 	</select>
 	
 	<select id="selectMaxIdx" resultType="Integer">

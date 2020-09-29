@@ -18,7 +18,7 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
@@ -56,27 +56,24 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 		return jsonData;
 	}
 
-	public Map<Integer, String> selectBusinessCardList(String id) {
+	public Map<Integer, String> selectBusinessCardList() {
 		Map<Integer, String> map = new HashMap<Integer, String>();
-		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList(id);
+		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
 		if (businessCardList != null) {
-			
-			for (BusinessCardVO vo : businessCardList) {
-				
-				String filePath = FILE_PATH + vo.getFileName();
-				
+ 			for (BusinessCardVO vo : businessCardList) {
+				String filePath = FILE_PATH + vo.getFileName()+FILE_EXTENSION;
 				try {
-					map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
-				} catch (IOException e) {
+					//map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
+					map.put(vo.getIdx(), vo.getFileName());
+				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
+			System.out.println(map);
 		}
-
 		return map;
 	}
 
