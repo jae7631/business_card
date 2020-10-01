@@ -43,24 +43,10 @@
               </button>
             </div>
             <div class="modal-body">
-              <div class="container-fluid">
-              
-	          	<!-- <form id="form" th:object="${mav}"> -->
-	            	<table class="tb_col">
-                	<thead>
-                		<tr>
-                			<td>No.</td>
-                			<td>FileName</td>
-                		</tr>
-                	</thead>
-                	<tbody>
-                		<!-- <tr th:each="list: ${list}">
- 							<td th:each="${list.idx}"></td>
- 							<td th:each="${list.fileName}"></td>
-                		</tr> -->
-                	</tbody>
-                </table>
-	            <!-- </form> -->
+              <div class="container-fluid" id="target">
+				<div id = "namecardList">
+				
+				</div>
                 
               </div>
             </div>
@@ -267,9 +253,6 @@
                             id="text-cmd-overline" name="fontType" value="overline"></div>
                       </div>
 
-                      <div class="row my-1 py-2">
-
-                      </div>
 
                       <div class="row my-1 py-2">
                         <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="load" data-toggle="modal" data-target="loadData">load</button>

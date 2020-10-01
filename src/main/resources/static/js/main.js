@@ -287,29 +287,69 @@ $(document).ready(function () {
             }
         }
     });
-    /** Load Templet */
+      
+    $('#listArticle').hover(
+    	      function(event){
+    	        $(this).addClass('hover');
+    	      },
+    	      function(){
+    	        $(this).removeClass('hover');
+    	      }
+    	    );
+    /** Load Templet List */
     $('#load').on("click", function () {
         $('#modal1').modal('show');
-        
         $.ajax({
             url: "/selectBusinessCardList",
+            traditional:true,
+           contentType: "application/json; charset=utf-8",
             method: "POST",
-            data:"mav",
             dataType: "json",
             success: function (data) {
-            	alert("success");
-            	
-               //canvas.clear();
-                //canvas.loadFromJSON(data, function () {
-                	//canvas.renderAll();
-                //});
+            	console.log(data);
+            	var output = "<table class='table'>";
+            	output += "<thead>";
+            	output += "<tr>";
+            	output += "<th scope = 'col'>" + "#" + "</th>";
+            	output += "<th scope = 'col'>" + "テンプレート名" + "</th>";
+            	output += "</tr>";
+            	output += "</thead>";
+            	$.each(data, function(idx, val) {
+            		output += "<tr>";
+            		output += "<td>" + idx + "</td>";
+            		output += "<td id='listArticle'>" +val + "</td>";
+            		output += "</tr>";
+            	});
+            	output += "</table>";
+            	$("#namecardList").html(output);
+        		console.log(output);
             },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
     });
-
+    
+    
+    /** Load Templet 
+    $('#load').on("click", function () { 
+        $.ajax({
+            url: "/selectBusinessCard",
+            data: { idx: 1 },
+            method: "POST",
+            dataType: "text",
+            success: function (data) {
+                canvas.clear();
+                canvas.loadFromJSON(data, function () {
+                	canvas.renderAll();
+                });
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+    });
+    */
 
     /** Delete Object */
     $('html').keyup(function (event) {

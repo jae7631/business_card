@@ -1,8 +1,12 @@
 package com.infosiatec.service;
 
-import java.util.Map;
 
+import java.util.List;
+import java.util.Map;
 import org.springframework.http.ResponseEntity;
+
+import com.infosiatec.domain.BusinessCardVO;
+
 
 public interface BusinessCardService {
 
@@ -10,4 +14,5 @@ public interface BusinessCardService {
 	public String selectBusinessCard(String id, int idx);
 	public Map<Integer, String> selectBusinessCardList();
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData);
+	public List<BusinessCardVO> list();
 }

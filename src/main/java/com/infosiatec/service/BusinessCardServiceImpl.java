@@ -1,9 +1,11 @@
 package com.infosiatec.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,6 +61,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return jsonData;
 	}
 
+	
 	public Map<Integer, String> selectBusinessCardList() {
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
@@ -75,6 +78,12 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 			System.out.println(map);
 		}
 		return map;
+	}
+	
+	public List<BusinessCardVO> list(){
+		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
+		System.out.println(businessCardList);
+		return businessCardList;
 	}
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String svgData) {
