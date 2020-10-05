@@ -24,11 +24,11 @@ public class BusinessCardController {
 	}
 	
 	@RequestMapping(value = "/selectBusinessCard", method = RequestMethod.POST)
-	public String selectBusinessCard(@RequestParam("idx") int idx) {
+	public String selectBusinessCard(@RequestParam("idx") int idx, @RequestParam("id")String fileName) {
 		//TODO
 		//get sessionID
-		String id = "testID";
-		return businessCardService.selectBusinessCard(id, idx);
+		//String id = "testID";
+		return businessCardService.selectBusinessCard(fileName, idx);
 	}
 	
 	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)

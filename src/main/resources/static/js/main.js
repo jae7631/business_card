@@ -306,23 +306,37 @@ $(document).ready(function () {
             method: "POST",
             dataType: "json",
             success: function (data) {
-            	console.log(data);
-            	var output = "<table class='table'>";
+            	var output = "<table class='table' id='namecardTable'>";
             	output += "<thead>";
             	output += "<tr>";
             	output += "<th scope = 'col'>" + "#" + "</th>";
+				output += "<th scope = 'col'>" + "" + "</th>";
             	output += "<th scope = 'col'>" + "テンプレート名" + "</th>";
             	output += "</tr>";
             	output += "</thead>";
             	$.each(data, function(idx, val) {
             		output += "<tr>";
-            		output += "<td>" + idx + "</td>";
-            		output += "<td id='listArticle'>" +val + "</td>";
-            		output += "</tr>";
+					output += "<td>" + "<canvas id = thumbnail-area";
+					output += idx + ">" + "</canvas>" + "</td>";
+					
+					output += "<td>" + "<canvas id = thumbnail-area";
+					output += idx + ">" + "</canvas>" + "</td>"
+					
+					output += "</tr>";
+;
             	});
+            		
             	output += "</table>";
             	$("#namecardList").html(output);
-        		console.log(output);
+
+				$.each(data, function(idx, val){
+					fabric.Object.prototype.transparentCorners = false;
+			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
+				    thumbnail.setHeight(300);
+    				thumbnail.setWidth(450);
+				//call thumbnail function
+				loadThumbnail(idx,val,thumbnail);
+				})
             },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -330,7 +344,23 @@ $(document).ready(function () {
         });
     });
     
-    
+
+			function loadThumbnail(idx, val, thumbnail){
+					$.ajax({
+						url : "/selectBusinessCard",
+						data : {id: val, idx:idx},
+						 method : "POST",
+						success : function(data){
+							console.log(data);
+							thumbnail.loadFromJSON(data,function(){
+								thumbnail.renderAll();
+							})
+						},error : function(request,status, error){
+							 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+						}
+					})	
+				}
+    	
     /** Load Templet 
     $('#load').on("click", function () { 
         $.ajax({
@@ -339,7 +369,7 @@ $(document).ready(function () {
             method: "POST",
             dataType: "text",
             success: function (data) {
-                canvas.clear();
+                canvs.clear();
                 canvas.loadFromJSON(data, function () {
                 	canvas.renderAll();
                 });
@@ -350,6 +380,9 @@ $(document).ready(function () {
         });
     });
     */
+	
+
+	
 
     /** Delete Object */
     $('html').keyup(function (event) {
