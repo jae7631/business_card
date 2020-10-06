@@ -2,11 +2,14 @@ package com.infosiatec.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.infosiatec.service.BusinessCardService;
 
 @RestController
@@ -25,10 +28,8 @@ public class BusinessCardController {
 	
 	@RequestMapping(value = "/selectBusinessCard", method = RequestMethod.POST)
 	public String selectBusinessCard(@RequestParam("idx") int idx, @RequestParam("id")String fileName) {
-		//TODO
-		//get sessionID
-		//String id = "testID";
-		return businessCardService.selectBusinessCard(fileName, idx);
+
+ 		return businessCardService.selectBusinessCard(fileName, idx);
 	}
 	
 	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)
@@ -38,4 +39,6 @@ public class BusinessCardController {
 		String id = "testID";
 		return businessCardService.updateBusinessCard(id, idx, svgData);
 	}
+	
+	
 }

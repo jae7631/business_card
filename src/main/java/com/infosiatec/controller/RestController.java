@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,10 +19,11 @@ public class RestController {
 	private BusinessCardService businessCardService;
 	
 	@RequestMapping(value = "/selectBusinessCardList")
-	public Map<Integer, String> returnList(){
+	public Map<Integer, String> returnList(Model model){
 		Map<Integer, String> list = businessCardService.selectBusinessCardList();
 		return list;
 	}
+	
 	
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
 	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData, @RequestParam("fileName")String fileName) {
@@ -29,4 +31,6 @@ public class RestController {
 		//get sessionID
 		return businessCardService.createBusinessCard(jsonData, fileName);
 	}
+	
+
 }

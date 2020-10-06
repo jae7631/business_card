@@ -2,6 +2,8 @@
 .canvas-container {
         border:1px solid red;
         background: #FFF;
+        box-sizing: border-box;
+		margin : 0 auto;
     }
     .yoko {
       position: relative;
@@ -19,3 +21,24 @@
         padding:0;
         display: inline-block;
     }
+    
+
+	.table .tb_tit {
+	text-align:center;
+}
+
+.table .tb_tit_fileName {
+	text-align:left;
+}
+
+.idx_txt {
+	text-align : center;
+}
+
+.file_txt {
+	text-align : left;
+}
+
+.trow:hover {
+	background-color: #d3d3d3;
+}

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:th="http://www.thymeleaf.org" lang="en">
 
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -43,13 +44,19 @@
               </button>
             </div>
             <div class="modal-body">
-              <div class="container-fluid" id="target">
-				<div id = "namecardList">
-				<!-- <table class='table'><thead><tr><th scope = 'col'>#</th><th scope = 'col'></th><th scope = 'col'>テンプレート名</th></tr></thead><tr><td>1</td><td><canvas id = thumbnail-area1></canvas></td><td id='listArticle'>testID1</td></tr><tr><td>2</td><td><canvas id = thumbnail-area2></canvas></td><td id='listArticle'>testID</td></tr><tr><td>3</td><td><canvas id = thumbnail-area3></canvas></td><td id='listArticle'>testID</td></tr></table> -->
-				</div>
-                
-              </div>
-            </div>
+
+					<table class='table' id='namecardTable'>
+						<thead>
+							<tr>
+								<th scope='col' class='tb_tit' style="width:10%">idx</th>
+								<th scope='col' class='tb_tit' style="width:20%">view</th>
+								<th scope='col' class='tb_tit_fileName' style="width:70%">FileName</th>
+							</tr>
+						</thead>
+						<tbody id="listBody">
+						</tbody>
+					</table>
+            </div> 
           </div>
         </div>
       </div>
@@ -255,11 +262,14 @@
 
 
                       <div class="row my-1 py-2">
-                        <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="load" data-toggle="modal" data-target="loadData">load</button>
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="load" data-toggle="modal" data-target="loadData">load</button>
                         </div>
-                        <div class="col-sm-6"><button class="btn btn-outline-primary btn-block" id="save" data-toggle="modal2" data-target="saveData">保存</button>
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="update" data-toggle="modal2" data-target="saveData">修正</button>
+                        </div>
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="save" data-toggle="modal2" data-target="saveData">保存</button>
                         </div>
                       </div>
+                      
                     </div>
                   </div>
                 </div>
@@ -286,3 +296,4 @@
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
 </html>
+	    

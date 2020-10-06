@@ -133,7 +133,6 @@ $(document).ready(function () {
         }
     });
 
-    //다른 오브젝트 선택시 속성값
     canvas.on('selection:updated', function (event) {
         console.log("update");
         $('#text-align').val(event.target.textAlign);
@@ -214,7 +213,7 @@ $(document).ready(function () {
     })
 
 
-    /** test save */
+    /** canvas save */
     $('#fileNameSave').on("click", function(){
     	var fileName = $('#fileName').val();
     	var jsonData = JSON.stringify(canvas);
@@ -287,100 +286,116 @@ $(document).ready(function () {
             }
         }
     });
-      
-    $('#listArticle').hover(
-    	      function(event){
-    	        $(this).addClass('hover');
-    	      },
-    	      function(){
-    	        $(this).removeClass('hover');
-    	      }
-    	    );
+ 
+    
+    
     /** Load Templet List */
     $('#load').on("click", function () {
-        $('#modal1').modal('show');
+        $('#modal1').modal('show'); 
         $.ajax({
             url: "/selectBusinessCardList",
             traditional:true,
            contentType: "application/json; charset=utf-8",
             method: "POST",
             dataType: "json",
-            success: function (data) {
-            	var output = "<table class='table' id='namecardTable'>";
-            	output += "<thead>";
-            	output += "<tr>";
-            	output += "<th scope = 'col'>" + "#" + "</th>";
-				output += "<th scope = 'col'>" + "" + "</th>";
-            	output += "<th scope = 'col'>" + "テンプレート名" + "</th>";
-            	output += "</tr>";
-            	output += "</thead>";
+            success: function (data) {      
+            	var output = "";
             	$.each(data, function(idx, val) {
-            		output += "<tr>";
-					output += "<td>" + "<canvas id = thumbnail-area";
-					output += idx + ">" + "</canvas>" + "</td>";
-					
-					output += "<td>" + "<canvas id = thumbnail-area";
-					output += idx + ">" + "</canvas>" + "</td>"
-					
-					output += "</tr>";
-;
+            		var obj_length = Object.keys(data).length;
+            			output += "<tr id= 'table_row" + idx + "'";
+            			output += "class='trow'"+">";
+            				output += "<td class='align-middle idx_txt'>";
+            				output += idx;
+            				output += "</td>";
+            				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
+        					output += idx + ">" + "</canvas>" + "</td>";
+        					output += "<td class='align-middle file_txt'>";
+        					output += val;
+        					output += "</td>";
+        					output +="</tr>";
             	});
-            		
-            	output += "</table>";
-            	$("#namecardList").html(output);
 
+            	$("#listBody").html(output);
+            	
+            	
 				$.each(data, function(idx, val){
-					fabric.Object.prototype.transparentCorners = false;
 			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
+			    	fabric.Object.prototype.transparentCorners = false;
 				    thumbnail.setHeight(300);
     				thumbnail.setWidth(450);
+    		  		thumbnail.setZoom(0.4);
+            		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
+            		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
 				//call thumbnail function
 				loadThumbnail(idx,val,thumbnail);
+				})
+				
+				console.log(data);
+			
+					$(".trow").on("click",function(){
+						var idx = $(this).index()+1;
+						var val = $(this).find("td").eq(2).text();
+						console.log(idx + ", " + val);
+						loadBusinessCard(idx,val);
+						
 				})
             },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
+        
+        
     });
-    
 
-			function loadThumbnail(idx, val, thumbnail){
-					$.ajax({
-						url : "/selectBusinessCard",
-						data : {id: val, idx:idx},
-						 method : "POST",
-						success : function(data){
-							console.log(data);
-							thumbnail.loadFromJSON(data,function(){
-								thumbnail.renderAll();
-							})
-						},error : function(request,status, error){
-							 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-						}
-					})	
-				}
-    	
-    /** Load Templet 
-    $('#load').on("click", function () { 
-        $.ajax({
-            url: "/selectBusinessCard",
-            data: { idx: 1 },
-            method: "POST",
-            dataType: "text",
-            success: function (data) {
-                canvs.clear();
-                canvas.loadFromJSON(data, function () {
-                	canvas.renderAll();
-                });
-            },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        });
-    });
-    */
-	
+    	/** load Thumbnail*/
+		function loadThumbnail(idx, val, thumbnail){
+				$.ajax({
+					url : "/selectBusinessCard",
+					data : {id: val, idx:idx},
+					 method : "POST",
+					success : function(data){
+						thumbnail.loadFromJSON(data, thumbnail.renderAll.bind(thumbnail),function(o,object){
+							object.set('selectable', false);
+						})
+					},error : function(request,status, error){
+						 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					}
+				})	
+			}
+		
+  
+		/** Load Templet */
+		function loadBusinessCard(idx,val){
+		      $.ajax({
+		            url: "/selectBusinessCard",
+		            data: { idx: idx, id:val },
+		            method: "POST",
+		            dataType: "text",
+		            success: function (data) {
+		            	$('#modal1').modal('hide'); 
+		                canvas.clear();
+		                canvas.loadFromJSON(data, function () {
+		                	canvas.renderAll();
+		                });
+		            },
+		            error: function (request, status, error) {
+		                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+		            }
+		        });
+		}
+		
+		
+		/** update template */
+		$("#update").on("click", function(){
+			if (confirm("このまま上書きしますか？") === true){
+				$.ajax({
+					url : "/"
+				})
+			}
+		})
+      
+		   
 
 	
 
