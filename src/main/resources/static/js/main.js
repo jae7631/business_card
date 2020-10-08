@@ -38,7 +38,7 @@ $(document).ready(function () {
             fontFamily: "helvetica",
             fill: '#000000',
             stroke: '#000000',
-            strokeWidth : '',
+            strokeWidth : 0,
             strokeUniform: true,
         });
         canvas.add(new_text);
@@ -301,7 +301,6 @@ $(document).ready(function () {
             success: function (data) {      
             	var output = "";
             	$.each(data, function(idx, val) {
-            		var obj_length = Object.keys(data).length;
             			output += "<tr id= 'table_row" + idx + "'";
             			output += "class='trow'"+">";
             				output += "<td class='align-middle idx_txt'>";
@@ -655,6 +654,12 @@ $(document).ready(function () {
         }
     });
   
+addHandler('text-cmd-bold', function(obj) {
+  var isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('text-cmd-bold') > -1;
+  setStyle(obj, 'textDecoration', isUnderline ? '' : 'text-cmd-bold');
+});
+
+
 
     /** Add Property */
     addHandler('font-family', function (obj) {
@@ -734,14 +739,17 @@ $(document).ready(function () {
             ? object.getSelectionStyles()[styleName]
             : object[styleName];
     }
-    function addHandler(id, fn, eventName) {
-        document.getElementById(id)[eventName || "onclick"] = function () {
-            var el = this;
-            //alert(this.value);
-            if (obj = canvas.getActiveObject()) {
-                fn.call(el, obj);
-                canvas.renderAll();
-            }
-        };
-    }
+
+	function addHandler(id, fn, eventName) {
+	  document.getElementById(id)[eventName || 'onclick'] = function() {
+	    var el = this;
+	    if (obj = canvas.getActiveObject()) {
+	      fn.call(el, obj);
+	      canvas.renderAll();
+	    }
+	  };
+	}
+	
+	
+
 });
