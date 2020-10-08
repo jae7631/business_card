@@ -20,7 +20,8 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
@@ -30,13 +31,13 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		if(mapper.selectMaxIdx()==null) {
 			System.out.println("null");
 		}
-		return mapper.selectMaxIdx()+1;
+		return mapper.selectMaxIdx()+1;	
 	}
 	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
 		Integer idx = getNextIdx();
 
-		String fileName = id + "-"+idx;
+		String fileName = id + "-" + idx;
 		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
 
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
@@ -66,7 +67,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 				String filePath = FILE_PATH + vo.getFileName()+FILE_EXTENSION;
 				try {
 					//map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
-					map.put(vo.getIdx(), vo.getFileName());
+					map.put(vo.getIdx(), vo.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
