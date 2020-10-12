@@ -303,7 +303,8 @@ $(document).ready(function () {
             	$.each(data, function(idx, val) {
             			output += "<tr id= 'table_row" + idx + "'";
             			output += "class='trow'"+">";
-            				output += "<td class='align-middle idx_txt'>";
+							output += "<td class='align-middle txt_center'><input type='checkbox' name='chk'></td>"
+            				output += "<td class='align-middle txt_center'>";
             				output += idx;
             				output += "</td>";
             				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
@@ -325,27 +326,30 @@ $(document).ready(function () {
     		  		thumbnail.setZoom(0.4);
             		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
             		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
-				//call thumbnail function
-				loadThumbnail(idx,val,thumbnail);
+					//call thumbnail function
+					loadThumbnail(idx,val,thumbnail);
 				})
 				
 				console.log(data);
 			
-					$(".trow").on("click",function(){
-						var idx = $(this).index()+1;
-						var val = $(this).find("td").eq(2).text();
-						console.log(idx + ", " + val);
-						loadBusinessCard(idx,val);
+					$(".file_txt").on("click",function(){
+						var idx = $(this).parents("tr").index()+1;
+						var val = $(this).text();
+
+						if(confirm(val+"を読み込みますか？")){
+						loadBusinessCard(idx,val);	
+						}
 						
 				})
             },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
+            }	
         });
         
         
     });
+
 
     	/** load Thumbnail*/
 		function loadThumbnail(idx, val, thumbnail){
@@ -384,6 +388,42 @@ $(document).ready(function () {
 		        });
 		}
 		
+		/** All check namecardList*/
+		$("#checkAll").on("click",function(){
+			if($("#checkAll").prop("checked")){
+				$("input[name=chk]").prop("checked",true);
+			}else{
+				$("input[name=chk]").prop("checked",false);
+			}
+		})
+		
+		/** delete namecardList */
+		$("#btn_del").on("click",function(){
+		var checklist = $("input:checkbox[name=chk]:checked");
+			if(checklist.length == 0){
+				alert("リストを選択してください")
+			}else{
+				checklist.each(function(i){
+					var tr = checklist.parent().parent().eq(i);
+					var td = tr.children(i);
+					var idx = td.eq(1).text();
+					var val = td.eq(3).text();
+					
+					$.ajax({
+						url : "/deleteBusinessCard",
+						data : {idx:idx, id:val},
+						method : "POST",
+						success : function(data){
+							alert("success");
+						},
+							error : function (request, status, error) {
+				                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+				            }
+						})
+					})
+				}
+			})
+		
 		
 		/** update template */
 		$("#update").on("click", function(){
@@ -393,8 +433,13 @@ $(document).ready(function () {
 				})
 			}
 		})
+		
+		/** back*/
+		$("#btn_back").on("click",function(){
+			$('#modal1').modal('hide'); 
+		})
       
-		   
+
 
 	
 

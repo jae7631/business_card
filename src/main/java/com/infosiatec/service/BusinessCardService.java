@@ -14,5 +14,5 @@ public interface BusinessCardService {
 	public String selectBusinessCard(String id, int idx);
 	public Map<Integer, String> selectBusinessCardList();
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData);
-	public List<BusinessCardVO> list();
+	public ResponseEntity<String> deleteBusinessCard(String id, int idx);
 }

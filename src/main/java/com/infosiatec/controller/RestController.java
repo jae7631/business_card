@@ -32,5 +32,9 @@ public class RestController {
 		return businessCardService.createBusinessCard(jsonData, fileName);
 	}
 	
+	@RequestMapping(value = "/deleteBusinessCard", method= RequestMethod.POST)
+	public ResponseEntity<String> deleteBusinessCard(@RequestParam("idx")int idx, @RequestParam String id){
+		return businessCardService.deleteBusinessCard(id, idx);
+	}
 
 }

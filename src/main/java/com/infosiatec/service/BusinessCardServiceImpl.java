@@ -36,10 +36,8 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
 		Integer idx = getNextIdx();
-
 		String fileName = id + "-" + idx;
 		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
-
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
@@ -77,10 +75,6 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return map;
 	}
 	
-	public List<BusinessCardVO> list(){
-		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
-		return businessCardList;
-	}
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
 		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
@@ -89,5 +83,13 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		}
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
+
+	@Override
+	public ResponseEntity<String> deleteBusinessCard(String id, int idx) {
+		
+		return null;
+	}
+
+
 	
 }
