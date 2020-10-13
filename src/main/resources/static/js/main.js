@@ -211,10 +211,10 @@ $(document).ready(function () {
     $('#createBusinessCard').on("click", function(){
     	var fileName = $('#fileName').val();
     	var jsonData = JSON.stringify(canvas);
-    	createBusinessCard();    	
+    	createBusinessCard(fileName, jsonData);    	
     });
     
-    function createBusinessCard() {
+    function createBusinessCard(fileName, jsonData) {
     	$.ajax({
     		url: "/createBusinessCard",
     		data: {jsonData: jsonData, fileName: fileName},
