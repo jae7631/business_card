@@ -1,7 +1,7 @@
 package com.infosiatec.service;
 
+import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -20,8 +20,8 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
-	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	//private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
@@ -77,19 +77,24 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
-		String filePath = FILE_PATH + id + idx + FILE_EXTENSION;
+		String filePath = FILE_PATH + id + "-" + idx + FILE_EXTENSION;
 		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
-	@Override
-	public ResponseEntity<String> deleteBusinessCard(String id, int idx) {
-		
-		return null;
+	public ResponseEntity<String> deleteBusinessCard(int idx, String id) {
+		String fileName = id + "-" + idx;
+		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
+		File file = new File(filePath);
+			if(!file.delete()) {
+				System.out.println("fail");
+				return new ResponseEntity<String>("ERROR", HttpStatus.OK);
+			}
+			System.out.println("success");
+			mapper.deleteBusinessCard(idx, id);
+			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
-
-	
 }

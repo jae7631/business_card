@@ -3,19 +3,31 @@
 
 <mapper namespace="com.infosiatec.mapper.BusinessCardMapper">
 	<insert id="insertBusinessCard" parameterType="string">
-		INSERT INTO BusinessCard ('id', 'fileName')
-		VALUES ( #{id}, #{fileName} )
+		INSERT INTO businesscard (id, fileName, isDelete)
+		VALUES ( #{id}, #{fileName}, FALSE )
 	</insert>
 	
-	<select id="selectFileName" parameterType="string" resultType="string">
+	<select id="selectFileName" parameterType="com.infosiatec.domain.BusinessCardVO" resultType="string">
 		SELECT fileName
-		FROM BusinessCard
-		WHERE id = #{id} AND idx = #{idx}
+		FROM businesscard
+		WHERE id = #{id} AND idx = #{idx} AND isDelete='FALSE'
 	</select>
 	
 	<select id="selectBusinessCardList" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">
 		SELECT *
-		FROM BusinessCard
-		WHERE id = #{id}
+		FROM businesscard
+		WHERE isDelete='FALSE'
+		ORDER BY idx
 	</select>
+	
+	<select id="selectMaxIdx" resultType="Integer">
+		SELECT MAX(idx)
+		FROM businesscard
+	</select>
+	
+	<update id="deleteBusinessCard" parameterType="string">
+		UPDATE businesscard set isDelete = FALSE
+		where idx = #{idx}
+		and fileName = #{fileName}
+	</update>
 </mapper>

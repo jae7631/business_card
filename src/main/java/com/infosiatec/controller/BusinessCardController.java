@@ -33,11 +33,8 @@ public class BusinessCardController {
 	}
 	
 	@RequestMapping(value = "/updateBusinessCard", method = RequestMethod.POST)
-	public ResponseEntity<String> updateBusinessCard(@RequestParam("idx") int idx, @RequestParam("svg") String svgData) {
-		//TODO
-		//get sessionID
-		String id = "testID";
-		return businessCardService.updateBusinessCard(id, idx, svgData);
+	public ResponseEntity<String> updateBusinessCard(@RequestParam("id")String id,@RequestParam("idx") int idx, @RequestParam("jsonData") String jsonData) {
+		return businessCardService.updateBusinessCard(id, idx, jsonData);
 	}
 	
 	

@@ -33,8 +33,8 @@ public class RestController {
 	}
 	
 	@RequestMapping(value = "/deleteBusinessCard", method= RequestMethod.POST)
-	public ResponseEntity<String> deleteBusinessCard(@RequestParam("idx")int idx, @RequestParam String id){
-		return businessCardService.deleteBusinessCard(id, idx);
+	public ResponseEntity<String> deleteBusinessCard(@RequestParam("idx")int idx, @RequestParam("id") String id) {
+		return businessCardService.deleteBusinessCard(idx, id);
 	}
 
 }
