@@ -31,4 +31,19 @@
 		where idx = #{idx}
 		and id = #{id}
 	</update>
+	
+	<select id="searchBusinessCard" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">
+		SELECT *
+		FROM businesscard
+		<trim prefix="WHERE" prefixOverrides="AND|OR">
+			<if test="searchType=='title' and keyword != null and keyword != '' ">
+				AND id like CONCAT('%', #{keyword}, '%')
+			</if>
+
+			<if test="searchType=='idx' and keyword != null and keyword != '' ">
+				AND idx like CONCAT('%', #{keyword}, '%')
+			</if>
+	</trim>
+		AND isDelete = FALSE
+	</select>
 </mapper>

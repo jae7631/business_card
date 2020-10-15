@@ -425,6 +425,45 @@ $(document).ready(function () {
             }
         });
 	}
+	
+	/** search namecard */
+		$("#namecardSearch").on("click",function(){
+			var keyword = $("#keyword").val();
+			var searchType = $("#searchType").val();
+			console.log(keyword);
+			console.log(searchType);
+			$.ajax({
+				url : "/searchBusinessCard",
+				data : {keyword : keyword, searchType : searchType},
+				method : "POST",
+				dataType: "json",
+				success : function(data){
+					alert("success");
+					console.log(data);
+					
+						var output = "";
+            			$.each(data, function(idx, ) {
+        			output += "<tr id= 'table_row" + idx + "'";
+        			output += "class='trow'"+">";
+					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
+    				output += "<td class='align-middle txt_center idx'>";
+    				output += idx;
+    				output += "</td>";
+    				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
+					output += idx + ">" + "</canvas>" + "</td>";
+					output += "<td class='align-middle file_txt'>";
+					output += val;
+					output += "</td>";
+					output +="</tr>";
+            	});
+            	$("#listBody").html(output);
+					
+				},
+				error: function (request, status, error) {
+              }
+			})
+		});
+	
 			
 	/** update namecard */
 	function updateBusinessCard(idx, val){
@@ -435,6 +474,7 @@ $(document).ready(function () {
 					url : "/updateBusinessCard",
 					data : {idx:idx, id:val, jsonData : newData},
 					method : "POST",
+					dataType: "json",
 					success : function(data) {
 						alert("success");
 					},

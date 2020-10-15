@@ -97,4 +97,21 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
+	@Override
+	public Map<Integer, String> searchBusinessCardList(String keyword, String searchType) {
+		Map<Integer, String> map = new HashMap<Integer, String>();
+		List<BusinessCardVO> resultList = mapper.searchBusinessCard(keyword, searchType);
+		if (resultList != null) {
+ 			for (BusinessCardVO vo : resultList) {
+				try {
+					map.put(vo.getIdx(), vo.getId());
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			System.out.println(map);
+		}
+		return map;		
+	}
+
 }

@@ -23,8 +23,6 @@ public class RestController {
 		Map<Integer, String> list = businessCardService.selectBusinessCardList();
 		return list;
 	}
-	
-	
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
 	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData, @RequestParam("fileName")String fileName) {
 		//TODO
@@ -35,6 +33,12 @@ public class RestController {
 	@RequestMapping(value = "/deleteBusinessCard", method= RequestMethod.POST)
 	public ResponseEntity<String> deleteBusinessCard(@RequestParam("idx")int idx, @RequestParam("id") String id) {
 		return businessCardService.deleteBusinessCard(idx, id);
+	}
+	
+	@RequestMapping(value ="searchBusinessCard", method = RequestMethod.POST)
+	public Map<Integer, String>searchList(@RequestParam("keyword")String keyword, @RequestParam("searchType")String searchType){
+		Map<Integer, String> list = businessCardService.searchBusinessCardList(keyword, searchType);
+		return list;
 	}
 
 }

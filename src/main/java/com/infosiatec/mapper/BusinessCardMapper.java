@@ -13,6 +13,7 @@ public interface BusinessCardMapper {
 	void insertBusinessCard(@Param("id") String id, @Param("fileName") String fileName);
 	String selectFileName(@Param("id") String id, @Param("idx") int idx);
 	List<BusinessCardVO> selectBusinessCardList();
+	List<BusinessCardVO> searchBusinessCard(@Param("keyword")String keyword, @Param("searchType")String searchType);
 	Integer selectMaxIdx();
 	void deleteBusinessCard(@Param("idx")int idx, @Param("id")String id);
 }
