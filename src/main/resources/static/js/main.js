@@ -302,7 +302,7 @@ $(document).ready(function () {
             contentType: "application/json; charset=utf-8",
             method: "POST",
             dataType: "json",
-            success: function (data) {      
+            success: function (data) {
             	var output = "";
             	$.each(data, function(idx, val) {
         			output += "<tr id= 'table_row" + idx + "'";
@@ -430,8 +430,11 @@ $(document).ready(function () {
 		$("#namecardSearch").on("click",function(){
 			var keyword = $("#keyword").val();
 			var searchType = $("#searchType").val();
-			console.log(keyword);
-			console.log(searchType);
+			if(keyword===""||null){
+				
+				alert("");
+				return false;
+			}
 			$.ajax({
 				url : "/searchBusinessCard",
 				data : {keyword : keyword, searchType : searchType},
@@ -440,9 +443,8 @@ $(document).ready(function () {
 				success : function(data){
 					alert("success");
 					console.log(data);
-					
-						var output = "";
-            			$.each(data, function(idx, ) {
+					var output = "";
+        			$.each(data, function(idx, val) {
         			output += "<tr id= 'table_row" + idx + "'";
         			output += "class='trow'"+">";
 					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
@@ -457,7 +459,29 @@ $(document).ready(function () {
 					output +="</tr>";
             	});
             	$("#listBody").html(output);
-					
+
+				// Set Namecard thumbnails Size
+				$.each(data, function(idx, val){
+			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
+			    	fabric.Object.prototype.transparentCorners = false;
+				    thumbnail.setHeight(300);
+    				thumbnail.setWidth(450);
+    		  		thumbnail.setZoom(0.4);
+            		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
+            		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
+					//call thumbnails function
+					loadThumbnail(idx,val,thumbnail);
+				})
+				
+				// load Namecard to canvas
+				$(".file_txt").on("click",function(){
+					var tr = $(this).parent();
+					var val = tr.children().eq(3).text();
+					var idx = tr.children().eq(1).text();
+					if(confirm(val + "を読み込みますか？")){
+					loadBusinessCard(idx,val);	
+					}
+					})
 				},
 				error: function (request, status, error) {
               }
