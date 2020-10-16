@@ -8,9 +8,7 @@ $(document).ready(function () {
     canvas.setWidth(450);
     $('.canvas-container').addClass('yoko');
 
-	function rgbToHex(r, g, b) {
-  		return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
-		}
+
 
     /** change fontScale to fontSize */
     $('#text-font-size').keyup(function () {
@@ -24,6 +22,7 @@ $(document).ready(function () {
         canvas.renderAll();
     });
 
+    /** add TextBox */
     $('#add-text-btn').click(function () {
         if ($('#text-font-size').val()) {
             var txtfontsize = $('#text-font-size').val();
@@ -46,17 +45,14 @@ $(document).ready(function () {
     });
 
     canvas.on('object:scaling', function (event) {
-        console.log("scale");
         if (event.target.text) {
             $('#text-color').spectrum("set", event.target.fill);
-			console.log(event.target.fill);
 			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
         }
     });
 
     canvas.on('object:modified', function (event) {
-        console.log("modi");
         if (event.target.text) {
             $('#text-color').spectrum("set", event.target.fill);
 			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
@@ -65,7 +61,6 @@ $(document).ready(function () {
             event.target.scaleX = 1;
             event.target.scaleY = 1;
             $("#text-font-size").val(event.target.fontSize);
-            //event.target._clearCache();
         }
     });
 
@@ -98,7 +93,7 @@ $(document).ready(function () {
         }
     });
 
-  	//object property
+  	/** object property */
     canvas.on('object:selected', function (event) {
         console.log("sel");
         console.log(event.target);
@@ -133,8 +128,8 @@ $(document).ready(function () {
         }
     });
 
+    /** Click other Object */
     canvas.on('selection:updated', function (event) {
-        console.log("update");
         $('#text-align').val(event.target.textAlign);
         $('#text-font-size').val(event.target.fontSize);
         if (event.target.text) {
@@ -211,14 +206,15 @@ $(document).ready(function () {
             } 
         }
     })
-
-
+   
     /** canvas save */
-    $('#fileNameSave').on("click", function(){
+    $('#createBusinessCard').on("click", function(){
     	var fileName = $('#fileName').val();
     	var jsonData = JSON.stringify(canvas);
-    	console.log(fileName);
-    	
+    	createBusinessCard(fileName, jsonData);    	
+    });
+    
+    function createBusinessCard(fileName, jsonData) {
     	$.ajax({
     		url: "/createBusinessCard",
     		data: {jsonData: jsonData, fileName: fileName},
@@ -231,7 +227,6 @@ $(document).ready(function () {
                 });
                 const link = document.createElement('a');
                 link.download = fileName+'.png';
-                //link.href = 'data:image/svg+xml;utf8,' + canvas.toSVG();
                 link.href = this.href;
                 document.body.appendChild(link);
                 link.click();
@@ -244,11 +239,12 @@ $(document).ready(function () {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }
         });
-    });
+    }
 
     
-    /** Save Canvas to Png */
+    /** call Save Modal */
     $('#save').on("click", function () {
+    	//remove grid
         if ($('#gridBtn').text() == "gridOff") {
             $('#gridBtn').removeClass('grid-off');
             $('#gridBtn').addClass('grid-on');
@@ -286,38 +282,45 @@ $(document).ready(function () {
             }
         }
     });
- 
-    
-    
-    /** Load Templet List */
+        
+	/** close NamecardList Modal*/
+	$("#btn_back").on("click",function(){
+		$('#modal1').modal('hide'); 
+	});
+   
+    /** call NamecardList Modal */
     $('#load').on("click", function () {
         $('#modal1').modal('show'); 
+        loadNamecardList();
+    });
+    
+    /** load List*/
+    function loadNamecardList(){
         $.ajax({
             url: "/selectBusinessCardList",
             traditional:true,
-           contentType: "application/json; charset=utf-8",
+            contentType: "application/json; charset=utf-8",
             method: "POST",
             dataType: "json",
             success: function (data) {      
             	var output = "";
             	$.each(data, function(idx, val) {
-            			output += "<tr id= 'table_row" + idx + "'";
-            			output += "class='trow'"+">";
-							output += "<td class='align-middle txt_center'><input type='checkbox' name='chk'></td>"
-            				output += "<td class='align-middle txt_center'>";
-            				output += idx;
-            				output += "</td>";
-            				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
-        					output += idx + ">" + "</canvas>" + "</td>";
-        					output += "<td class='align-middle file_txt'>";
-        					output += val;
-        					output += "</td>";
-        					output +="</tr>";
+        			output += "<tr id= 'table_row" + idx + "'";
+        			output += "class='trow'"+">";
+					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
+    				output += "<td class='align-middle txt_center idx'>";
+    				output += idx;
+    				output += "</td>";
+    				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
+					output += idx + ">" + "</canvas>" + "</td>";
+					output += "<td class='align-middle file_txt'>";
+					output += val;
+					output += "</td>";
+					output +="</tr>";
             	});
-
             	$("#listBody").html(output);
             	
-            	
+            	// Set Namecard thumbnails Size
 				$.each(data, function(idx, val){
 			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
 			    	fabric.Object.prototype.transparentCorners = false;
@@ -326,123 +329,163 @@ $(document).ready(function () {
     		  		thumbnail.setZoom(0.4);
             		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
             		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
-					//call thumbnail function
+					//call thumbnails function
 					loadThumbnail(idx,val,thumbnail);
 				})
 				
-				console.log(data);
-			
-					$(".file_txt").on("click",function(){
-						var idx = $(this).parents("tr").index()+1;
-						var val = $(this).text();
-
-						if(confirm(val+"を読み込みますか？")){
-						loadBusinessCard(idx,val);	
-						}
+				// load Namecard to canvas
+				$(".file_txt").on("click",function(){
+					var tr = $(this).parent();
+					var val = tr.children().eq(3).text();
+					var idx = tr.children().eq(1).text();
+					if(confirm(val + "を読み込みますか？")){
+					loadBusinessCard(idx,val);	
+				}
 						
-				})
-            },
+			})
+          },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
             }	
         });
-        
-        
-    });
-
-
-    	/** load Thumbnail*/
-		function loadThumbnail(idx, val, thumbnail){
+    }
+    
+    /** All check namecardList*/
+	$("#checkAll").on("click",function(){
+		if($("#checkAll").prop("checked")){
+			$("input[name=chk]").prop("checked",true);
+		}else{
+			$("input[name=chk]").prop("checked",false);
+		}
+	})	
+				
+	/** delete namecardList */
+	$("#btn_del").on("click",function(){
+	var checklist = $("input:checkbox[name=chk]:checked");
+		if(checklist.length == 0){
+			alert("リストを選択してください")
+		}else{
+			checklist.each(function(i){
+				var tr = checklist.parent().parent().eq(i);
+				var td = tr.children(i);
+				var idx = td.eq(1).text();
+				var val = td.eq(3).text();
+				
 				$.ajax({
-					url : "/selectBusinessCard",
-					data : {id: val, idx:idx},
-					 method : "POST",
+					url : "/deleteBusinessCard",
+					data : {idx:idx, id:val},
+					method : "POST",
 					success : function(data){
-						thumbnail.loadFromJSON(data, thumbnail.renderAll.bind(thumbnail),function(o,object){
-							object.set('selectable', false);
-						})
-					},error : function(request,status, error){
-						 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-					}
-				})	
-			}
-		
-  
-		/** Load Templet */
-		function loadBusinessCard(idx,val){
-		      $.ajax({
-		            url: "/selectBusinessCard",
-		            data: { idx: idx, id:val },
-		            method: "POST",
-		            dataType: "text",
-		            success: function (data) {
-		            	$('#modal1').modal('hide'); 
-		                canvas.clear();
-		                canvas.loadFromJSON(data, function () {
-		                	canvas.renderAll();
-		                });
-		            },
-		            error: function (request, status, error) {
+						alert("success");
+						loadList();
+					},
+					error : function (request, status, error) {
 		                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
 		            }
-		        });
-		}
-		
-		/** All check namecardList*/
-		$("#checkAll").on("click",function(){
-			if($("#checkAll").prop("checked")){
-				$("input[name=chk]").prop("checked",true);
-			}else{
-				$("input[name=chk]").prop("checked",false);
-			}
-		})
-		
-		/** delete namecardList */
-		$("#btn_del").on("click",function(){
-		var checklist = $("input:checkbox[name=chk]:checked");
-			if(checklist.length == 0){
-				alert("リストを選択してください")
-			}else{
-				checklist.each(function(i){
-					var tr = checklist.parent().parent().eq(i);
-					var td = tr.children(i);
-					var idx = td.eq(1).text();
-					var val = td.eq(3).text();
-					
-					$.ajax({
-						url : "/deleteBusinessCard",
-						data : {idx:idx, id:val},
-						method : "POST",
-						success : function(data){
-							alert("success");
-						},
-							error : function (request, status, error) {
-				                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-				            }
-						})
-					})
-				}
-			})
-		
-		
-		/** update template */
-		$("#update").on("click", function(){
-			if (confirm("このまま上書きしますか？") === true){
-				$.ajax({
-					url : "/"
 				})
+			})
+		}
+	})
+
+	/** load Thumbnail*/
+	function loadThumbnail(idx, val, thumbnail){
+		$.ajax({
+			url : "/selectBusinessCard",
+			data : {id: val, idx:idx},
+			 method : "POST",
+			success : function(data){
+				thumbnail.loadFromJSON(data, thumbnail.renderAll.bind(thumbnail),function(o,object){
+					object.set('selectable', false);
+				})
+			},
+			error : function(request,status, error){
+				 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
 			}
-		})
+		});	
+	}
 		
-		/** back*/
-		$("#btn_back").on("click",function(){
-			$('#modal1').modal('hide'); 
-		})
-      
-
-
+	/** Load Templet */
+	function loadBusinessCard(idx,val){
+	      $.ajax({
+            url: "/selectBusinessCard",
+            data: { idx: idx, id:val },
+            method: "POST",
+            dataType: "text",
+            success: function (data) {
+            	$('#modal1').modal('hide'); 
+                canvas.clear();
+                canvas.loadFromJSON(data, function () {
+                	canvas.renderAll();
+                });
+                // Overwrite Namecard
+                updateBusinessCard(idx, val);
+            },
+            error: function (request, status, error) {
+                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+            }
+        });
+	}
 	
-
+	/** search namecard */
+		$("#namecardSearch").on("click",function(){
+			var keyword = $("#keyword").val();
+			var searchType = $("#searchType").val();
+			console.log(keyword);
+			console.log(searchType);
+			$.ajax({
+				url : "/searchBusinessCard",
+				data : {keyword : keyword, searchType : searchType},
+				method : "POST",
+				dataType: "json",
+				success : function(data){
+					alert("success");
+					console.log(data);
+					
+						var output = "";
+            			$.each(data, function(idx, ) {
+        			output += "<tr id= 'table_row" + idx + "'";
+        			output += "class='trow'"+">";
+					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
+    				output += "<td class='align-middle txt_center idx'>";
+    				output += idx;
+    				output += "</td>";
+    				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
+					output += idx + ">" + "</canvas>" + "</td>";
+					output += "<td class='align-middle file_txt'>";
+					output += val;
+					output += "</td>";
+					output +="</tr>";
+            	});
+            	$("#listBody").html(output);
+					
+				},
+				error: function (request, status, error) {
+              }
+			})
+		});
+	
+			
+	/** update namecard */
+	function updateBusinessCard(idx, val){
+		$("#update").on("click",function(){
+			var newData = JSON.stringify(canvas);
+			if(confirm("名刺を修正しますか？")===true){
+				$.ajax({
+					url : "/updateBusinessCard",
+					data : {idx:idx, id:val, jsonData : newData},
+					method : "POST",
+					dataType: "json",
+					success : function(data) {
+						alert("success");
+					},
+					error : function (request, status, error) {
+						alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
+					}
+				});
+			}	
+		});
+	}
+	
     /** Delete Object */
     $('html').keyup(function (event) {
         if (event.keyCode == 46) {
@@ -477,8 +520,8 @@ $(document).ready(function () {
     	    fabric.Image.fromURL(data, function (img) {
     	      var oImg = img.set({left: 0, top: 0, angle: 0}).scale(0.8);
     	      canvas.add(oImg).renderAll();
-    	      var a = canvas.setActiveObject(oImg);
-    	      var dataURL = canvas.toDataURL({format: 'svg', quality: 0.8});
+    	      //var a = canvas.setActiveObject(oImg);
+    	      //var dataURL = canvas.toDataURL({format: 'svg', quality: 0.8});
     	    });
     	  };
     	  reader.readAsDataURL(file);
@@ -580,7 +623,7 @@ $(document).ready(function () {
         reader.readAsDataURL(file);
     });
 
-    /** Delete Background */
+    /** Remove Background */
     $('#bgDel').on("click",function(){
         if(confirm("背景を削除しますか？") === true)
             changeToColor();        
@@ -600,14 +643,13 @@ $(document).ready(function () {
         showInitial: true,
         showInput: true,
         clickoutFiresChange: false,
-        //기존 색
+
         show: function (color) {
             console.log("show");
             isCancel = false;
             previousColor = color.toHexString();
 			console.log(previousColor);
         },
-        // 움직일때
         move: function (color) {
             console.log("move");
             canvas.getActiveObject().set('fill', color.toHexString());
@@ -618,7 +660,6 @@ $(document).ready(function () {
             isCancel = true;
             canvas.getActiveObject().set('fill', color.toHexString());
             canvas.renderAll();
-            console.log(isCancel);
 
         },
         hide: function (color) {
@@ -630,13 +671,13 @@ $(document).ready(function () {
             }
         }
     });
+    
     $("#text-bg-color").spectrum({
         preferredFormat: "hex",
         allowEmpty: true,
         showInitial: true,
         showInput: true,
         clickoutFiresChange: false,
-        //기존 색
         show: function (color) {
             console.log("show");
             isCancel = false;
@@ -668,6 +709,7 @@ $(document).ready(function () {
 
 	var strokePrevious;
 	var strokeCancel;
+	
     $("#text-stroke-color").spectrum({
         preferredFormat: "hex",
         allowEmpty: true,
@@ -699,11 +741,11 @@ $(document).ready(function () {
         }
     });
   
-addHandler('text-cmd-bold', function(obj) {
-  var isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('text-cmd-bold') > -1;
-  setStyle(obj, 'textDecoration', isUnderline ? '' : 'text-cmd-bold');
-});
 
+	addHandler('text-cmd-bold', function(obj) {
+		  var isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('text-cmd-bold') > -1;
+		  setStyle(obj, 'textDecoration', isUnderline ? '' : 'text-cmd-bold');
+		});
 
 
     /** Add Property */
@@ -794,7 +836,4 @@ addHandler('text-cmd-bold', function(obj) {
 	    }
 	  };
 	}
-	
-	
-
 });
