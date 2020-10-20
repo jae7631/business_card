@@ -11,7 +11,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="js/main.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="js/jquery.simplePagination.js"></script>
+  	<link rel="stylesheet" type="text/css" href="css/simplePagination.css">
+  	<link rel="stylesheet" type="text/css" href="css/main.css">
   <title>Main</title>
 
 </head>
@@ -25,14 +27,15 @@
       <ul class="navbar-nav">
         <li class="navbar-item"><a class="nav-link" href="#">Home</a></li>
         <li class="navbar-item active"><a class="nav-link" href="#">Create</a></li>
-        <!-- <li class="navbar-item"><a class="nav-link" href="#"></a></li> -->
       </ul>
     </nav>
     <!-- //header-->
 
     <!--container-->
     <div class="container">
-      <!-- modal 1-->
+ 
+     
+    <!-- modal 1-->
       <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="modal1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
           <div class="modal-content">
@@ -41,51 +44,58 @@
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
+              
             </div>
             <div class="modal-body">
 
-					<table class='table' id='namecardTable'>
-						<thead>
-							<tr>
-								<th scope='col' class='tb_tit' style="width:10%"><input type="checkbox" id="checkAll"></th>
-								<th scope='col' class='tb_tit align-middle' style="width:10%">Idx</th>
-								<th scope='col' class='tb_tit align-middle' style="width:20%"></th>
-								<th scope='col' class='tb_tit_fileName align-middle' style="width:50%">Title</th>
-							</tr>
-						</thead>
-						<tbody id="listBody">
-						</tbody>
-					</table>
+			<table class='table' id='namecardTable'>
+				<thead>
+					<tr>
+						<th scope='col' class='tb_tit' style="width:10%"><input type="checkbox" id="checkAll"></th>
+						<th scope='col' class='tb_tit align-middle' style="width:10%">Idx</th>
+						<th scope='col' class='tb_tit align-middle' style="width:20%"></th>
+						<th scope='col' class='tb_tit_fileName align-middle' style="width:50%">Title</th>
+					</tr>
+				</thead>
+				<tbody id="listBody">
+				</tbody>
+			</table>
             </div>
             <div class="modal-footer">
-            
-				<div class="input-group col-sm-8">
-				<div class="input-group-append">
-				    <select class="form-control" id="searchType">
-				    	<option value="title">Title</option>
-				    	<option value="idx">Idx</option>
-				    </select>
-				  </div>
-				  <input type="text" class="form-control" id="keyword" placeholder="入力してください">
-				  <div class="input-group-append">
-				    <button class="btn btn-primary" id="namecardSearch">検索</button>
-				  </div>
-				</div>
-    			
-    		
-                   
-                <div class="col-auto"><button class="btn btn-outline-danger btn-block" id="btn_del">削除</button></div>
-	       		<div class="col-auto"><button class="btn btn-outline-primary btn-block" id="btn_back">戻る</button></div>
-    			</div>
-                                    
-            	
-	       		
-        
-          </div>
-        </div>
-      </div>
-      <!--//modal 1-->
+            	<div class="container-fluid">
+            		<div class="row mb-3">
+            			<div class="col-sm-2"><button class="btn btn-outline-danger" id="btn_del">削除</button></div>
+            			<div class="col-sm-8">
+            				<div class="input-group">
+								<div class="input-group-append">
+								    <select class="form-control" id="searchType">
+								    	<option value="title">Title</option>
+								    	<option value="idx">Idx</option>
+								    </select>
+								 </div>
+					  
+								 <input type="text" class="form-control" id="keyword" placeholder="入力してください">
+								 <div class="input-group-append">
+								 	<button class="btn btn-primary" id="namecardSearch">検索</button>
+								 </div>
+							</div>
+            			</div>
+            			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btn_back" style="float:right">戻る</button></div> 
+            		</div>
+            		            	            
+            		<div class="row">
+            			<div class="col-sm-12">
+            				<div id="pagination-container"></div>	
+            			</div>
+            		</div>		
+            	</div>			
+			</div>
+    	</div>
+       </div>
+     </div>
+     <!-- // modal 1 -->
       
+
       <!-- modal 2-->
       <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="modal2">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
@@ -159,8 +169,14 @@
                 <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 1vh auto auto;">
                   <div class="card-body" style="height: 500px;">
                     <div class="container-fluid">
-                      <div class="row my-1 py-2"><button class="btn btn-outline-primary btn-block"
-                          id="add-text-btn">テキスト追加</button></div>
+                      <div class="row my-1 py-2">
+                      	<div class="col-sm-12"><button class="btn btn-outline-primary btn-block" id="add-text-btn">テキスト追加</button></div>
+                      	</div>
+                      <div class="row my-1 py-2">
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-rect-btn">四角形追加</button></div>
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-tri-btn">三角形追加</button></div>
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-cir-btn">円形追加</button></div>
+                      </div>    
                       <div class="row my-1 py-2">
                         <div class="col-sm-2"><label for="font-family">Font</label></div>
                         <div class="col-sm-4">
@@ -224,12 +240,12 @@
                             class="form-control"></div>
                       </div>
                       <div class="row my-1 py-2">
-                        <div class="col-sm-3"><label for="text-color">文字色</label></div>
+                        <div class="col-sm-3"><label for="text-color">背景色</label></div>
                         <div class="col-sm-3">
                           <input id="text-color" class="form-control form-control-sm" type="color">
                         </div>
 
-                        <div class="col-sm-3"><label for="text-bg-color">背景色</label></div>
+                        <div class="col-sm-3"><label for="text-bg-color">文字背景色</label></div>
                         <div class="col-sm-3"><input type="color" class="form-control form-control-sm"
                             id="text-bg-color"></div>
                       </div>
@@ -245,7 +261,7 @@
 
                       <div class="row my-1 py-2">
                         <div class="col-sm-3"><label for="text-line-height">Line height</label></div>
-                        <div class="col-sm-3"><input type="range" value="1.1" min="1.1" max="1.5" step="0.1" id="text-line-height" class="form-control"></div>
+                        <div class="col-sm-3"><input type="number" min="0" max="1.5" step="0.1" id="text-line-height" class="form-control"></div>
                         <div class="col-sm-3"><label for="font-family">Align</label></div>
                         <div class="col-sm-3">
                           <select id ="text-align" class="form-control">
@@ -263,24 +279,13 @@
                             name="fontType" value="bold"></div>
 
                         <div class="col-sm-1"><label for="text-cmd-italic">Italic</label></div>
-                        <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic"
+                        <div class="col-sm-3"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic"
                             name="fontType" value="italic"></div>
-                      </div>	
-
-                      <div class="row my-1 py-2">
+                        
                         <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
                         <div class="col-sm-2"><input type="checkbox" class="form-control-checkbox"
                             id="text-cmd-underline" name="u" value="underline"></div>
-
-                       <!--  <div class="col-sm-3"><label for="text-cmd-linethrough">LineThrough</label></div>
-                        <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox"
-                            id="text-cmd-linethrough" name="fontType" value="linethrough"></div> -->
-
-                        <div class="col-sm-2"><label for="text-cmd-overline">overLine</label></div>
-                        <div class="col-sm-1"><input type="checkbox" class="form-control-checkbox"
-                            id="text-cmd-overline" name="fontType" value="overline"></div>
-                      </div>
-
+                      </div>	
 
                       <div class="row my-1 py-2">
                         <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="load" data-toggle="modal" data-target="loadData">開く</button>
@@ -290,6 +295,8 @@
                         <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="save" data-toggle="modal2" data-target="saveData">保存</button>
                         </div>
                       </div>
+                      
+                      
                       
                     </div>
                   </div>

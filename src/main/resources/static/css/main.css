@@ -42,3 +42,7 @@
 .trow:hover {
 	background-color: #d3d3d3;
 }
+
+.simple-pagination ul {
+	margin-left:50%;
+}

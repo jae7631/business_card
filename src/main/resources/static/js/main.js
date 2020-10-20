@@ -39,13 +39,14 @@ $(document).ready(function () {
             stroke: '#000000',
             strokeWidth : 0,
             strokeUniform: true,
+            lineHeight : 1
         });
         canvas.add(new_text);
         canvas.setActiveObject(new_text);
     });
 
     canvas.on('object:scaling', function (event) {
-        if (event.target.text) {
+        if (event.target) {
             $('#text-color').spectrum("set", event.target.fill);
 			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $("#text-font-size").val((event.target.fontSize * event.target.scaleX).toFixed(0));
@@ -53,7 +54,7 @@ $(document).ready(function () {
     });
 
     canvas.on('object:modified', function (event) {
-        if (event.target.text) {
+        if (event.target) {
             $('#text-color').spectrum("set", event.target.fill);
 			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             event.target.fontSize *= event.target.scaleX;
@@ -63,6 +64,51 @@ $(document).ready(function () {
             $("#text-font-size").val(event.target.fontSize);
         }
     });
+    
+    /** add Rectangle */
+    $("#add-rect-btn").on("click",function(){
+    	var rect = new fabric.Rect({
+    		  left: 100,
+    		  top: 100,
+    		  fill: 'blue',
+    		  width: 50,
+    		  height: 50,
+    		  stroke : '',
+    		  strokeWidth : 0
+    		});
+    	canvas.add(rect);
+    	canvas.setActiveObject(rect);
+    })
+    /** add triangle */
+    $("#add-tri-btn").on("click",function(){
+    	var triangle = new fabric.Triangle({
+    		  left: 100,
+    		  top: 100,
+    		  fill: 'blue',
+    		  width: 50,
+    		  height: 50,
+    		  stroke : '',
+    		  strokeWidth : 0
+    		});
+    	canvas.add(triangle);
+    	canvas.setActiveObject(triangle);
+    })
+    
+    /** add circle */
+    $("#add-cir-btn").on("click",function(){
+    	var Circle = new fabric.Circle({
+    		radius: 20,
+    		  left: 100,
+    		  top: 100,
+    		  fill: 'blue',
+    		  width: 50,
+    		  height: 50,
+    		  stroke : '',
+    		  strokeWidth : 0
+    		});
+    	canvas.add(Circle);
+    	canvas.setActiveObject(Circle);
+    })
 
     /** Object Move in Canvas */
     canvas.on('object:moving', function (event) {
@@ -97,16 +143,15 @@ $(document).ready(function () {
     canvas.on('object:selected', function (event) {
         console.log("sel");
         console.log(event.target);
+        console.log(event.target.text);
         $('#text-align').val(event.target.textAlign);
         $('#text-font-size').val(event.target.fontSize);
-        if (event.target.text) {
+        if (event.target) {
             $('#text-color').spectrum("set", event.target.fill);
             $('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $('#text-stroke-color').spectrum("set", event.target.stroke)
         }
         $('#text-cmd-underline').prop("checked", event.target.underline);
-        $('#text-cmd-overline').prop("checked", event.target.overline);
-        $('#text-cmd-linethrough').prop("checked", event.target.linethrough);
         $('#text-stroke-width').val(event.target.strokeWidth);
         $('#text-line-height').val(event.target.lineHeight);
         $('#font-family').val(event.target.fontFamily);
@@ -132,14 +177,13 @@ $(document).ready(function () {
     canvas.on('selection:updated', function (event) {
         $('#text-align').val(event.target.textAlign);
         $('#text-font-size').val(event.target.fontSize);
-        if (event.target.text) {
+        if (event.target) {
+        	console.log(event.target.text);
             $('#text-color').spectrum("set", event.target.fill);
             $('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $('#text-stroke-color').spectrum("set", event.target.stroke);
         }
         $('#text-cmd-underline').prop("checked", event.target.underline);
-        $('#text-cmd-overline').prop("checked", event.target.overline);
-        $('#text-cmd-linethrough').prop("checked", event.target.linethrough);
 		$('#text-stroke-width').val(event.target.strokeWidth);
         $('#text-line-height').val(event.target.lineHeight);
         $('#font-family').val(event.target.fontFamily);
@@ -303,7 +347,9 @@ $(document).ready(function () {
             method: "POST",
             dataType: "json",
             success: function (data) {
+            	var container = $("#pagination");
             	var output = "";
+
             	$.each(data, function(idx, val) {
         			output += "<tr id= 'table_row" + idx + "'";
         			output += "class='trow'"+">";
@@ -316,10 +362,31 @@ $(document).ready(function () {
 					output += "<td class='align-middle file_txt'>";
 					output += val;
 					output += "</td>";
-					output +="</tr>";
+					output +="</tr>";				
             	});
+            		   
+
             	$("#listBody").html(output);
             	
+            	var items = $("#listBody .trow");
+            	var numItems = items.length;
+            	var perPage = 4;
+            	
+            	items.slice(perPage).hide();
+            	
+            	$("#pagination-container").pagination({
+                    items: numItems,
+                    itemsOnPage: perPage,
+                    prevText: "&laquo;",
+                    nextText: "&raquo;",
+                    cssStyle: "light-theme",
+                    onPageClick: function (pageNumber) {
+                        var showFrom = perPage * (pageNumber - 1);
+                        var showTo = showFrom + perPage;
+                        items.hide().slice(showFrom, showTo).show();
+                    }
+                });
+            	         
             	// Set Namecard thumbnails Size
 				$.each(data, function(idx, val){
 			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
@@ -340,9 +407,10 @@ $(document).ready(function () {
 					var idx = tr.children().eq(1).text();
 					if(confirm(val + "を読み込みますか？")){
 					loadBusinessCard(idx,val);	
-				}
-						
-			})
+					}
+					
+				})
+			
           },
             error: function (request, status, error) {
                 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -377,7 +445,7 @@ $(document).ready(function () {
 					method : "POST",
 					success : function(data){
 						alert("success");
-						loadList();
+						loadNamecardList();
 					},
 					error : function (request, status, error) {
 		                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
@@ -811,17 +879,6 @@ $(document).ready(function () {
         obj.dirty = true;
     });
 
-    addHandler('text-cmd-linethrough', function (obj) {
-        var islinethrough = (getStyle(obj, 'linethrough') || false);
-        setStyle(obj, 'linethrough', islinethrough ? false : true);
-        obj.dirty = true;
-    });
-
-    addHandler('text-cmd-overline', function (obj) {
-        var isoverline = (getStyle(obj, 'overline') || false);
-        setStyle(obj, 'overline', isoverline ? false : true);
-        obj.dirty = true;
-    });
     $('#text-stroke-width').change(function(){
         var cur_val = parseInt($(this).val());
         var activeObj = canvas.getActiveObject();
