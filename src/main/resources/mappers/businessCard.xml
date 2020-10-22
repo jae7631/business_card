@@ -28,7 +28,10 @@
 
 	<update id="deleteBusinessCard">
 		UPDATE businesscard set isDelete = TRUE
-		where idx = #{idx}
+		where idx in 
+		<foreach collection="idx" item="idx" open="(" close=")" separator=",">
+			#{idx}
+		</foreach>
 	</update>
 	
 	<select id="searchBusinessCard" parameterType="string" resultType="com.infosiatec.domain.BusinessCardVO">

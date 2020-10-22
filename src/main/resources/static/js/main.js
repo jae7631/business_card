@@ -255,6 +255,17 @@ $(document).ready(function () {
     $('#createBusinessCard').on("click", function(){
     	var fileName = $('#fileName').val();
     	var jsonData = JSON.stringify(canvas);
+    	var reg = /^[A-Za-z0-9+]*$/; 
+    	var pattern1 = /^(?!(?:[0-9]+)$)([a-zA-Z]|[0-9a-zA-Z]){4,}$/;
+
+    	
+    	if(fileName === "" || null){
+    		alert("ファイル名を入力してください");
+    		return false;
+    	}else if(pattern1.test(fileName)){
+    		alert("半角英数字だけ可能です");
+    		return false;
+    	}
     	createBusinessCard(fileName, jsonData);    	
     });
     
@@ -429,47 +440,33 @@ $(document).ready(function () {
 				
 	/** delete namecardList */
 	$("#btn_del").on("click",function(){
-		var cnt = $("input:checkbox[name=chk]:checked").length;
-		var checkList = new Array(); 
-		$("input:checkbox[name=chk]:checked").each(function(){
-			var tr = $(this).parent().parent().eq();
-			var td = tr.children();
-			var idx = td.eq(1).text();
-			var val = td.eq(3).text();
-			
-			checkList.push(idx);
-			console.log(tr);
-			console.log(td);
-			console.log(idx);
-			console.log(val);
-			console.log(checkList);
-	
-		})
-		
-		if(cnt === 0){
+		var check = $("input:checkbox[name=chk]:checked");
+		var checkList = new Array();
+		var a;
+		if($("input:checkbox[name=chk]:checked").length === 0){
 			alert("リストを選択してください")
-		}/*else{
-			checklist.each(function(i){
-				var tr = checklist.parent().parent().eq(i);
-				var td = tr.children(i);
-				var idx = td.eq(1).text();
-				var val = td.eq(3).text();
-				
+		}else if(confirm("選択した名刺を削除しますか？")===true){
+			check.each(function(){
+				a = $(this).parent().next().text();
+				checkList.push(a);
+			})
 				$.ajax({
 					url : "/deleteBusinessCard",
-					data : {idx:idx, id:val},
+					data : {"checkList" : checkList},
 					method : "POST",
+					traditional : true,
 					success : function(data){
-						alert("success");
+						alert("削除しました。");
 						loadNamecardList();
 					},
 					error : function (request, status, error) {
 		                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
 		            }
 				})
-			})
-		}*/
+			
+		}
 	})
+	
 
 	/** load Thumbnail*/
 	function loadThumbnail(idx, val, thumbnail){
@@ -514,9 +511,8 @@ $(document).ready(function () {
 		$("#namecardSearch").on("click",function(){
 			var keyword = $("#keyword").val();
 			var searchType = $("#searchType").val();
-			if(keyword===""||null){
-				
-				alert("");
+			if(keyword === ""||null){
+				alert("キーワードを入力してください。");
 				return false;
 			}
 			$.ajax({

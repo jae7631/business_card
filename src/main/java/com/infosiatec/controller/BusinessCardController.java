@@ -1,5 +1,6 @@
 package com.infosiatec.controller;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+
 import com.infosiatec.service.BusinessCardService;
 
 @RestController
@@ -38,22 +40,16 @@ public class BusinessCardController {
 	
 	@RequestMapping(value = "/selectBusinessCardList")
 	public Map<Integer, String> returnList(Model model, @RequestParam(defaultValue="1") int curPage){
-		Map<Integer, String> list = businessCardService.selectBusinessCardList();
-		//int listCnt = businessCardService.countBusinessCardList();
-		
-		//Pagination pagination = new Pagination(listCnt, curPage);
-		
+		Map<Integer, String> list = businessCardService.selectBusinessCardList();		
 		return list;
 	}
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
 	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData, @RequestParam("fileName")String fileName) {
-		//TODO
-		//get sessionID
 		return businessCardService.createBusinessCard(jsonData, fileName);
 	}
 	
 	@RequestMapping(value = "/deleteBusinessCard", method= RequestMethod.POST)
-	public ResponseEntity<String> deleteBusinessCard(@RequestParam("idx")int idx) {
+	public ResponseEntity<String> deleteBusinessCard(@RequestParam("checkList") String[] idx) {
 		return businessCardService.deleteBusinessCard(idx);
 	}
 	

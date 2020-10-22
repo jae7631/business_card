@@ -1,6 +1,5 @@
 package com.infosiatec.service;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -20,8 +19,8 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
-	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	//private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
@@ -84,8 +83,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
-	public ResponseEntity<String> deleteBusinessCard(int idx) {
-
+	public ResponseEntity<String> deleteBusinessCard(String[] idx) {
 			mapper.deleteBusinessCard(idx);
 			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
