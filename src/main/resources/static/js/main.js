@@ -429,10 +429,26 @@ $(document).ready(function () {
 				
 	/** delete namecardList */
 	$("#btn_del").on("click",function(){
-	var checklist = $("input:checkbox[name=chk]:checked");
-		if(checklist.length == 0){
+		var cnt = $("input:checkbox[name=chk]:checked").length;
+		var checkList = new Array(); 
+		$("input:checkbox[name=chk]:checked").each(function(){
+			var tr = $(this).parent().parent().eq();
+			var td = tr.children();
+			var idx = td.eq(1).text();
+			var val = td.eq(3).text();
+			
+			checkList.push(idx);
+			console.log(tr);
+			console.log(td);
+			console.log(idx);
+			console.log(val);
+			console.log(checkList);
+	
+		})
+		
+		if(cnt === 0){
 			alert("リストを選択してください")
-		}else{
+		}/*else{
 			checklist.each(function(i){
 				var tr = checklist.parent().parent().eq(i);
 				var td = tr.children(i);
@@ -452,7 +468,7 @@ $(document).ready(function () {
 		            }
 				})
 			})
-		}
+		}*/
 	})
 
 	/** load Thumbnail*/

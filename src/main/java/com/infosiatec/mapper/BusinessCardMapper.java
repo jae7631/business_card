@@ -15,5 +15,5 @@ public interface BusinessCardMapper {
 	List<BusinessCardVO> selectBusinessCardList();
 	List<BusinessCardVO> searchBusinessCard(@Param("keyword")String keyword, @Param("searchType")String searchType);
 	Integer selectMaxIdx();
-	void deleteBusinessCard(@Param("idx")int idx, @Param("id")String id);
+	void deleteBusinessCard(@Param("idx")int idx);
 }

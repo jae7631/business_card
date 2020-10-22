@@ -20,8 +20,8 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
-	//private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
@@ -84,16 +84,9 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
-	public ResponseEntity<String> deleteBusinessCard(int idx, String id) {
-		String fileName = id + "-" + idx;
-		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
-		File file = new File(filePath);
-			if(!file.delete()) {
-				System.out.println("fail");
-				return new ResponseEntity<String>("ERROR", HttpStatus.OK);
-			}
-			System.out.println("success");
-			mapper.deleteBusinessCard(idx, id);
+	public ResponseEntity<String> deleteBusinessCard(int idx) {
+
+			mapper.deleteBusinessCard(idx);
 			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
