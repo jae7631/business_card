@@ -6,9 +6,8 @@ $(document).ready(function () {
     var canvas = this.__canvas = new fabric.Canvas('canvas-area');
     canvas.setHeight(300);
     canvas.setWidth(450);
+	//デフォルトサイズ
     $('.canvas-container').addClass('yoko');
-
-
 
     /** change fontScale to fontSize */
     $('#text-font-size').keyup(function () {
@@ -57,12 +56,13 @@ $(document).ready(function () {
         if (event.target) {
             $('#text-color').spectrum("set", event.target.fill);
 			$('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
-            event.target.fontSize *= event.target.scaleX;
+        }else if(event.target.text){
+			event.target.fontSize *= event.target.scaleX;
             event.target.fontSize = event.target.fontSize.toFixed(0);
             event.target.scaleX = 1;
             event.target.scaleY = 1;
             $("#text-font-size").val(event.target.fontSize);
-        }
+		}
     });
     
     /** add Rectangle */
@@ -143,13 +143,13 @@ $(document).ready(function () {
     canvas.on('object:selected', function (event) {
         console.log("sel");
         console.log(event.target);
-        console.log(event.target.text);
         $('#text-align').val(event.target.textAlign);
         $('#text-font-size').val(event.target.fontSize);
         if (event.target) {
             $('#text-color').spectrum("set", event.target.fill);
             $('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
-            $('#text-stroke-color').spectrum("set", event.target.stroke)
+            $('#text-stroke-color').spectrum("set", event.target.stroke);
+ 			$("#text-font-size").val(event.target.fontSize);
         }
         $('#text-cmd-underline').prop("checked", event.target.underline);
         $('#text-stroke-width').val(event.target.strokeWidth);
@@ -167,10 +167,6 @@ $(document).ready(function () {
         } else {
             $('#text-cmd-italic').prop("checked", false);
         }
-
-        if (event.target) {
-            $("#text-font-size").val(event.target.fontSize);
-        }
     });
 
     /** Click other Object */
@@ -178,7 +174,6 @@ $(document).ready(function () {
         $('#text-align').val(event.target.textAlign);
         $('#text-font-size').val(event.target.fontSize);
         if (event.target) {
-        	console.log(event.target.text);
             $('#text-color').spectrum("set", event.target.fill);
             $('#text-bg-color').spectrum("set", event.target.textBackgroundColor);
             $('#text-stroke-color').spectrum("set", event.target.stroke);
@@ -250,53 +245,7 @@ $(document).ready(function () {
             } 
         }
     })
-   
-    /** canvas save */
-    $('#createBusinessCard').on("click", function(){
-    	var fileName = $('#fileName').val();
-    	var jsonData = JSON.stringify(canvas);
-    	var reg = /^[A-Za-z0-9+]*$/; 
-    	var pattern1 = /^(?!(?:[0-9]+)$)([a-zA-Z]|[0-9a-zA-Z]){4,}$/;
 
-    	
-    	if(fileName === "" || null){
-    		alert("ファイル名を入力してください");
-    		return false;
-    	}else if(pattern1.test(fileName)){
-    		alert("半角英数字だけ可能です");
-    		return false;
-    	}
-    	createBusinessCard(fileName, jsonData);    	
-    });
-    
-    function createBusinessCard(fileName, jsonData) {
-    	$.ajax({
-    		url: "/createBusinessCard",
-    		data: {jsonData: jsonData, fileName: fileName},
-    		method: "POST",
-            dataType: "text",
-            success: function (data) {
-                this.href = canvas.toDataURL({
-                    format: 'png',
-                    multiplier: 4,
-                });
-                const link = document.createElement('a');
-                link.download = fileName+'.png';
-                link.href = this.href;
-                document.body.appendChild(link);
-                link.click();
-                document.body.removeChild(link);
-                document.getElementById('fileName').value = ''
-                alert("success");
-                $('#modal2').modal('hide');
-            },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        });
-    }
-
-    
     /** call Save Modal */
     $('#save').on("click", function () {
     	//remove grid
@@ -312,6 +261,70 @@ $(document).ready(function () {
         canvas.renderAll();
         $('#modal2').modal('show');          
     });
+   
+    /** Save Event */
+    $('#createBusinessCard').on("click", function(){
+    	var fileName = $('#fileName').val();
+    	var jsonData = JSON.stringify(canvas);
+    	var reg = /^[A-Za-z0-9+]*$/; 
+    	
+    	if(fileName === "" || null){
+    		alert("ファイル名を入力してください");
+    		return false;
+    	}else if(!reg.test(fileName)){
+    		alert("半角英数字だけ可能です");
+    		return false;
+    	}
+    	createBusinessCard(fileName, jsonData);    	
+    });
+    
+    /** call BusinessCardList Modal */
+    $('#load').on("click", function () {
+        $('#modal1').modal('show'); 
+        loadBusinessCardList(canvas);
+    });
+
+    /** Check All BusinessCardList*/
+	$("#checkAll").on("click",function(){
+		if($("#checkAll").prop("checked")){
+			$("input[name=chk]").prop("checked",true);
+		}else{
+			$("input[name=chk]").prop("checked",false);
+		}
+	})
+	
+	/** Delete BusinessCardList */
+	$("#btn_del").on("click",function(){
+		var check = $("input:checkbox[name=chk]:checked");
+		var checkList = new Array();
+		var idx;
+		if($("input:checkbox[name=chk]:checked").length === 0){
+			alert("リストを選択してください")
+		}else if(confirm("選択した名刺を削除しますか？")===true){
+			check.each(function(){
+				idx = $(this).parent().next().text();
+				checkList.push(idx);
+			})
+			deleteNamecard(checkList);
+		}
+	})	
+
+	/** search BusinessCard */
+	$("#namecardSearch").on("click",function(){
+		var keyword = $("#keyword").val();
+		var searchType = $("#searchType").val();
+		if(keyword === ""||null){
+			alert("キーワードを入力してください。");
+			return false;
+		}
+		searchBusinessCard(keyword, searchType);
+	});
+	
+	/** close BusinessCardList Modal*/
+	$("#btn_back").on("click",function(){
+		$('#modal1').modal('hide'); 
+	});
+	
 
     /** Canvas Resizing*/
     $('#size_modify').on("click", function () {
@@ -337,269 +350,16 @@ $(document).ready(function () {
             }
         }
     });
-        
-	/** close NamecardList Modal*/
-	$("#btn_back").on("click",function(){
-		$('#modal1').modal('hide'); 
-	});
-   
-    /** call NamecardList Modal */
-    $('#load').on("click", function () {
-        $('#modal1').modal('show'); 
-        loadNamecardList();
-    });
-    
-    /** load List*/
-    function loadNamecardList(){
-        $.ajax({
-            url: "/selectBusinessCardList",
-            traditional:true,
-            contentType: "application/json; charset=utf-8",
-            method: "POST",
-            dataType: "json",
-            success: function (data) {
-            	var container = $("#pagination");
-            	var output = "";
-
-            	$.each(data, function(idx, val) {
-        			output += "<tr id= 'table_row" + idx + "'";
-        			output += "class='trow'"+">";
-					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
-    				output += "<td class='align-middle txt_center idx'>";
-    				output += idx;
-    				output += "</td>";
-    				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
-					output += idx + ">" + "</canvas>" + "</td>";
-					output += "<td class='align-middle file_txt'>";
-					output += val;
-					output += "</td>";
-					output +="</tr>";				
-            	});
-            		   
-
-            	$("#listBody").html(output);
-            	
-            	var items = $("#listBody .trow");
-            	var numItems = items.length;
-            	var perPage = 4;
-            	
-            	items.slice(perPage).hide();
-            	
-            	$("#pagination-container").pagination({
-                    items: numItems,
-                    itemsOnPage: perPage,
-                    prevText: "&laquo;",
-                    nextText: "&raquo;",
-                    cssStyle: "light-theme",
-                    onPageClick: function (pageNumber) {
-                        var showFrom = perPage * (pageNumber - 1);
-                        var showTo = showFrom + perPage;
-                        items.hide().slice(showFrom, showTo).show();
-                    }
-                });
-            	         
-            	// Set Namecard thumbnails Size
-				$.each(data, function(idx, val){
-			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
-			    	fabric.Object.prototype.transparentCorners = false;
-				    thumbnail.setHeight(300);
-    				thumbnail.setWidth(450);
-    		  		thumbnail.setZoom(0.4);
-            		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
-            		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
-					//call thumbnails function
-					loadThumbnail(idx,val,thumbnail);
-				})
-				
-				// load Namecard to canvas
-				$(".file_txt").on("click",function(){
-					var tr = $(this).parent();
-					var val = tr.children().eq(3).text();
-					var idx = tr.children().eq(1).text();
-					if(confirm(val + "を読み込みますか？")){
-					loadBusinessCard(idx,val);	
-					}
-					
-				})
-			
-          },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }	
-        });
-    }
-    
-    /** All check namecardList*/
-	$("#checkAll").on("click",function(){
-		if($("#checkAll").prop("checked")){
-			$("input[name=chk]").prop("checked",true);
-		}else{
-			$("input[name=chk]").prop("checked",false);
-		}
-	})	
-				
-	/** delete namecardList */
-	$("#btn_del").on("click",function(){
-		var check = $("input:checkbox[name=chk]:checked");
-		var checkList = new Array();
-		var a;
-		if($("input:checkbox[name=chk]:checked").length === 0){
-			alert("リストを選択してください")
-		}else if(confirm("選択した名刺を削除しますか？")===true){
-			check.each(function(){
-				a = $(this).parent().next().text();
-				checkList.push(a);
-			})
-				$.ajax({
-					url : "/deleteBusinessCard",
-					data : {"checkList" : checkList},
-					method : "POST",
-					traditional : true,
-					success : function(data){
-						alert("削除しました。");
-						loadNamecardList();
-					},
-					error : function (request, status, error) {
-		                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-		            }
-				})
-			
-		}
-	})
-	
-
-	/** load Thumbnail*/
-	function loadThumbnail(idx, val, thumbnail){
-		$.ajax({
-			url : "/selectBusinessCard",
-			data : {id: val, idx:idx},
-			 method : "POST",
-			success : function(data){
-				thumbnail.loadFromJSON(data, thumbnail.renderAll.bind(thumbnail),function(o,object){
-					object.set('selectable', false);
-				})
-			},
-			error : function(request,status, error){
-				 alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-			}
-		});	
-	}
-		
-	/** Load Templet */
-	function loadBusinessCard(idx,val){
-	      $.ajax({
-            url: "/selectBusinessCard",
-            data: { idx: idx, id:val },
-            method: "POST",
-            dataType: "text",
-            success: function (data) {
-            	$('#modal1').modal('hide'); 
-                canvas.clear();
-                canvas.loadFromJSON(data, function () {
-                	canvas.renderAll();
-                });
-                // Overwrite Namecard
-                updateBusinessCard(idx, val);
-            },
-            error: function (request, status, error) {
-                alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-            }
-        });
-	}
-	
-	/** search namecard */
-		$("#namecardSearch").on("click",function(){
-			var keyword = $("#keyword").val();
-			var searchType = $("#searchType").val();
-			if(keyword === ""||null){
-				alert("キーワードを入力してください。");
-				return false;
-			}
-			$.ajax({
-				url : "/searchBusinessCard",
-				data : {keyword : keyword, searchType : searchType},
-				method : "POST",
-				dataType: "json",
-				success : function(data){
-					alert("success");
-					console.log(data);
-					var output = "";
-        			$.each(data, function(idx, val) {
-        			output += "<tr id= 'table_row" + idx + "'";
-        			output += "class='trow'"+">";
-					output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
-    				output += "<td class='align-middle txt_center idx'>";
-    				output += idx;
-    				output += "</td>";
-    				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
-					output += idx + ">" + "</canvas>" + "</td>";
-					output += "<td class='align-middle file_txt'>";
-					output += val;
-					output += "</td>";
-					output +="</tr>";
-            	});
-            	$("#listBody").html(output);
-
-				// Set Namecard thumbnails Size
-				$.each(data, function(idx, val){
-			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
-			    	fabric.Object.prototype.transparentCorners = false;
-				    thumbnail.setHeight(300);
-    				thumbnail.setWidth(450);
-    		  		thumbnail.setZoom(0.4);
-            		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
-            		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
-					//call thumbnails function
-					loadThumbnail(idx,val,thumbnail);
-				})
-				
-				// load Namecard to canvas
-				$(".file_txt").on("click",function(){
-					var tr = $(this).parent();
-					var val = tr.children().eq(3).text();
-					var idx = tr.children().eq(1).text();
-					if(confirm(val + "を読み込みますか？")){
-					loadBusinessCard(idx,val);	
-					}
-					})
-				},
-				error: function (request, status, error) {
-              }
-			})
-		});
-	
-			
-	/** update namecard */
-	function updateBusinessCard(idx, val){
-		$("#update").on("click",function(){
-			var newData = JSON.stringify(canvas);
-			if(confirm("名刺を修正しますか？")===true){
-				$.ajax({
-					url : "/updateBusinessCard",
-					data : {idx:idx, id:val, jsonData : newData},
-					method : "POST",
-					dataType: "json",
-					success : function(data) {
-						alert("success");
-					},
-					error : function (request, status, error) {
-						alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
-					}
-				});
-			}	
-		});
-	}
 	
     /** Delete Object */
     $('html').keyup(function (event) {
         if (event.keyCode == 46) {
             var obj = canvas.getActiveObject();
-            if (!obj.isEditing) {
-                deleteSelectedObjectsFromCanvas();
-            }
+	        if (!obj.isEditing) {
+	            deleteSelectedObjectsFromCanvas();
+	        }
         }
     });
-
     function deleteSelectedObjectsFromCanvas() {
         var selection = canvas.getActiveObject();
         if (selection.type === 'activeSelection') {
@@ -617,114 +377,50 @@ $(document).ready(function () {
 
     /** add image */
     document.getElementById('imgFile').addEventListener("change", function (e) {
-    	  var file = e.target.files[0];
-    	  var reader = new FileReader();
-    	  reader.onload = function (f) {
-    	    var data = f.target.result;                    
-    	    fabric.Image.fromURL(data, function (img) {
-    	      var oImg = img.set({left: 0, top: 0, angle: 0}).scale(0.8);
-    	      canvas.add(oImg).renderAll();
-    	      //var a = canvas.setActiveObject(oImg);
-    	      //var dataURL = canvas.toDataURL({format: 'svg', quality: 0.8});
-    	    });
-    	  };
-    	  reader.readAsDataURL(file);
-    	  $('input[type="file"]').val(null);
-    	});
-    /*
-    document.getElementById('imgFile').onchange = function handleImage(e) {
-    	var reader = new FileReader();
-    	  reader.onload = function (event){
-    	    var imgObj = new Image();
-    	    imgObj.src = event.target.result;
-    	    imgObj.onload = function () {
-    	      var image = new fabric.Image(imgObj);
-    	      image.set({
-    	            angle: 0,
-    	            padding: 10,
-    	            cornersize:10,
-    	            height:110,
-    	            width:110,
-    	      });
-    	      canvas.centerObject(image);
-    	      canvas.add(image);
-    	      canvas.renderAll();
-    	    }
-    	  }
-    	  reader.readAsDataURL(e.target.files[0]);
-    	}*/
-    /*
-    document.getElementById('imgFile').addEventListener("change", function (event) {
-        var fileType = event.target.files[0].type;
-        var url = URL.createObjectURL(event.target.files[0]);
-        
-        switch (fileType) {
-            case 'image/png':
-                fabric.Image.fromURL(url, (img) => {
-                    img.objectCaching = false;
-                    if (img.width > canvas.getWidth() || img.hieght > canvas.getHeight()) {
-                        img.scaleToWidth(img.width * 0.4);
-                        img.scaleToHeight(img.height * 0.4);
-                    }
-                    canvas.add(img);
-                    $('input[type="file"]').val(null);
-                });
-                break;
-
-            case 'image/jpeg':
-                fabric.Image.fromURL(url, (img) => {
-                    img.objectCaching = false;
-                    if (img.width > canvas.getWidth() || img.hieght > canvas.getHeight()) {
-                        img.scaleToWidth(img.width * 0.4);
-                        img.scaleToHeight(img.height * 0.4);
-                    }
-                    canvas.add(img);
-                    $('input[type="file"]').val(null);
-                });
-                break;
-                
-            case 'image/gif':
-                fabric.Image.fromURL(url, (img) => {
-                    img.objectCaching = false;
-                    if (img.width > canvas.getWidth() || img.hieght > canvas.getHeight()) {
-                        img.scaleToWidth(img.width * 0.4);
-                        img.scaleToHeight(img.height * 0.4);
-                    }
-                    canvas.add(img);
-                    $('input[type="file"]').val(null);
-                });
-                break;
-                
-                
-
-            case 'image/svg+xml':
-                fabric.loadSVGFromURL(url, function (objects, options) {
-                    canvas.add.apply(canvas, objects);
-                    canvas.renderAll();
-                    $('input[type="file"]').val(null);
-                });
-                break;
-                
-        }
-       
-    })*/
-
+		var file = e.target.files[0];
+		var fileName = e.target.files[0].name;
+		var reader = new FileReader();		
+		var reg = /(.*?)\.(jpg|jpeg|png|gif|bmp|ico|)$/;
+  		if(fileName.match(reg)) {
+		reader.onload = function (f) {
+			var data = f.target.result;                    
+		    fabric.Image.fromURL(data, function (img) {
+		    var oImg = img.set({left: 0, top: 0, angle: 0}).scale(0.8);
+		      canvas.add(oImg).renderAll();
+		    });
+		  };			
+		  reader.readAsDataURL(file);
+		  $('input[type="file"]').val(null);
+		} else {
+			alert("ファイルを読み込めませんでした。ファイルフォマットをご確認ください。");
+		}
+		
+		
+		});
 
     /** Add Background */
-    document.getElementById('bgFile').addEventListener("change", function (event) {
-        var file = event.target.files[0];
+    document.getElementById('bgFile').addEventListener("change", function (e) {
+        var file = e.target.files[0];
+		var fileName = e.target.files[0].name;
         var reader = new FileReader();
-        reader.onload = function (f) {
-            var data = f.target.result;
-            fabric.Image.fromURL(data, function (img) {
-                // add background image
-                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
-                    scaleX: canvas.width / img.width,
-                    scaleY: canvas.height / img.height
-                });
-            });
-        };
-        reader.readAsDataURL(file);
+		var reg = /(.*?)\.(jpg|jpeg|png|gif|bmp|ico|)$/;
+		if(fileName.match(reg)){
+			reader.onload = function (f) {
+		            var data = f.target.result;
+		            fabric.Image.fromURL(data, function (img) {
+		                // add background image
+		                canvas.setBackgroundImage(img, canvas.renderAll.bind(canvas), {
+		                    scaleX: canvas.width / img.width,
+		                    scaleY: canvas.height / img.height
+		                });
+		            });
+		        };
+	        reader.readAsDataURL(file);
+			$('input[type="file"]').val(null);
+		}else {
+			alert("ファイルを読み込めませんでした。ファイルフォマットをご確認ください。");
+		}
+	        
     });
 
     /** Remove Background */
@@ -844,14 +540,7 @@ $(document).ready(function () {
             }
         }
     });
-  
-
-	addHandler('text-cmd-bold', function(obj) {
-		  var isUnderline = (getStyle(obj, 'textDecoration') || '').indexOf('text-cmd-bold') > -1;
-		  setStyle(obj, 'textDecoration', isUnderline ? '' : 'text-cmd-bold');
-		});
-
-
+ 
     /** Add Property */
     addHandler('font-family', function (obj) {
         setStyle(obj, 'fontFamily', this.value);
@@ -909,8 +598,7 @@ $(document).ready(function () {
             var style = {};
             style[styleName] = value;
             object.setSelectionStyles(style);
-        }
-        else {
+        }else {
             object[styleName] = value;
         }
     }

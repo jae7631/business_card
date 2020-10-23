@@ -19,8 +19,8 @@ import com.infosiatec.mapper.BusinessCardMapper;
 public class BusinessCardServiceImpl implements BusinessCardService {
 
 	// json file path
-	private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
-	//private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
+	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
 	//private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
