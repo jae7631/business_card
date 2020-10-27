@@ -1,9 +1,12 @@
 package com.infosiatec.service;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +20,9 @@ import com.infosiatec.mapper.BusinessCardMapper;
 
 @Service
 public class BusinessCardServiceImpl implements BusinessCardService {
+	
+	@Autowired
+	ServletContext c;
 
 	// json file path
 	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
@@ -34,9 +40,18 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 	
 	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
-		Integer idx = getNextIdx();
+ 		Integer idx = getNextIdx();
 		String fileName = id + "-" + idx;
-		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
+		String filePath = c.getRealPath("/").concat("jsonData").concat(File.separator);
+		File folder = new File(filePath);
+		
+		if(!folder.exists()) {
+			folder.mkdir();
+			filePath = filePath + fileName + FILE_EXTENSION;
+		}else {
+			filePath = filePath + fileName + FILE_EXTENSION;		
+		}
+		
 		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}

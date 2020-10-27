@@ -275,7 +275,8 @@ $(document).ready(function () {
     		alert("半角英数字だけ可能です");
     		return false;
     	}
-    	createBusinessCard(fileName, jsonData);    	
+    	createBusinessCard(fileName,jsonData,canvas);
+    	
     });
     
     /** call BusinessCardList Modal */

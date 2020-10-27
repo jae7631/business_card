@@ -1,7 +1,10 @@
 package com.infosiatec.controller;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.Map;
+
+import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -10,8 +13,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.infosiatec.common.CommonFileCreate;
+import com.infosiatec.domain.BusinessCardVO;
 import com.infosiatec.service.BusinessCardService;
 
 @RestController
@@ -19,13 +25,61 @@ public class BusinessCardController {
 	
 	@Autowired
 	private BusinessCardService businessCardService;
+	
+	@Autowired
+	ServletContext c;
 
 	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public ModelAndView home(ModelAndView mv) {
-		System.out.println("normal home page");
-		System.out.println("#############HOME##############");
+	public ModelAndView index(ModelAndView mv) {
+		System.out.println("index");
+		mv.addObject("hm", businessCardService.selectBusinessCardList());
 		mv.setViewName("index");
 		return mv;
+	}
+	
+	@RequestMapping(value="/create", method = RequestMethod.GET)
+	public ModelAndView create(ModelAndView mv) {
+		System.out.println("Create");
+		mv.setViewName("create");
+		return mv;
+	}
+	
+	@RequestMapping(value ="/createFile", method = RequestMethod.POST)
+	public String test(BusinessCardVO vo, MultipartFile file, HttpServletRequest req, 
+			@RequestParam("fileName")String fileName, @RequestParam("jsonData")byte[] jsonData) throws Exception{
+		
+		//C:\Users\kan03\Documents\GitHub\business_card\src\main\webapp\resources
+		
+		// C:\Users\kan03\Documents\GitHub\business_card\src\main\webapp\
+		
+		
+		String filePath = c.getRealPath("/file").concat("test"); 
+		System.out.println(filePath);
+		String imgPath = filePath + File.separator + "thumbnails";
+		System.out.println(imgPath);
+		//String xmlPath = CommonFileCreate.calcPath(imgPath);
+		//System.out.println(xmlPath);
+		/**
+		
+		
+		String fileName = null;
+		if(file.getOriginalFilename() != null && !file.getOriginalFilename().equals("")) {
+			fileName = CommonFileCreate.fileSave(imgPath, file.getOriginalFilename(), file.getBytes(), xmlPath);
+			
+			//img에 원본이미지 파일 경로 + 	파일명 저장
+			vo.setImg(File.separator + "imgUpload" + xmlPath + File.separator + fileName);
+		
+			// thumbnails에 썸네일 파일경로 + 파일명 저장
+			vo.setThumbnails(File.separator + "imgUpload" + xmlPath + File.separator + "s" + File.separator + "_s" + fileName);
+		}else {
+			//이미지가 없으면 임시이미지 출력
+			fileName = File.separator + "images" + File.separator + "none.jpg";
+			vo.setImg(fileName);
+			vo.setThumbnails(fileName);
+		}
+		System.out.println("fileName : " + fileName);
+		*/
+		return "";
 	}
 	
 	@RequestMapping(value = "/selectBusinessCard", method = RequestMethod.POST)

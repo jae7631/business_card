@@ -15,7 +15,6 @@ public class CommonFileRead {
 		for(String line : lines) {
 			sb.append(line);
 		}
-		
 		return sb.toString();
 	}
 }

@@ -1,6 +1,6 @@
 
 /** Create Templet */
-function createBusinessCard(fileName, jsonData) {
+function createBusinessCard(fileName, jsonData, canvas) {
 	$.ajax({
 		url: "/createBusinessCard",
 		data: {jsonData: jsonData, fileName: fileName},
@@ -27,6 +27,20 @@ function createBusinessCard(fileName, jsonData) {
             alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
     });
+}
+
+
+/** test */
+function testf(fileName, jsonData){
+	$.ajax({
+		url : "/createFile",
+		data : {fileName : fileName, jsonData : jsonData},
+		method : "POST",
+		dataType : "text",
+		success : function(data){
+			alert("success");
+		}
+	})
 }
 
 /** load List */
