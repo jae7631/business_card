@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.infosiatec.common.CommonFileCreate;
 import com.infosiatec.common.CommonFileRead;
@@ -20,42 +21,39 @@ import com.infosiatec.mapper.BusinessCardMapper;
 
 @Service
 public class BusinessCardServiceImpl implements BusinessCardService {
-	
+
 	@Autowired
 	ServletContext c;
 
 	// json file path
-	//private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
+	// private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
 	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
-	//private static final String FILE_EXTENSION = ".svg";
+	// private static final String FILE_EXTENSION = ".svg";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
 	private BusinessCardMapper mapper;
 
 	private Integer getNextIdx() {
-		if(mapper.selectMaxIdx()==null) {
+		if (mapper.selectMaxIdx() == null) {
 			System.out.println("null");
 		}
-		return mapper.selectMaxIdx()+1;	
+		return mapper.selectMaxIdx() + 1;
 	}
-	
-	public ResponseEntity<String> createBusinessCard(String jsonData, String id) {
+
+	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) {
  		Integer idx = getNextIdx();
 		String fileName = id + "-" + idx;
-		String filePath = c.getRealPath("/").concat("jsonData").concat(File.separator);
-		File folder = new File(filePath);
+		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator);
+		String pngPath = c.getRealPath("/").concat("pngData").concat(File.separator);
 		
-		if(!folder.exists()) {
-			folder.mkdir();
-			filePath = filePath + fileName + FILE_EXTENSION;
-		}else {
-			filePath = filePath + fileName + FILE_EXTENSION;		
-		}
+		jsonPath = CommonFileCreate.existJson(fileName,jsonPath);
+		pngPath = CommonFileCreate.existPng(fileName,pngPath);
 		
-		if (!CommonFileCreate.fileCreate(filePath, jsonData)) {
+		if (!(CommonFileCreate.jsonCreate(jsonData,jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
 		mapper.insertBusinessCard(id, fileName);
+		
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
@@ -70,15 +68,15 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		}
 		return jsonData;
 	};
-	
+
 	public Map<Integer, String> selectBusinessCardList() {
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
 		if (businessCardList != null) {
- 			for (BusinessCardVO vo : businessCardList) {
-				String filePath = FILE_PATH + vo.getFileName()+FILE_EXTENSION;
+			for (BusinessCardVO vo : businessCardList) {
+				String filePath = FILE_PATH + vo.getFileName() + FILE_EXTENSION;
 				try {
-					//map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
+					// map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
 					map.put(vo.getIdx(), vo.getId());
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -88,7 +86,6 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		}
 		return map;
 	}
-	
 
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
 		String filePath = FILE_PATH + id + "-" + idx + FILE_EXTENSION;
@@ -99,8 +96,8 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 
 	public ResponseEntity<String> deleteBusinessCard(String[] idx) {
-			mapper.deleteBusinessCard(idx);
-			return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
+		mapper.deleteBusinessCard(idx);
+		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
 	@Override
@@ -108,7 +105,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		Map<Integer, String> map = new HashMap<Integer, String>();
 		List<BusinessCardVO> resultList = mapper.searchBusinessCard(keyword, searchType);
 		if (resultList != null) {
- 			for (BusinessCardVO vo : resultList) {
+			for (BusinessCardVO vo : resultList) {
 				try {
 					map.put(vo.getIdx(), vo.getId());
 				} catch (Exception e) {
@@ -117,7 +114,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 			}
 			System.out.println(map);
 		}
-		return map;		
+		return map;
 	}
 
 }

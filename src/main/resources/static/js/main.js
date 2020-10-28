@@ -267,7 +267,8 @@ $(document).ready(function () {
     	var fileName = $('#fileName').val();
     	var jsonData = JSON.stringify(canvas);
     	var reg = /^[A-Za-z0-9+]*$/; 
-    	
+    	var imgData = canvas.toDataURL({format : 'png', multiplier:4});
+
     	if(fileName === "" || null){
     		alert("ファイル名を入力してください");
     		return false;
@@ -275,7 +276,7 @@ $(document).ready(function () {
     		alert("半角英数字だけ可能です");
     		return false;
     	}
-    	createBusinessCard(fileName,jsonData,canvas);
+    	createBusinessCard(fileName,jsonData,imgData);
     	
     });
     

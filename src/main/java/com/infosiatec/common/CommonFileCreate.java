@@ -1,23 +1,29 @@
 package com.infosiatec.common;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
-import java.text.DecimalFormat;
-import java.util.Calendar;
-import java.util.UUID;
 
-import org.springframework.util.FileCopyUtils;
+import javax.imageio.ImageIO;
+import javax.servlet.ServletContext;
 
-import net.coobird.thumbnailator.Thumbnails;
+import org.apache.tomcat.util.codec.binary.Base64;
+import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommonFileCreate {
+	@Autowired
+	static ServletContext c;
 	
-	static final int THUMB_WIDTH = 450;
-	static final int THUMB_HEIGHT = 300;
+	private static final String BASE_64_PREFIX = "data:image/png;base64,";
+	private static final int THUMB_WIDTH = 450;
+	private static final int THUMB_HEIGHT = 300;	
+	private static final String JSON_EXTENSION = ".json";
+	private static final String PNG_EXTENSION = ".png";
 	
-	public static boolean fileCreate(String filePath, String jsonData) {
+	public static boolean jsonCreate(String jsonData,String jsonPath) {
 		try {
-			FileWriter file = new FileWriter(filePath);
+			FileWriter file = new FileWriter(jsonPath);
 			file.write(jsonData);
 			file.flush();
 			file.close();
@@ -26,6 +32,32 @@ public class CommonFileCreate {
 			return false;
 		}
 		return true;
+	}
+	
+	public static boolean pngCreate(String imgData, String pngPath) {
+		String data = imgData.replaceAll(BASE_64_PREFIX,"");
+		byte[] png = Base64.decodeBase64(data.getBytes());
+		try {
+			FileOutputStream fos = new FileOutputStream(new File(pngPath));
+			fos.write(png);
+			fos.flush();
+			fos.close();
+		}catch(Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public static void resize(String pngPath) throws Exception{
+		File in = new File(pngPath);
+		BufferedImage inputImage = ImageIO.read(in);
+		
+		String[] ext = {"bmp","gif","jpg","jpeg","png"};
+		
+		for (String format : ext) {
+			BufferedImage outputImage = new BufferedImage(THUMB_WIDTH,THUMB_HEIGHT,BufferedImage.);
+		}
 	}
 	
 	public static boolean fileOverwrite(String filePath, String jsonData) {
@@ -40,60 +72,29 @@ public class CommonFileCreate {
 		}
 		return true;
 	}
-	
-	//file upload logic
-	public static String fileSave(String filePath, String fileName, byte[] jsonData, String xmlPath) throws Exception{
-		
-		System.out.println("filePath : "+filePath);
-		System.out.println("fileName : "+fileName);
-		System.out.println("fileData : "+jsonData);
-		System.out.println("xmlPath : " + xmlPath);
-		UUID uid = UUID.randomUUID();
-		
-		String newFileName = uid + "-" + fileName;
-		String imgPath = filePath + xmlPath;
-		
-		File target = new File(imgPath, newFileName);
-		FileCopyUtils.copy(jsonData, target);
-		
-		String thumbFileName = "s_" + newFileName;
-		File image = new File(imgPath + File.separator + newFileName);
-		
-		File thumbnail = new File(imgPath + File.separator + "s" + File.separator + thumbFileName);
-		
-		if (image.exists()) {
-			thumbnail.getParentFile().mkdirs();
-			Thumbnails.of(image).size(THUMB_WIDTH, THUMB_HEIGHT).toFile(thumbnail);
-		}
-		return newFileName;	
-	}
-	
-	//Create folder name, folder
-	public static String calcPath(String filePath) {
-		Calendar cal = Calendar.getInstance();
-		String yearPath = File.separator + cal.get(Calendar.YEAR);
-		
-		String monthPath = yearPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.MONTH) + 1);
-		String datePath = monthPath + File.separator + new DecimalFormat("00").format(cal.get(Calendar.DATE));
-		
-		makeDir(filePath, yearPath, monthPath, datePath);
-		makeDir(filePath, yearPath, monthPath, datePath + "\\s");
-		
-		return datePath;
-	}
-	
-	// create directory
-	public static void makeDir(String filePath, String... paths) {
-		if (new File(paths[paths.length - 1]).exists()) {
-			return;
-		}
 
-		for (String path : paths) {
-			File dirPath = new File(filePath + path);
-
-			if (!dirPath.exists()) {
-				dirPath.mkdir();
-			}
+	 
+	public static String existJson(String fileName,String jsonPath) {
+		File folder= new File(jsonPath);
+		if(!folder.exists()) {
+			folder.mkdir();
+			jsonPath += fileName + JSON_EXTENSION;
+		}else {
+			jsonPath += fileName + JSON_EXTENSION;
 		}
+		return jsonPath;
 	}
+	
+	public static String existPng(String fileName, String pngPath){
+		File folder= new File(pngPath);
+		if(!folder.exists()) {
+			folder.mkdir();
+			pngPath += fileName + PNG_EXTENSION;
+		}else {
+			pngPath += fileName + PNG_EXTENSION;
+		}
+		return pngPath;
+	}
+
+	
 }

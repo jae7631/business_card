@@ -1,17 +1,17 @@
 
 /** Create Templet */
-function createBusinessCard(fileName, jsonData, canvas) {
+function createBusinessCard(fileName, jsonData, imgData) {
 	$.ajax({
 		url: "/createBusinessCard",
-		data: {jsonData: jsonData, fileName: fileName},
+		data: {jsonData: jsonData, fileName: fileName, imgData: imgData},
 		method: "POST",
         dataType: "text",
         success: function (data) {
-            this.href = canvas.toDataURL({
+            /*this.href = canvas.toDataURL({
                 format: 'png',
-                multiplier: 4,
-            });
-			var d = new Date();
+                multiplier: 4
+            });*/
+/*			var d = new Date();
 			var currentDate = d.toLocaleString('en-US')
             const link = document.createElement('a');
             link.download = fileName + currentDate + '.png';
@@ -19,7 +19,7 @@ function createBusinessCard(fileName, jsonData, canvas) {
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
-            document.getElementById('fileName').value = ''
+            document.getElementById('fileName').value = ''*/
             alert("success");
             $('#modal2').modal('hide');
         },
