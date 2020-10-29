@@ -1,5 +1,6 @@
 package com.infosiatec.common;
 
+import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -12,8 +13,6 @@ import org.apache.tomcat.util.codec.binary.Base64;
 import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommonFileCreate {
-	@Autowired
-	static ServletContext c;
 	
 	private static final String BASE_64_PREFIX = "data:image/png;base64,";
 	private static final int THUMB_WIDTH = 450;
@@ -49,15 +48,18 @@ public class CommonFileCreate {
 		return true;
 	}
 	
-	public static void resize(String pngPath) throws Exception{
+	public static void resize(String pngPath, String fileName) throws Exception {
 		File in = new File(pngPath);
 		BufferedImage inputImage = ImageIO.read(in);
-		
-		String[] ext = {"bmp","gif","jpg","jpeg","png"};
-		
-		for (String format : ext) {
-			BufferedImage outputImage = new BufferedImage(THUMB_WIDTH,THUMB_HEIGHT,BufferedImage.);
-		}
+		BufferedImage outputImage = new BufferedImage(THUMB_WIDTH,THUMB_HEIGHT,BufferedImage.TYPE_INT_RGB);
+		Graphics2D g = outputImage.createGraphics();
+		g.drawImage(inputImage, 0,0, THUMB_WIDTH, THUMB_HEIGHT, null);
+		String thumbPath = pngPath.replaceAll("pngData\\\\".concat(fileName).concat(".png"),"").concat("thumb").concat(File.separator);
+		File folder= new File(thumbPath);
+		if(!folder.exists()) {folder.mkdir();}
+		File out = new File(thumbPath + fileName + "_s" + ".png");
+		FileOutputStream fos = new FileOutputStream(out);
+		ImageIO.write(outputImage,".png", fos);
 	}
 	
 	public static boolean fileOverwrite(String filePath, String jsonData) {
@@ -73,7 +75,6 @@ public class CommonFileCreate {
 		return true;
 	}
 
-	 
 	public static String existJson(String fileName,String jsonPath) {
 		File folder= new File(jsonPath);
 		if(!folder.exists()) {
@@ -95,6 +96,4 @@ public class CommonFileCreate {
 		}
 		return pngPath;
 	}
-
-	
 }

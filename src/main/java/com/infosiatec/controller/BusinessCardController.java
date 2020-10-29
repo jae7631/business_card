@@ -98,7 +98,8 @@ public class BusinessCardController {
 		return list;
 	}
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)
-	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData, @RequestParam("fileName")String fileName, @RequestParam("imgData")String imgData) {
+	public ResponseEntity<String> createBusinessCard(@RequestParam("jsonData") String jsonData, @RequestParam("fileName")String fileName, @RequestParam("imgData")String imgData) 
+	throws Exception{
 		return businessCardService.createBusinessCard(jsonData, fileName, imgData);
 	}
 	

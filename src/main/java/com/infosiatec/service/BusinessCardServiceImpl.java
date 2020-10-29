@@ -12,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.infosiatec.common.CommonFileCreate;
 import com.infosiatec.common.CommonFileRead;
@@ -40,7 +39,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return mapper.selectMaxIdx() + 1;
 	}
 
-	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) {
+	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) throws Exception{
  		Integer idx = getNextIdx();
 		String fileName = id + "-" + idx;
 		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator);
@@ -48,12 +47,12 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		
 		jsonPath = CommonFileCreate.existJson(fileName,jsonPath);
 		pngPath = CommonFileCreate.existPng(fileName,pngPath);
-		
+
 		if (!(CommonFileCreate.jsonCreate(jsonData,jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
 		mapper.insertBusinessCard(id, fileName);
-		
+		CommonFileCreate.resize(pngPath,fileName);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
