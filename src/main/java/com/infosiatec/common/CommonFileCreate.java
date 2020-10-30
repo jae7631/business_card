@@ -1,22 +1,20 @@
 package com.infosiatec.common;
 
-import java.awt.Graphics2D;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
 
 import javax.imageio.ImageIO;
-import javax.servlet.ServletContext;
 
 import org.apache.tomcat.util.codec.binary.Base64;
-import org.springframework.beans.factory.annotation.Autowired;
 
 public class CommonFileCreate {
 	
 	private static final String BASE_64_PREFIX = "data:image/png;base64,";
-	private static final int THUMB_WIDTH = 450;
-	private static final int THUMB_HEIGHT = 300;	
+	
 	private static final String JSON_EXTENSION = ".json";
 	private static final String PNG_EXTENSION = ".png";
 	
@@ -49,17 +47,42 @@ public class CommonFileCreate {
 	}
 	
 	public static void resize(String pngPath, String fileName) throws Exception {
-		File in = new File(pngPath);
-		BufferedImage inputImage = ImageIO.read(in);
-		BufferedImage outputImage = new BufferedImage(THUMB_WIDTH,THUMB_HEIGHT,BufferedImage.TYPE_INT_RGB);
-		Graphics2D g = outputImage.createGraphics();
-		g.drawImage(inputImage, 0,0, THUMB_WIDTH, THUMB_HEIGHT, null);
-		String thumbPath = pngPath.replaceAll("pngData\\\\".concat(fileName).concat(".png"),"").concat("thumb").concat(File.separator);
-		File folder= new File(thumbPath);
-		if(!folder.exists()) {folder.mkdir();}
-		File out = new File(thumbPath + fileName + "_s" + ".png");
-		FileOutputStream fos = new FileOutputStream(out);
-		ImageIO.write(outputImage,".png", fos);
+		// Original image
+		System.out.println(pngPath);
+		// thumb img
+		String imgFormat = "png";
+		String thumbPath =
+				pngPath.replaceAll("pngData\\\\".concat(fileName).concat(".png"),"")
+				.concat("thumb").concat(File.separator).concat(fileName)+"_thumb."+imgFormat;
+		
+		int newWidth = 450;
+		int newHeight = 300;
+		
+		Image image;
+		int imgWidth;
+		int imgHeight;
+		try {
+			//원본 이미지 가져오기
+			image = ImageIO.read(new File(pngPath));
+			imgWidth = image.getWidth(null);
+			imgHeight = image.getHeight(null);
+			System.out.println("imageWidth : " + imgWidth);
+			System.out.println("imageHeight : " + imgHeight);
+
+			Image resizeImage = image.getScaledInstance(newWidth, newHeight, Image.SCALE_SMOOTH);
+			System.out.println("reimageWidth : " + resizeImage.getWidth(null));
+			System.out.println("reimageHeight : " + resizeImage.getHeight(null));
+			
+			BufferedImage thumb = new BufferedImage(newWidth, newHeight, BufferedImage.TYPE_INT_ARGB);
+			Graphics g = thumb.getGraphics();
+			g.drawImage(resizeImage, 0, 0, null);
+			//g.drawImage(resizeImage, 0, 0, "#FFFFFF", observer)
+			g.dispose();
+
+			ImageIO.write(thumb, imgFormat, new File(thumbPath));			
+		}catch(Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static boolean fileOverwrite(String filePath, String jsonData) {
@@ -96,4 +119,5 @@ public class CommonFileCreate {
 		}
 		return pngPath;
 	}
+	
 }
