@@ -1,10 +1,9 @@
 package com.infosiatec.controller;
 
-import java.io.File;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
-import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -13,10 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.ModelAndView;
 
-import com.infosiatec.common.CommonFileCreate;
 import com.infosiatec.domain.BusinessCardVO;
 import com.infosiatec.service.BusinessCardService;
 
@@ -55,8 +52,9 @@ public class BusinessCardController {
 	}
 	
 	@RequestMapping(value = "/selectBusinessCardList")
-	public Map<Integer, String> returnList(Model model, @RequestParam(defaultValue="1") int curPage){
-		Map<Integer, String> list = businessCardService.selectBusinessCardList();		
+	public List<BusinessCardVO> returnList(Model model, @RequestParam(defaultValue="1") int curPage){
+		//Map<Integer, String> list = businessCardService.selectBusinessCardList();
+		List<BusinessCardVO>list = businessCardService.selectBusinessCardList();
 		return list;
 	}
 	@RequestMapping(value = "/createBusinessCard", method = RequestMethod.POST)

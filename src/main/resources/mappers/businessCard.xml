@@ -4,8 +4,8 @@
 <mapper namespace="com.infosiatec.mapper.BusinessCardMapper">
 
 	<insert id="insertBusinessCard" parameterType="string">
-		INSERT INTO businesscard (id, fileName, isDelete)
-		VALUES ( #{id}, #{fileName}, FALSE )
+		INSERT INTO businesscard (id, fileName, isDelete, thumbnailPath, jsonPath, pngPath)
+		VALUES ( #{id}, #{fileName}, FALSE, #{thumbnailPath}, #{jsonPath}, #{pngPath} )
 	</insert>
 	
 	<select id="selectFileName" parameterType="com.infosiatec.domain.BusinessCardVO" resultType="string">

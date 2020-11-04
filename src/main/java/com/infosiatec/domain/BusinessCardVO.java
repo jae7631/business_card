@@ -8,7 +8,8 @@ public class BusinessCardVO {
 	private String id;
 	private int idx;
 	private String fileName;
-	private String img;
-	private String thumbnails;
-	
+	private boolean isDelete;
+	private String thumbnailPath;
+	private String jsonPath;
+	private String pngPath;
 }

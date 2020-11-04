@@ -2,6 +2,7 @@ package com.infosiatec.service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,41 +52,44 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		if (!(CommonFileCreate.jsonCreate(jsonData,jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		mapper.insertBusinessCard(id, fileName);
-		CommonFileCreate.resize(pngPath,fileName);
+		String thumbPath = CommonFileCreate.resize(pngPath,fileName);
+		mapper.insertBusinessCard(id, fileName,thumbPath, jsonPath, pngPath);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
 	public String selectBusinessCard(String id, int idx) {
 		String fileName = mapper.selectFileName(id, idx);
-		String filePath = FILE_PATH + fileName + FILE_EXTENSION;
+		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator) + fileName + FILE_EXTENSION;
 		String jsonData = new String();
 		try {
-			jsonData = CommonFileRead.fileRead(filePath);
+			jsonData = CommonFileRead.fileRead(jsonPath);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return jsonData;
 	};
-
-	public Map<Integer, String> selectBusinessCardList() {
-		Map<Integer, String> map = new HashMap<Integer, String>();
+	
+	public List<BusinessCardVO> selectBusinessCardList() {
 		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
+		List<BusinessCardVO>selectList = new ArrayList<BusinessCardVO>();
 		if (businessCardList != null) {
 			for (BusinessCardVO vo : businessCardList) {
-				String filePath = FILE_PATH + vo.getFileName() + FILE_EXTENSION;
+				String jsonPath = vo.getJsonPath().substring(vo.getJsonPath().lastIndexOf("jsonData\\"));
+				vo.setJsonPath(jsonPath);
+				String thumbnailPath = vo.getThumbnailPath().substring(vo.getThumbnailPath().lastIndexOf("thumb\\"));
+				vo.setThumbnailPath(thumbnailPath);
+				String pngPath = vo.getPngPath().substring(vo.getPngPath().lastIndexOf("pngData\\"));
+				vo.setPngPath(pngPath);
 				try {
-					// map.put(vo.getIdx(), CommonFileRead.fileRead(filePath));
-					map.put(vo.getIdx(), vo.getId());
+					selectList.add(vo);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(map);
+			System.out.println(selectList);
 		}
-		return map;
+		return selectList;
 	}
-
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
 		String filePath = FILE_PATH + id + "-" + idx + FILE_EXTENSION;
 		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {

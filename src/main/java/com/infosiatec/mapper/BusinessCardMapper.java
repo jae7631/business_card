@@ -10,7 +10,8 @@ import com.infosiatec.domain.BusinessCardVO;
 @Mapper
 public interface BusinessCardMapper {
 	
-	void insertBusinessCard(@Param("id") String id, @Param("fileName") String fileName);
+	void insertBusinessCard(@Param("id") String id, @Param("fileName") String fileName,
+			@Param("thumbnailPath")String thumbnailPath, @Param("jsonPath")String jsonPath, @Param("pngPath")String pngPath);
 	String selectFileName(@Param("id") String id, @Param("idx") int idx);
 	List<BusinessCardVO> selectBusinessCardList();
 	List<BusinessCardVO> searchBusinessCard(@Param("keyword")String keyword, @Param("searchType")String searchType);

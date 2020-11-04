@@ -7,19 +7,6 @@ function createBusinessCard(fileName, jsonData, imgData) {
 		method: "POST",
         dataType: "text",
         success: function (data) {
-            /*this.href = canvas.toDataURL({
-                format: 'png',
-                multiplier: 4
-            });*/
-/*			var d = new Date();
-			var currentDate = d.toLocaleString('en-US')
-            const link = document.createElement('a');
-            link.download = fileName + currentDate + '.png';
-            link.href = this.href;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            document.getElementById('fileName').value = ''*/
             alert("success");
             $('#modal2').modal('hide');
         },
@@ -27,20 +14,6 @@ function createBusinessCard(fileName, jsonData, imgData) {
             alert("code:" + request.status + "\n" + "message:" + request.responseText + "\n" + "error:" + error);
         }
     });
-}
-
-
-/** test */
-function testf(fileName, jsonData){
-	$.ajax({
-		url : "/createFile",
-		data : {fileName : fileName, jsonData : jsonData},
-		method : "POST",
-		dataType : "text",
-		success : function(data){
-			alert("success");
-		}
-	})
 }
 
 /** load List */
@@ -52,22 +25,22 @@ function loadBusinessCardList(canvas){
         method: "POST",
         dataType: "json",
         success: function (data) {
+			console.log(data);
         	var output = "";
-
-        	$.each(data, function(idx, val) {
-    			output += "<tr id= 'table_row" + idx + "'";
+			for(var i = 0 in data){
+				output += "<tr id= 'table_row" + data[i].idx + "'";
     			output += "class='trow'"+">";
 				output += "<td class='align-middle txt_center del_chk'><input type='checkbox' name='chk'></td>"
 				output += "<td class='align-middle txt_center idx'>";
-				output += idx;
+				output += data[i].idx;
 				output += "</td>";
-				output += "<td class='align-middle'>" + "<canvas class='thumbnailCanvas' id = thumbnail-area";
-				output += idx + ">" + "</canvas>" + "</td>";
+				output += "<td class='align-middle'><img src='";
+				output += data[i].thumbnailPath + "' style='width:80%;height:45%; border:1px solid black;'>" + "</td>";
 				output += "<td class='align-middle file_txt'>";
-				output += val;
+				output += data[i].id;
 				output += "</td>";
-				output +="</tr>";				
-        	});       		   
+				output +="</tr>";
+			}     	
         	$("#listBody").html(output);
         	
 			// Set Pagnation
@@ -88,19 +61,6 @@ function loadBusinessCardList(canvas){
                 }
             });
         	         
-        	// Set Namecard thumbnails Size
-				$.each(data, function(idx, val){
-			    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
-			    	fabric.Object.prototype.transparentCorners = false;
-				    thumbnail.setHeight(300);
-    				thumbnail.setWidth(450);
-    		  		thumbnail.setZoom(0.4);
-            		thumbnail.setWidth(thumbnail.getWidth() * thumbnail.getZoom());
-            		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
-
-					//call thumbnails function
-					loadThumbnail(idx,val,thumbnail);
-				})
 			
 			
 			// load Namecard to canvas

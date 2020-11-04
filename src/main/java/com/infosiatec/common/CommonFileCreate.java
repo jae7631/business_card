@@ -46,7 +46,7 @@ public class CommonFileCreate {
 		return true;
 	}
 	
-	public static void resize(String pngPath, String fileName) throws Exception {
+	public static String resize(String pngPath, String fileName) throws Exception {
 		// Original image
 		System.out.println(pngPath);
 		// thumb img
@@ -83,6 +83,7 @@ public class CommonFileCreate {
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
+		return thumbPath;
 	}
 	
 	public static boolean fileOverwrite(String filePath, String jsonData) {
