@@ -619,5 +619,4 @@ $(document).ready(function () {
 	    }
 	  };
 	}
-	
 });

@@ -120,6 +120,7 @@ function deleteNamecard(checkList){
 }
 
 /** load Thumbnail*/
+/*
 function loadThumbnail(idx, val, thumbnail){
 	$.ajax({
 		url : "/selectBusinessCard",
@@ -135,7 +136,7 @@ function loadThumbnail(idx, val, thumbnail){
 		}
 	});	
 }
-
+*/
 
 
 /** update namecard */
@@ -186,6 +187,7 @@ function searchBusinessCard(keyword, searchType){
         	$("#listBody").html(output);
 
 			// Set Namecard thumbnails Size
+			/*
 			$.each(data, function(idx, val){
 		    var thumbnail = new fabric.Canvas('thumbnail-area' + idx);
 		    	fabric.Object.prototype.transparentCorners = false;
@@ -196,7 +198,7 @@ function searchBusinessCard(keyword, searchType){
         		thumbnail.setHeight(thumbnail.getHeight() * thumbnail.getZoom());
 				//call thumbnails function
 				loadThumbnail(idx,val,thumbnail);
-			})
+			})*/
 			
 			// load Namecard to canvas
 			$(".file_txt").on("click",function(){
