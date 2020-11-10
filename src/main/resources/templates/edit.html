@@ -1,3 +1,332 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="/js/editAjax.js"></script>
+    <script src="/js/jquery.simplePagination.js"></script>
+  	<link rel="stylesheet" type="text/css" href="/css/simplePagination.css">
+  	<link rel="stylesheet" type="text/css" href="/css/main.css">    
+    
+  <title>Main</title>
+</head>
+
+<body>
+
+  <!--content wrapper-->
+  <div id="content-wrapper" class="d-flex flex-column">
+    <!--header-->
+    <nav class="navbar navbar-expand navbar-dark bg-dark topbar mb-4 static-top shadow">
+      <ul class="navbar-nav">
+        <li class="navbar-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="navbar-item active"><a class="nav-link" href="/create">Create</a></li>
+      </ul>
+    </nav>
+    <!-- //header-->
+
+    <!--container-->
+    <div class="container">
+ 
+     
+    <!-- modal 1-->
+      <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="modal1">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Load NameCard</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+              
+            </div>
+            <div class="modal-body">
+
+			<table class='table' id='namecardTable'>
+				<thead>
+					<tr>
+						<th scope='col' class='tb_tit' style="width:10%"><input type="checkbox" id="checkAll"></th>
+						<th scope='col' class='tb_tit align-middle' style="width:10%">Idx</th>
+						<th scope='col' class='tb_tit align-middle' style="width:20%"></th>
+						<th scope='col' class='tb_tit_fileName align-middle' style="width:50%">Title</th>
+					</tr>
+				</thead>
+				<tbody id="listBody">
+					<tr class="trow" th:each="loadList, i:${loadList}">
+						<td class="align-middle txt_center del_chk"><input type='checkbox' name='chk'></td>
+						<td class="align-middle txt_center idx" th:text="${loadList.idx}"</td>
+						<td class="align-middle"><img th:src="@{${'/thumb/' + loadList.fileName +'_'+ 'thumb' + '.png'}}"
+						style="width:80%; height:45%; border:1px solid black;"></td>
+						<td class="align-middle file_txt" th:text="${loadList.id}"></td>
+					</tr>	
+				</tbody>
+			</table>
+            </div>
+            <div class="modal-footer">
+            	<div class="container-fluid">
+            		<div class="row mb-3">
+            			<div class="col-sm-2"><button class="btn btn-outline-danger" id="btn_del">削除</button></div>
+            			<div class="col-sm-8">
+            				<div class="input-group">
+								<div class="input-group-append">
+								    <select class="form-control" id="searchType">
+								    	<option value="title">Title</option>
+								    	<option value="idx">Idx</option>
+								    </select>
+								 </div>
+					  
+								 <input type="text" class="form-control" id="keyword" placeholder="入力してください">
+								 <div class="input-group-append">
+								 	<button class="btn btn-primary" id="namecardSearch">検索</button>
+								 </div>
+							</div>
+            			</div>
+            			<div class="col-sm-2"><button class="btn btn-outline-primary" id="btn_back" style="float:right">戻る</button></div> 
+            		</div>
+            		            	            
+            		<div class="row">
+            			<div class="col-sm-12">
+            				<div id="pagination-container"></div>	
+            			</div>
+            		</div>		
+            	</div>			
+			</div>
+    	</div>
+       </div>
+     </div>
+     <!-- // modal 1 -->
+      
+
+      <!-- modal 2-->
+      <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="modal2">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Save NameCard</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="container-fluid">
+              	<form class="row">
+	               <div class="col-sm-2 align-self-center"><label>File Name</label></div>
+	               <div class="col-sm-7"><input type="text" class="form-control" id="fileName" placeholder="please write fileName"></div>
+	               <div class="col-sm-3"><submit class="btn btn-outline-primary btn-block" id="createBusinessCard">save</button></div>
+	            </form>   
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--//modal 2-->
+
+      <!--Page header-->
+      <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Page</h1>
+      </div>
+      <!--//Page header-->
+
+      <!-- row -->
+      <div class="row my-1">
+        <!-- main content-->
+        <div class="col-sm-12">
+          <!-- shadow-->
+          <div class="card shadow mb-2 text-left" style="margin: 2vh auto auto;">
+            <!-- main content Title-->
+            <div class="card-header py-3 d-flex flex-row align-items-center justify-content-end">
+              <div class="col-sm-1"><label>grid size</label></div>
+              <div class="col-sm-1"><input type="number" class="form-control" value = "10" min="0" max="100" id="gridSize"></div>
+              <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on"
+                  id="gridBtn">gridOn</button></div>
+              <div class="col-sm-2"><button class="btn btn-outline-primary btn-block" id="size_modify">たて</button>
+              </div>
+              <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="imageAdd"
+                  style="margin:0;">イメージ追加<input type="file" id="imgFile" hidden></label></div>
+              <div class="col-sm-2"><label class="btn btn-outline-primary btn-block" id="bgAdd"
+                  style="margin:0;">背景追加<input type="file" id="bgFile" hidden></label></div>
+                  <div class="col-sm-2"><button class="btn btn-outline-primary btn-block grid-on"
+                    id="bgDel">背景削除</button></div>
+            </div>
+            
+            <!-- //main content Title-->
+
+            <!-- main content body-->
+            <div class="row card-body">
+              <!-- input Form-->
+
+              <!-- canvas Area-->
+              <div class="col-sm-6">
+                <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 1vh auto auto;">
+                  <div class="card-body" style="height: 500px; background: #f3f3f3;">
+                    <canvas id="canvas-area"></canvas>
+                  </div>
+                </div>
+              </div>
+              <!-- //canvas Area-->
+
+              <!-- canvas attribute Area-->
+              <div class="col-sm-6">
+                <div class="card shadow mb-2 text-left" style="max-width:40rem; margin: 1vh auto auto;">
+                  <div class="card-body" style="height: 500px;">
+                    <div class="container-fluid">
+                      <div class="row my-1 py-2">
+                      	<div class="col-sm-12"><button class="btn btn-outline-primary btn-block" id="add-text-btn">テキスト追加</button></div>
+                      	</div>
+                      <div class="row my-1 py-2">
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-rect-btn">四角形追加</button></div>
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-tri-btn">三角形追加</button></div>
+                      	<div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="add-cir-btn">円形追加</button></div>
+                      </div>    
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-2"><label for="font-family">Font</label></div>
+                        <div class="col-sm-4">
+                          <select id="font-family" class="form-control">
+                            <option value="Times New Roman">Times New Roman</option>
+                            <option value="arial">Arial</option>
+                            <option value="helvetica" selected>Helvetica</option>
+                            <option value="myriad pro">Myriad Pro</option>
+                            <option value="delicious">Delicious</option>
+                            <option value="verdana">Verdana</option>
+                            <option value="georgia">Georgia</option>
+                            <option value="courier">Courier</option>
+                            <option value="comic sans ms">Comic Sans MS</option>
+                            <option value="impact">Impact</option>
+                            <option value="monaco">Monaco</option>
+                            <option value="optima">Optima</option>
+                            <option value="hoefler text">Hoefler Text</option>
+                            <option value="plaster">Plaster</option>
+                            <option value="engagement">Engagement</option>
+                            <option value="sans-serif">sans-serif</option>
+                            <option value="serif">serif</option>
+                            <option value="cursive">cursive</option>
+                            <option value="fantasy">fantasy</option>
+                            <option value="monospace">monospace</option>
+                            <option value="HiraginoSans-W0">HiraginoSans-W0</option>
+                            <option value="Hiragino Sans">Hiragino Sans</option>
+                            <option value="Hiragino Maru Gothic ProN">Hiragino Maru Gothic ProN</option>
+                            <option value="YuGothic">YuGothic</option>
+                            <option value="YuMincho">YuMincho</option>
+                            <option value="YuKyokasho">YuKyokasho</option>
+                            <option value="YuKyokasho Yoko">YuKyokasho Yoko</option>
+                            <option value="Klee">Klee</option>
+                            <option value="Tsukushi A Round Gothic">Tsukushi A Round Gothic</option>
+                            <option value="Tsukushi B Round Gothic">Tsukushi B Round Gothic</option>
+                            <option value="Toppan Bunkyu Gothic">Toppan Bunkyu Gothic</option>
+                            <option value="Toppan Bunkyu Midashi Gothic">Toppan Bunkyu Midashi Gothic</option>
+                            <option value="Toppan Bunkyu Mincho">Toppan Bunkyu Mincho</option>
+                            <option value="Toppan Bunkyu Midashi Mincho">Toppan Bunkyu Midashi Mincho</option>
+                            <option value="Meiryo">Meiryo</option>
+                            <option value="Meiryo UI">Meiryo UI</option>
+                            <option value="Yu Gothic">Yu Gothic</option>
+                            <option value="Yu Mincho">Yu Mincho</option>
+                            <option value="BIZ UDPGothic">BIZ UDPGothic</option>
+                            <option value="BIZ UDGothic">BIZ UDGothic</option>
+                            <option value="BIZ UDPMincho">BIZ UDPMincho</option>
+                            <option value="UD Digi Kyokasho N-R">UD Digi Kyokasho N-R</option>
+                            <option value="UD Digi Kyokasho N-B">UD Digi Kyokasho N-B</option>
+                            <option value="UD Digi Kyokasho NP-R">UD Digi Kyokasho NP-R</option>
+                            <option value="UD Digi Kyokasho NP-B">UD Digi Kyokasho NP-B</option>
+                            <option value="UD Digi Kyokasho NK-R">UD Digi Kyokasho NK-R</option>
+                            <option value="UD Digi Kyokasho NK-B">UD Digi Kyokasho NK-B</option>
+                            <option value="MS UI Gothic">MS UI Gothic</option>
+                            <option value="MS PGothic">MS PGothic</option>
+                            <option value="MS Gothic">MS Gothic</option>
+                            <option value="MS PMincho">MS PMincho</option>
+                            <option value="MS Mincho">MS Mincho</option>
+                          </select>
+                        </div>
+                        <div class="col-sm-3"><label for="text-font-size">Font size</label></div>
+                        <div class="col-sm-3"><input type="number" min="1" max="120" step="1" id="text-font-size"
+                            class="form-control"></div>
+                      </div>
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-3"><label for="text-color">背景色</label></div>
+                        <div class="col-sm-3">
+                          <input id="text-color" class="form-control form-control-sm" type="color">
+                        </div>
+
+                        <div class="col-sm-3"><label for="text-bg-color">文字背景色</label></div>
+                        <div class="col-sm-3"><input type="color" class="form-control form-control-sm"
+                            id="text-bg-color"></div>
+                      </div>
+
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-3"><label for="text-stroke-width">Stroke width</label></div>
+                        <div class="col-sm-3"><input type="range" class="form-control-range" id="text-stroke-width"
+                            value="0" min="0" max="5"></div>
+                        <div class="col-sm-3"><label for="text-stroke-color">Stroke color</label></div>
+                        <div class="col-sm-3"><input type="color" class="form-control form-control-sm"
+                            id="text-stroke-color"></div>
+                      </div>
+
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-3"><label for="text-line-height">行間</label></div>
+                        <div class="col-sm-3"><input type="number" min="0" max="1.5" step="0.1" id="text-line-height" class="form-control"></div>
+                        <div class="col-sm-3"><label for="font-family">Align</label></div>
+                        <div class="col-sm-3">
+                          <select id ="text-align" class="form-control">
+                            <option value="left">left</option>
+                            <option value="center">center</option>
+                            <option value="right">right</option>
+                            <option value="justify">justify</option>
+                          </select>
+                        </div>
+                      </div>
+                      
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-1"><label for="text-cmd-bold">Bold</label></div>
+                        <div class="col-sm-3"><input type="checkbox" class="form-control-checkbox" id="text-cmd-bold"
+                            name="fontType" value="bold"></div>
+
+                        <div class="col-sm-1"><label for="text-cmd-italic">Italic</label></div>
+                        <div class="col-sm-3"><input type="checkbox" class="form-control-checkbox" id="text-cmd-italic"
+                            name="fontType" value="italic"></div>
+                        
+                        <div class="col-sm-2"><label for="text-cmd-underline">Underline</label></div>
+                        <div class="col-sm-2"><input type="checkbox" class="form-control-checkbox"
+                            id="text-cmd-underline" name="u" value="underline"></div>
+                      </div>	
+
+                      <div class="row my-1 py-2">
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="load" data-toggle="modal" data-target="loadData" onclick="/">開く</button>
+                        </div>
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="update" data-toggle="modal2" data-target="saveData">修正</button>
+                        </div>
+                        <div class="col-sm-4"><button class="btn btn-outline-primary btn-block" id="save" data-toggle="modal2" data-target="saveData">保存</button>
+                        </div>
+                      </div>
+                      
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <!-- //canvas attribute Area-->
+          </div>
+          <!-- //main content body-->
+        </div>
+        <!-- //shadow-->
+      </div>
+      <!-- //main content-->
+    </div>
+    <!-- //row-->
+  </div>
+  <!-- //container-->
+</body>
+
+
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.js"></script>
+</html>
+
+<script th:inline="javascript">
+/*<![CDATA[*/
 $(document).ready(function () {
 	/** Create Canvas */
     fabric.Object.prototype.transparentCorners = false;
@@ -8,6 +337,11 @@ $(document).ready(function () {
     canvas.setWidth(450);
     //デフォルトサイズ
     $('.canvas-container').addClass('yoko');
+    var data = [[${loadData}]]
+	canvas.clear();
+	canvas.loadFromJSON(data,function(){
+		canvas.renderAll();
+	})
 
     /** change fontScale to fontSize */
     $('#text-font-size').keyup(function () {
@@ -282,36 +616,9 @@ $(document).ready(function () {
     
     /** call BusinessCardList Modal */
     $('#load').on("click", function () {
-        $('#modal1').modal('show'); 
+        $('#modal1').modal('show');
+        
     });
-    
-    /** Set Pagnation */
-	var items = $("#listBody .trow");
-	var numItems = items.length;
-	var perPage = 4;         	
-	items.slice(perPage).hide();
-	$("#pagination-container").pagination({
-        items: numItems,
-        itemsOnPage: perPage,
-        prevText: "&laquo;",
-        nextText: "&raquo;",
-        cssStyle: "light-theme",
-        onPageClick: function (pageNumber) {
-            var showFrom = perPage * (pageNumber - 1);
-            var showTo = showFrom + perPage;
-            items.hide().slice(showFrom, showTo).show();
-        }
-    });
-	
-	// load Namecard to canvas
-	$(".file_txt").on("click",function(){
-		var tr = $(this).parent();
-		var val = tr.children().eq(3).text();
-		var idx = tr.children().eq(1).text();
-		if(confirm(val + "を読み込みますか？")){
-		loadBusinessCard(idx,val,canvas);	
-		}					
-	})	
 
     /** Check All BusinessCardList*/
 	$("#checkAll").on("click",function(){
@@ -336,8 +643,9 @@ $(document).ready(function () {
 			})
 			deleteNamecard(checkList);
 		}
-	})
-	/*
+	})	
+
+	/** search BusinessCard */
 	$("#namecardSearch").on("click",function(){
 		var keyword = $("#keyword").val();
 		var searchType = $("#searchType").val();
@@ -345,8 +653,8 @@ $(document).ready(function () {
 			alert("キーワードを入力してください。");
 			return false;
 		}
-		loadSearchResult(keyword,searchType);
-	});*/
+		searchBusinessCard(keyword, searchType);
+	});
 	
 	/** close BusinessCardList Modal*/
 	$("#btn_back").on("click",function(){
@@ -645,4 +953,24 @@ $(document).ready(function () {
 	    }
 	  };
 	}
+	
+	var items = $("#listBody .trow");
+	var numItems = items.length;
+	var perPage = 4;         	
+	items.slice(perPage).hide();
+	$("#pagination-container").pagination({
+        items: numItems,
+        itemsOnPage: perPage,
+        prevText: "&laquo;",
+        nextText: "&raquo;",
+        cssStyle: "light-theme",
+        onPageClick: function (pageNumber) {
+            var showFrom = perPage * (pageNumber - 1);
+            var showTo = showFrom + perPage;
+            items.hide().slice(showFrom, showTo).show();
+        }
+    });
 });
+/*]]>*/
+</script>
+	    

@@ -1,0 +1,13 @@
+
+
+<th:block th:fragment="loadList">
+<tr class="trow" th:each="loadList:${loadList}" th:if="${loadList != null}">
+	<td class="align-middle txt_center del_chk"><input type='checkbox'
+		name='chk'></td>
+	<td class="align-middle txt_center idx" th:text="${loadList.idx}"</td>
+	<td class="align-middle"><img
+		th:src="@{${'/thumb/' + loadList.fileName +'_'+ 'thumb' + '.png'}}"
+		style="width: 80%; height: 45%; border: 1px solid black;"></td>
+	<td class="align-middle file_txt" th:text="${loadList.id}"></td>
+</tr>
+</th:block>

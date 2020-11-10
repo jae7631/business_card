@@ -2,6 +2,9 @@ package com.infosiatec.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,5 +18,5 @@ public interface BusinessCardService {
 	public List<BusinessCardVO> selectBusinessCardList();
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData);
 	public ResponseEntity<String> deleteBusinessCard(String[]  idx);
-	public Map<Integer, String> searchBusinessCardList(String keyword, String searchType);
+	public List<BusinessCardVO> searchBusinessCardList(String keyword, String searchType);
 }

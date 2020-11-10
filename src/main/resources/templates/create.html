@@ -8,11 +8,11 @@
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/spectrum/1.8.0/spectrum.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="js/main.js"></script>
-    <script src="js/ajax.js"></script>
-    <script src="js/jquery.simplePagination.js"></script>
-  	<link rel="stylesheet" type="text/css" href="css/simplePagination.css">
-  	<link rel="stylesheet" type="text/css" href="css/main.css">
+    <script src="/js/main.js"></script>
+    <script src="/js/ajax.js"></script>
+    <script src="/js/jquery.simplePagination.js"></script>
+  	<link rel="stylesheet" type="text/css" href="/css/simplePagination.css">
+  	<link rel="stylesheet" type="text/css" href="/css/main.css">
   <title>Main</title>
 </head>
 
@@ -36,7 +36,7 @@
     <!-- modal 1-->
       <div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myExtraLargeModalLabel" aria-hidden="true" id="modal1">
         <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-xl">
-          <div class="modal-content">
+          <form class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="exampleModalLabel">Load NameCard</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
@@ -54,12 +54,19 @@
 						<th scope='col' class='tb_tit align-middle' style="width:20%"></th>
 						<th scope='col' class='tb_tit_fileName align-middle' style="width:50%">Title</th>
 					</tr>
+				
 				</thead>
 				<tbody id="listBody">
+					<!-- <tr th:fragment="fragmentName"></tr> -->
+					<!-- fragment -->
+						  <tr th:replace="fragments/boardList">
+						</tr>
+					<!-- //	fragment -->
+						
 				</tbody>
 			</table>
-            </div>
-            <div class="modal-footer">
+			</div>
+		<div class="modal-footer">
             	<div class="container-fluid">
             		<div class="row mb-3">
             			<div class="col-sm-2"><button class="btn btn-outline-danger" id="btn_del">削除</button></div>
@@ -74,7 +81,7 @@
 					  
 								 <input type="text" class="form-control" id="keyword" placeholder="入力してください">
 								 <div class="input-group-append">
-								 	<button class="btn btn-primary" id="namecardSearch">検索</button>
+								 	<button class="btn btn-primary" id="namecardSearch" onclick="loadSearchResult()">検索</button>
 								 </div>
 							</div>
             			</div>
@@ -88,9 +95,10 @@
             		</div>		
             	</div>			
 			</div>
-    	</div>
+    	</form>
        </div>
      </div>
+			
      <!-- // modal 1 -->
       
 
@@ -122,9 +130,11 @@
       <div class="d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0 text-gray-800">Create Page</h1>
       </div>
+      <div id="resultblock"></div>
       <!--//Page header-->
 
       <!-- row -->
+     
       <div class="row my-1">
         <!-- main content-->
         <div class="col-sm-12">
@@ -312,10 +322,18 @@
     <!-- //row-->
   </div>
   <!-- //container-->
-
-
-
 </body>
+
+<script th:inline="javascript">
+function loadSearchResult(keyword,searchType){
+	var url = "test2";
+ 	if($("#keyword").val() !=''){
+ 		url = url +'/' + $("#keyword").val()+ '/' + $("#searchType").val();
+ 	}
+	$("#resultblock").load(url);
+}
+</script>
+
 
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>

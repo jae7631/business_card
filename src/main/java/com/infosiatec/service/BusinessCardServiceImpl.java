@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -40,20 +42,20 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return mapper.selectMaxIdx() + 1;
 	}
 
-	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) throws Exception{
- 		Integer idx = getNextIdx();
+	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) throws Exception {
+		Integer idx = getNextIdx();
 		String fileName = id + "-" + idx;
 		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator);
 		String pngPath = c.getRealPath("/").concat("pngData").concat(File.separator);
-		
-		jsonPath = CommonFileCreate.existJson(fileName,jsonPath);
-		pngPath = CommonFileCreate.existPng(fileName,pngPath);
 
-		if (!(CommonFileCreate.jsonCreate(jsonData,jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
+		jsonPath = CommonFileCreate.existJson(fileName, jsonPath);
+		pngPath = CommonFileCreate.existPng(fileName, pngPath);
+
+		if (!(CommonFileCreate.jsonCreate(jsonData, jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		String thumbPath = CommonFileCreate.resize(pngPath,fileName);
-		mapper.insertBusinessCard(id, fileName,thumbPath, jsonPath, pngPath);
+		String thumbPath = CommonFileCreate.resize(pngPath, fileName);
+		mapper.insertBusinessCard(id, fileName, thumbPath, jsonPath, pngPath);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
@@ -68,17 +70,21 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		}
 		return jsonData;
 	};
-	
+
 	public List<BusinessCardVO> selectBusinessCardList() {
 		List<BusinessCardVO> businessCardList = mapper.selectBusinessCardList();
-		List<BusinessCardVO>selectList = new ArrayList<BusinessCardVO>();
+		List<BusinessCardVO> selectList = new ArrayList<BusinessCardVO>();
+		String jsonPath = new String();
+		String pngPath = new String();
+		String thumbnailPath = new String();
+
 		if (businessCardList != null) {
 			for (BusinessCardVO vo : businessCardList) {
-				String jsonPath = vo.getJsonPath().substring(vo.getJsonPath().lastIndexOf("jsonData\\"));
+				jsonPath = vo.getJsonPath().substring(vo.getJsonPath().lastIndexOf("jsonData\\"));
+				thumbnailPath = vo.getThumbnailPath().substring(vo.getThumbnailPath().lastIndexOf("thumb\\"));
+				pngPath = vo.getPngPath().substring(vo.getPngPath().lastIndexOf("pngData\\"));
 				vo.setJsonPath(jsonPath);
-				String thumbnailPath = vo.getThumbnailPath().substring(vo.getThumbnailPath().lastIndexOf("thumb\\"));
 				vo.setThumbnailPath(thumbnailPath);
-				String pngPath = vo.getPngPath().substring(vo.getPngPath().lastIndexOf("pngData\\"));
 				vo.setPngPath(pngPath);
 				try {
 					selectList.add(vo);
@@ -90,6 +96,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		}
 		return selectList;
 	}
+
 	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
 		String filePath = FILE_PATH + id + "-" + idx + FILE_EXTENSION;
 		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
@@ -104,20 +111,30 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	}
 
 	@Override
-	public Map<Integer, String> searchBusinessCardList(String keyword, String searchType) {
-		Map<Integer, String> map = new HashMap<Integer, String>();
-		List<BusinessCardVO> resultList = mapper.searchBusinessCard(keyword, searchType);
-		if (resultList != null) {
-			for (BusinessCardVO vo : resultList) {
+	public List<BusinessCardVO> searchBusinessCardList(String keyword, String searchType) {
+		List<BusinessCardVO> searchList = mapper.searchBusinessCard(keyword, searchType);
+		List<BusinessCardVO> resultList = new ArrayList<BusinessCardVO>();
+		String jsonPath = new String();
+		String pngPath = new String();
+		String thumbnailPath = new String();
+
+		if (searchList != null) {
+			for (BusinessCardVO vo : searchList) {
+				jsonPath = vo.getJsonPath().substring(vo.getJsonPath().lastIndexOf("jsonData\\"));
+				thumbnailPath = vo.getThumbnailPath().substring(vo.getThumbnailPath().lastIndexOf("thumb\\"));
+				pngPath = vo.getPngPath().substring(vo.getPngPath().lastIndexOf("pngData\\"));
+				vo.setJsonPath(jsonPath);
+				vo.setThumbnailPath(thumbnailPath);
+				vo.setPngPath(pngPath);
 				try {
-					map.put(vo.getIdx(), vo.getId());
+					resultList.add(vo);
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
 			}
-			System.out.println(map);
+			System.out.println(resultList);
 		}
-		return map;
+		return resultList;
+		
 	}
-
 }
