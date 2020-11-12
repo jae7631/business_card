@@ -31,6 +31,7 @@ public class CommonFileCreate {
 		return true;
 	}
 	
+	
 	public static boolean pngCreate(String imgData, String pngPath) {
 		String data = imgData.replaceAll(BASE_64_PREFIX,"");
 		byte[] png = Base64.decodeBase64(data.getBytes());
@@ -93,6 +94,21 @@ public class CommonFileCreate {
 			file.flush();
 			file.close();
 		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
+	}
+	
+	public static boolean pngOverwrite(String pngPath, String imgData) {
+		String data = imgData.replaceAll(BASE_64_PREFIX,"");
+		byte[] png = Base64.decodeBase64(data.getBytes());
+		try {
+			FileOutputStream fos = new FileOutputStream(new File(pngPath));
+			fos.write(png);
+			fos.flush();
+			fos.close();
+		}catch(Exception e) {
 			e.printStackTrace();
 			return false;
 		}

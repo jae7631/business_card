@@ -283,26 +283,9 @@ $(document).ready(function () {
     /** call BusinessCardList Modal */
     $('#load').on("click", function () {
         $('#modal1').modal('show'); 
+        loadBusinessCardList(canvas);
     });
-    
-    /** Set Pagnation */
-	var items = $("#listBody .trow");
-	var numItems = items.length;
-	var perPage = 4;         	
-	items.slice(perPage).hide();
-	$("#pagination-container").pagination({
-        items: numItems,
-        itemsOnPage: perPage,
-        prevText: "&laquo;",
-        nextText: "&raquo;",
-        cssStyle: "light-theme",
-        onPageClick: function (pageNumber) {
-            var showFrom = perPage * (pageNumber - 1);
-            var showTo = showFrom + perPage;
-            items.hide().slice(showFrom, showTo).show();
-        }
-    });
-	
+
 	// load Namecard to canvas
 	$(".file_txt").on("click",function(){
 		var tr = $(this).parent();
@@ -337,7 +320,7 @@ $(document).ready(function () {
 			deleteNamecard(checkList);
 		}
 	})
-	/*
+	
 	$("#namecardSearch").on("click",function(){
 		var keyword = $("#keyword").val();
 		var searchType = $("#searchType").val();
@@ -345,8 +328,8 @@ $(document).ready(function () {
 			alert("キーワードを入力してください。");
 			return false;
 		}
-		loadSearchResult(keyword,searchType);
-	});*/
+		searchBusinessCard(keyword,searchType,canvas);
+	});
 	
 	/** close BusinessCardList Modal*/
 	$("#btn_back").on("click",function(){

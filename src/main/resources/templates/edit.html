@@ -66,22 +66,23 @@
 				</tbody>
 			</table>
             </div>
-            <div class="modal-footer">
+            <form class="modal-footer" action="/searchBusinessCard2" method="get">
             	<div class="container-fluid">
             		<div class="row mb-3">
             			<div class="col-sm-2"><button class="btn btn-outline-danger" id="btn_del">削除</button></div>
             			<div class="col-sm-8">
             				<div class="input-group">
 								<div class="input-group-append">
-								    <select class="form-control" id="searchType">
+								    <select class="form-control" id="searchType" name="searchType">
 								    	<option value="title">Title</option>
 								    	<option value="idx">Idx</option>
 								    </select>
 								 </div>
 					  
-								 <input type="text" class="form-control" id="keyword" placeholder="入力してください">
+								 <input type="text" class="form-control" id="keyword" placeholder="入力してください" name="keyword">
 								 <div class="input-group-append">
-								 	<button class="btn btn-primary" id="namecardSearch">検索</button>
+								 	<!-- <button class="btn btn-primary" id="namecardSearch">検索</button> -->
+								 	<input type="submit" class="btn btn-primary" id="namecardSearch" value="検索">
 								 </div>
 							</div>
             			</div>
@@ -94,7 +95,7 @@
             			</div>
             		</div>		
             	</div>			
-			</div>
+			</form>
     	</div>
        </div>
      </div>
@@ -646,6 +647,18 @@ $(document).ready(function () {
 	})	
 
 	/** search BusinessCard */
+	$("#namecardSearch").submit(function(event){
+		var keyword = $("#keyword").val();
+		var searchType = $("#searchType").val();
+		if(keyword === ""||null){
+			alert("キーワードを入力してください。");
+			return false;
+		}
+		location.href="/searchBusinesscard2";
+		event.preventDefault();
+	})
+	
+	/**
 	$("#namecardSearch").on("click",function(){
 		var keyword = $("#keyword").val();
 		var searchType = $("#searchType").val();
@@ -653,8 +666,10 @@ $(document).ready(function () {
 			alert("キーワードを入力してください。");
 			return false;
 		}
-		searchBusinessCard(keyword, searchType);
-	});
+		//searchBusinessCard(keyword, searchType);
+		
+		location.href = "/searchBusinessCard2";
+	});*//
 	
 	/** close BusinessCardList Modal*/
 	$("#btn_back").on("click",function(){

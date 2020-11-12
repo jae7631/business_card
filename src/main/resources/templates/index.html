@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.3/fabric.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <!-- <script src="/js/main.js"></script> -->
+  <!--   <script src="/js/main.js"></script> -->
     <script src="js/jquery.simplePagination.js"></script>
   	<link rel="stylesheet" type="text/css" href="css/simplePagination.css">
   	<link rel="stylesheet" type="text/css" href="css/main.css">
@@ -45,7 +45,7 @@
               <input type="hidden" id ="hid" th:value="${list.idx}">
               <div class="d-flex justify-content-between align-items-center">
                 <div class="btn-group">
-                  <a id="edit" class="btn btn-outline-primary btn-block edit" th:href="@{/load/{id}/{idx}(id=${list.id},idx=${list.idx})}">edit</a><!-- th:href="@{/load/{id}/{idx}(id=${list.id},idx=${list.idx})}" -->
+                  <a id="edit" class="btn btn-outline-primary btn-block edit" th:href="@{/load/(id=${list.id},idx=${list.idx})}">edit</a> <!-- th:href="@{/load/(id=${list.id},idx=${list.idx})}" -->
                 </div>
               </div>
             </div>
@@ -72,29 +72,7 @@
   </div>
 </footer>
 </body>
-<script>
 
-/* 	$(".edit").on("click",function(){
-		var id =$(this).parent().parent().parent().children(".card-text").text();
-		var idx = $(this).parent().parent().parent().children("#hid").val();
-
-		$.ajax({
-			url : "/selectBusinessCard",
-			data : {idx:idx, id:id},
-			method : "POST",
-			dataType : "text",
-			success : function(data){
-				alert("success");
-				console.log(data);
-				//location.href="/create";
-			},error : function(request, status, error){
-				alert ("code : "+ request.status + "\n" + "message : " + request.responseText + "\n" + "error:" + error);
-			}
-		}); 
-	}) */	
-
-
-</script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </html>

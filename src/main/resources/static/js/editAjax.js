@@ -141,6 +141,7 @@ function updateBusinessCard(idx, val,canvas){
 	});
 }
 
+/**
 function searchBusinessCard(keyword, searchType){
 	$.ajax({
 			url : "/searchBusinessCard",
@@ -181,3 +182,4 @@ function searchBusinessCard(keyword, searchType){
           }
 		})
 }
+*/

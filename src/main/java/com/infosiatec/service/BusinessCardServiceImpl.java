@@ -28,9 +28,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	ServletContext c;
 
 	// json file path
-	// private static final String FILE_PATH = "C:\\Users\\kan03\\Desktop\\";
-	private static final String FILE_PATH = "C:\\Users\\ゆう\\Desktop\\";
-	// private static final String FILE_EXTENSION = ".svg";
+	private static final String IMG_EXTENSION = ".png";
 	private static final String FILE_EXTENSION = ".json";
 	@Autowired
 	private BusinessCardMapper mapper;
@@ -59,7 +57,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
-	public String selectBusinessCard(String id, int idx) {
+	public String selectBusinessCard(String id, Integer idx) {
 		String fileName = mapper.selectFileName(id, idx);
 		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator) + fileName + FILE_EXTENSION;
 		String jsonData = new String();
@@ -97,11 +95,15 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return selectList;
 	}
 
-	public ResponseEntity<String> updateBusinessCard(String id, int idx, String jsonData) {
-		String filePath = FILE_PATH + id + "-" + idx + FILE_EXTENSION;
-		if (!CommonFileCreate.fileOverwrite(filePath, jsonData)) {
+	public ResponseEntity<String> updateBusinessCard(String id, Integer idx, String jsonData, String imgData) throws Exception {		
+		String fileName = id + "-" + idx;
+		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator).concat(fileName).concat(FILE_EXTENSION);
+		String pngPath = c.getRealPath("/").concat("pngData").concat(File.separator).concat(fileName).concat(IMG_EXTENSION);	
+		
+		if (!(CommonFileCreate.fileOverwrite(jsonPath, jsonData)&&CommonFileCreate.pngOverwrite(pngPath, imgData))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
+		CommonFileCreate.resize(pngPath, fileName);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
@@ -135,6 +137,6 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 			System.out.println(resultList);
 		}
 		return resultList;
-		
+
 	}
 }

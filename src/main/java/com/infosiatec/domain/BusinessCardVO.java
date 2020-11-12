@@ -6,7 +6,7 @@ import lombok.Data;
 public class BusinessCardVO {
 	
 	private String id;
-	private int idx;
+	private Integer idx;
 	private String fileName;
 	private boolean isDelete;
 	private String thumbnailPath;
