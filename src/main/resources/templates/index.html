@@ -39,6 +39,7 @@
         <div class="col-md-4" th:each="list:${hm}">
           <div class="card mb-4 shadow-sm">
           	<img th:src="${list.thumbnailPath}" style= "width:100%;height:100%; border:1px solid #d3d3d3; box-sizing:border-box">
+
             <div class="card-body">
               <p class="card-text" th:text="${list.id}"></p>
 
@@ -54,11 +55,11 @@
         <!-- //col -->
       </div>
       <!-- //row -->
-	  <div class="row">
+
 
 	    	<div id="pagination-container"></div>	
 	    
-	  </div>
+
     </div>
   </div>
 
@@ -73,6 +74,25 @@
 </footer>
 </body>
 
+<script>
+// Set Pagnation
+var items = $(".row .col-md-4");
+var numItems = items.length;
+var perPage = 9;
+items.slice(perPage).hide();
+$("#pagination-container").pagination({
+	items : numItems,
+	itemsOnPage : perPage,
+	prevText : "&laquo;",
+	nextText : "&raquo;",
+	cssStyle : "light-theme",
+	onPageClick : function(pageNumber) {
+		var showFrom = perPage * (pageNumber - 1);
+		var showTo = showFrom + perPage;
+		items.hide().slice(showFrom, showTo).show();
+	}
+});
+</script>
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
 </html>
