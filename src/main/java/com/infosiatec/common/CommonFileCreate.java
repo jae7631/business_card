@@ -47,7 +47,7 @@ public class CommonFileCreate {
 		return true;
 	}
 	
-	public static String resize(String pngPath, String fileName) throws Exception {
+	public static String resize(String pngPath, String fileName, String widthFlag) throws Exception {
 		// Original image
 		System.out.println(pngPath);
 		// thumb img
@@ -55,9 +55,17 @@ public class CommonFileCreate {
 		String thumbPath =
 				pngPath.replaceAll("pngData\\\\".concat(fileName).concat(".png"),"")
 				.concat("thumb").concat(File.separator).concat(fileName)+"_thumb."+imgFormat;
+		int newWidth;
+		int newHeight;
 		
-		int newWidth = 450;
-		int newHeight = 300;
+		if(widthFlag.equals("y")) {
+			newWidth = 200;
+			newHeight = 120;
+		}else {
+			newWidth = 120;
+			newHeight = 200;
+		}
+
 		
 		Image image;
 		int imgWidth;

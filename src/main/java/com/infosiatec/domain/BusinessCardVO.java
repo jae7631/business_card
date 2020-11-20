@@ -12,4 +12,5 @@ public class BusinessCardVO {
 	private String thumbnailPath;
 	private String jsonPath;
 	private String pngPath;
+	private String widthFlag;
 }

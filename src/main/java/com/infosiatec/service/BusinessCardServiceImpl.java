@@ -30,6 +30,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 	// json file path
 	private static final String IMG_EXTENSION = ".png";
 	private static final String FILE_EXTENSION = ".json";
+
 	@Autowired
 	private BusinessCardMapper mapper;
 
@@ -40,7 +41,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return mapper.selectMaxIdx() + 1;
 	}
 
-	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData) throws Exception {
+	public ResponseEntity<String> createBusinessCard(String jsonData, String id, String imgData, String widthFlag) throws Exception {
 		Integer idx = getNextIdx();
 		String fileName = id + "-" + idx;
 		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator);
@@ -52,8 +53,8 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		if (!(CommonFileCreate.jsonCreate(jsonData, jsonPath) && CommonFileCreate.pngCreate(imgData, pngPath))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		String thumbPath = CommonFileCreate.resize(pngPath, fileName);
-		mapper.insertBusinessCard(id, fileName, thumbPath, jsonPath, pngPath);
+		String thumbPath = CommonFileCreate.resize(pngPath, fileName, widthFlag);
+		mapper.insertBusinessCard(id, fileName, thumbPath, jsonPath, pngPath, widthFlag);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
@@ -95,7 +96,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		return selectList;
 	}
 
-	public ResponseEntity<String> updateBusinessCard(String id, Integer idx, String jsonData, String imgData) throws Exception {		
+	public ResponseEntity<String> updateBusinessCard(String id, Integer idx, String jsonData, String imgData, String widthFlag) throws Exception {		
 		String fileName = id + "-" + idx;
 		String jsonPath = c.getRealPath("/").concat("jsonData").concat(File.separator).concat(fileName).concat(FILE_EXTENSION);
 		String pngPath = c.getRealPath("/").concat("pngData").concat(File.separator).concat(fileName).concat(IMG_EXTENSION);	
@@ -103,7 +104,7 @@ public class BusinessCardServiceImpl implements BusinessCardService {
 		if (!(CommonFileCreate.fileOverwrite(jsonPath, jsonData)&&CommonFileCreate.pngOverwrite(pngPath, imgData))) {
 			return new ResponseEntity<String>("ERROR", HttpStatus.OK);
 		}
-		CommonFileCreate.resize(pngPath, fileName);
+		CommonFileCreate.resize(pngPath, fileName, widthFlag);
 		return new ResponseEntity<String>("SUCCESS", HttpStatus.OK);
 	}
 
